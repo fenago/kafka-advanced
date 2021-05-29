@@ -872,7 +872,7 @@ code.`streaming.properties` file:
 
 ```
 topic=ipTest2
-broker.list=10.200.99.197:6667
+broker.list=localhost:9092
 appname=IpFraud
 group.id=Stream
 ```

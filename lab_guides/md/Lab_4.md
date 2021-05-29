@@ -1132,7 +1132,7 @@ Java:
 
 ```
 Properties consumerProperties = new Properties();
-consumerProperties.put("bootstrap.servers", "10.200.99.197:6667");
+consumerProperties.put("bootstrap.servers", "localhost:9092");
 consumerProperties.put("group.id", "Demo");
 consumerProperties.put("key.deserializer","org.apache.kafka.common.serialization.StringDeserializer");consumerProperties.put("value.deserializer","org.apache.kafka.common.serialization.StringDeserializer");KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(consumerProperties);
 ```
@@ -1141,7 +1141,7 @@ Scala:
 
 ```
 val consumerProperties: Properties = new Properties();
-consumerProperties.put("bootstrap.servers", "10.200.99.197:6667")
+consumerProperties.put("bootstrap.servers", "localhost:9092")
 consumerProperties.put("group.id", "consumerGroup1")
 consumerProperties.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")consumerProperties.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
 val consumer: KafkaConsumer[String, String] = new KafkaConsumer[String, String](consumerProperties)
@@ -1504,7 +1504,7 @@ object DemoConsumer {
     val topicList: List[String] = new ArrayList[String]
     topicList.add(topic)
     val consumerProperties: Properties = new Properties
-    consumerProperties.put("bootstrap.servers", "10.200.99.197:6667")
+    consumerProperties.put("bootstrap.servers", "localhost:9092")
     consumerProperties.put("group.id", "Demo_Group")
     consumerProperties.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")      consumerProperties.put("value.deserializer","org.apache.kafka.common.serialization.StringDeserializer")
     consumerProperties.put("enable.auto.commit", "true")

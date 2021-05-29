@@ -16,7 +16,7 @@ public class DemoConsumer {
         List<String> topicList = new ArrayList<>();
         topicList.add(topic);
         Properties consumerProperties = new Properties();
-        consumerProperties.put("bootstrap.servers", "10.200.99.197:6667");
+        consumerProperties.put("bootstrap.servers", "localhost:9092");
         consumerProperties.put("group.id", "Demo_Group");
         consumerProperties.put("key.deserializer",
                 "org.apache.kafka.common.serialization.StringDeserializer");
