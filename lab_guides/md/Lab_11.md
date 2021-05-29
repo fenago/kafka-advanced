@@ -616,7 +616,7 @@ important role in achieving high throughput and latency. Let\'s look
 into a few important matrices of Kafka producer:
 
 
--   [**Response rate**]:[** **]The producer sends
+-   [**Response rate**]: The producer sends
     records to the Kafka broker, and the broker acknowledges when a
     message is written to a replica in case of a request. Required
     `.acks` is set to -1. The response rate depends on the
@@ -627,7 +627,7 @@ into a few important matrices of Kafka producer:
     Obviously, less fewer write operations will lead to high
     performance, but there will be chances of losing data in such
     cases. 
--   [**Request rate**]:[** **]The request rate is the
+-   [**Request rate**]: The request rate is the
     number of records the producer produces within a given time. 
 -   [**I/O wait time**]: The producer sends data and then waits
     for data. It may wait for network resources when the producing rate
@@ -643,7 +643,7 @@ into a few important matrices of Kafka producer:
 -   [**Buffer total bytes**]: This represents the maximum
     memory the producer can use to buffer data before it sends it to
     brokers. The maximum buffer size will result in high throughput. 
--   [**Compression rate**]:[** **]This represents the
+-   [**Compression rate**]: This represents the
     average compression rate for batch records for topic. A higher
     compression rate triggers us to change the compression type or look
     for some way to reduce it.
@@ -686,7 +686,7 @@ consumer side:
     producer. It sends alerts for suitable action to fix up this issue,
     either by adding more consumer instance or by increasing partitions
     and increasing consumers simultaneously.
--   `bytes-consumed-rate`:[** **]This represents the
+-   `bytes-consumed-rate`: This represents the
     number of bytes consumed per second by the consumer. It helps in
     identifying the network bandwidth of your consumer.
 -   `records-consumed-rate`: This defines the number of

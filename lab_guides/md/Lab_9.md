@@ -160,7 +160,7 @@ application:
     Order processing can be easily achievable as Kafka also stores the
     time stamp with messages in topic partition. You can reorder the
     data in any form using this time stamp property.
--   [**State management**]:[** **]Maintaining the
+-   [**State management**]: Maintaining the
     state in a Stream processing application is also very important for
     some state dependent applications. Data processing may require
     access to recently processed data or derived data, so it is a great
@@ -188,7 +188,7 @@ shards of the global state. Kafka Stream instance only processes non
 overlapping subsets of Kafka topic partition.
 
 
--   [**Fault tolerance**]:[** **]Fault tolerance is a
+-   [**Fault tolerance**]: Fault tolerance is a
     very common and important feature in the Stream processing
     application. Failure of any instance should not affect the
     application processing. Kafka Stream maintains change of state in

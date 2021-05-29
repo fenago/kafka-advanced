@@ -205,7 +205,7 @@ Spark\'s ecosystem:
 Spark ecosystem
 
 
--   [**Spark core**]:[** **]Spark core is the base and
+-   [**Spark core**]: Spark core is the base and
     generalized layer in Spark ecosystem. It contains basic and common
     functionality which can be used by all the layers preceding it. This
     means that any performance improvement on the core is automatically

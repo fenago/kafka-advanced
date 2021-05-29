@@ -50,7 +50,7 @@ five paradigms. They are as follows:
     has support for SSL communication between the client (producer or
     consumer) and the broker. Even inter-broker communication can be
     encrypted.
--   [**Encryption at rest**]:[** **]This ensures that
+-   [**Encryption at rest**]: This ensures that
     any sensitive data that is stored on the disk is encrypted. Kafka
     does not have any direct support for encrypting data on the disk.
     However, you can utilize OS level disk encryption techniques for the
@@ -544,7 +544,7 @@ super.users=User:Bob;User:Alice
 ```
 
 
-4.  [**Adding an ACL**]:[** **]An[** **]ACL
+4.  [**Adding an ACL**]: An ACL
     can be added using the command line interface. For example, if you
     want to add an ACL where `principals User: Chanchal` and
     `User: Manish` are allowed to perform `Read` and
@@ -730,7 +730,7 @@ Let\'s look into the **`Service Details `**:
 -   **`Zookeeper Connect String`**: This refers to the IP address and
     port of Zookeeper running on cluster. The default value is
     `localhost:2181`.
--   **`Ranger Plugin SSL CName`**:[** **]You need to install
+-   **`Ranger Plugin SSL CName`**: You need to install
     Ranger Kafka plugin for integrating Kafka with Ranger and provide a
     common name for the certificate, which is then registered. 
 
@@ -789,15 +789,15 @@ see their meaning:
 -   **`Permission:`** This defines the type of permission you want to
     grant to this user:
     
-    -   [**Publish**]:[** **]If a given user can
+    -   [**Publish**]: If a given user can
         produce data to Kafka topic
-    -   [**Consume**]:[** **]If a given user can
+    -   [**Consume**]: If a given user can
         consume data from topic partitions
-    -   [**Configure**]:[** **]If a given user can
+    -   [**Configure**]: If a given user can
         configure brokers/clusters
-    -   [**Describe**]:[** **]Permission to fetch
+    -   [**Describe**]: Permission to fetch
         metadata on the topic
-    -   [**Kafka Admin**]:[** **]If checked, the user
+    -   [**Kafka Admin**]: If checked, the user
         will have the permissions of an admin
     
 
