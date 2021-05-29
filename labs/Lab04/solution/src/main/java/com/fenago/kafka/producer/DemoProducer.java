@@ -1,4 +1,4 @@
-package com.fenago.kafka;;
+package com.fenago.kafka.producer;
 
 import java.util.Properties;
 import java.util.concurrent.Future;

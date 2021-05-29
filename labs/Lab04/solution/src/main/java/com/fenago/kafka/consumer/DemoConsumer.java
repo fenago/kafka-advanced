@@ -1,17 +1,11 @@
-package com.fenago.kafka;;
+package com.fenago.kafka.consumer;
 
 
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.TopicPartition;
-import org.apache.log4j.Logger;
 
 import java.util.*;
 
-import org.apache.kafka.clients.consumer.*;
-import org.apache.kafka.common.TopicPartition;
-import org.apache.log4j.Logger;
-
-import java.util.*;
 
 public class DemoConsumer {
     private static final Logger log = Logger.getLogger(DemoConsumer.class);
@@ -36,15 +30,14 @@ public class DemoConsumer {
         KafkaConsumer<String, String> demoKafkaConsumer = new KafkaConsumer<String, String>(consumerProperties);
 
         demoKafkaConsumer.subscribe(topicList);
-        log.info("Subscribed to topic " + topic);
+        System.out.println("Subscribed to topic " + topic);
         int i = 0;
         try {
             while (true) {
                 ConsumerRecords<String, String> records = demoKafkaConsumer.poll(500);
                 for (ConsumerRecord<String, String> record : records)
-                    log.info("offset = " + record.offset() + "key =" + record.key() + "value =" + record.value());
+                    System.out.println("offset = " + record.offset() + "key =" + record.key() + "value =" + record.value());
 
-                //TODO : Do processing for data here
                 demoKafkaConsumer.commitAsync(new OffsetCommitCallback() {
                     public void onComplete(Map<TopicPartition, OffsetAndMetadata> map, Exception e) {
 
@@ -53,7 +46,7 @@ public class DemoConsumer {
 
             }
         } catch (Exception ex) {
-            //TODO : Log Exception Here
+           System.out.println(ex)
         } finally {
             try {
                 demoKafkaConsumer.commitSync();
