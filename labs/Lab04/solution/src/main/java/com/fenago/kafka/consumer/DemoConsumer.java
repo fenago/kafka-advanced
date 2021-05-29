@@ -8,7 +8,6 @@ import java.util.*;
 
 
 public class DemoConsumer {
-    private static final Logger log = Logger.getLogger(DemoConsumer.class);
 
     public static void main(String[] args) throws Exception {
 
@@ -46,7 +45,7 @@ public class DemoConsumer {
 
             }
         } catch (Exception ex) {
-           System.out.println(ex)
+           System.out.println(ex);
         } finally {
             try {
                 demoKafkaConsumer.commitSync();
