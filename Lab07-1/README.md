@@ -1,6 +1,6 @@
 # Lab 7.1: Avro
 
-Welcome to the session 7 lab 1. The work for this lab is done in `~/kafka-training/lab7.1`.
+Welcome to the session 7 lab 1. The work for this lab is done in `~/kafka-advanced/lab7.1`.
 In this lab, you are going to use Avro.
 
 

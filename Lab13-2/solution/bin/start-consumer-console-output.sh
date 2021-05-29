@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-cd ~/kafka-training
+cd ~/kafka-advanced
 
 ## Output Consumer
 kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 \

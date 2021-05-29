@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cd ~/kafka-training
+cd ~/kafka-advanced
 
 # TODO Create a topic
 # TODO Pass topic name my-topic, number of partitions 13 and replication factor 1.

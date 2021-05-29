@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cd ~/kafka-training
+cd ~/kafka-advanced
 
 #TODO DESCRIBE my-failsafe-topic
 kafka/bin/kafka-topics.sh --describe --topic my-failsafe-topic --zookeeper localhost:2181

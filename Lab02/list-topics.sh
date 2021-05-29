@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cd ~/kafka-training
+cd ~/kafka-advanced
 
 # TODO List existing topics
 # TODO Pass the parameter --list.

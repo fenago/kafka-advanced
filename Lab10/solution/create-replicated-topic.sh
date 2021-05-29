@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cd ~/kafka-training
+cd ~/kafka-advanced
 
 kafka/bin/kafka-topics.sh --create \
     --zookeeper localhost:2181 \

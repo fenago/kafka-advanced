@@ -1,6 +1,6 @@
 # Lab 7.2: Kafka Schema Registry with Avro.
 
-Welcome to the session 7 lab 2. The work for this lab is done in `~/kafka-training/lab7.2`.
+Welcome to the session 7 lab 2. The work for this lab is done in `~/kafka-advanced/lab7.2`.
 In this lab, you are going to use the Schema Registry with Avro.
 
 
@@ -339,14 +339,14 @@ note the behavior for the various compatibility settings.
 
 #### Running Schema Registry
 ```
-$ cat ~/kafka-training/confluent/etc/schema-registry/schema-registry.properties
+$ cat ~/kafka-advanced/confluent/etc/schema-registry/schema-registry.properties
 
 listeners=http://0.0.0.0:8081
 kafkastore.connection.url=localhost:2181
 kafkastore.topic=_schemas
 debug=false
 
-~/kafka-training/confluent/bin/schema-registry-start  ~/kafka-training/confluent/etc/schema-registry/schema-registry.properties
+~/kafka-advanced/confluent/bin/schema-registry-start  ~/kafka-advanced/confluent/etc/schema-registry/schema-registry.properties
 ```
 
 ## ***ACTION*** - RUN the schema registry on port 8081

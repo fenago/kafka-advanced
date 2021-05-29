@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cd ~/kafka-training
+cd ~/kafka-advanced
 
 # List existing topics
 kafka/bin/kafka-topics.sh --describe \

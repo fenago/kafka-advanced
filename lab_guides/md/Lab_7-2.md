@@ -43,19 +43,19 @@ Schema Registry, so we can try our out code right away.
 Make sure that Zookeeper and Kafka are already running. Start them by running following script incase they are not running:
 
 
-`~/kafka-training/run-zookeeper.sh`
+`~/kafka-advanced/run-zookeeper.sh`
 
 Wait about 30 seconds or so for ZooKeeper to startup.
 
-`~/kafka-training/run-kafka.sh`
+`~/kafka-advanced/run-kafka.sh`
 
 
 
 #### Start Schema Registry
 
-Confluence 6.1.1 has already been downloaded and extracted at following path `~/kafka-training/confluent-6.1.1` . Start schema registry by running following script in the terminal:
+Confluence 6.1.1 has already been downloaded and extracted at following path `~/kafka-advanced/confluent-6.1.1` . Start schema registry by running following script in the terminal:
 
-`~/kafka-training/run-schema_registry.sh`
+`~/kafka-advanced/run-schema_registry.sh`
 
 
 Your local Kafka cluster is now ready to be used. Kafka broker is available on
@@ -70,7 +70,7 @@ Complete lab solution is available at following path. Run mvn commands to compil
 
 
 ```
-cd ~/kafka-training/labs/lab-kafka-protobuf
+cd ~/kafka-advanced/labs/lab-kafka-protobuf
 
 mvn clean
 
@@ -79,7 +79,7 @@ mvn install
 
 #### Intellij IDE
 
-Open Intellij IDE and open following project headless/kafka-training/labs/lab-kafka-protobuf
+Open Intellij IDE and open following project headless/kafka-advanced/labs/lab-kafka-protobuf
 
 ![](./images/1.png)
 
@@ -377,7 +377,7 @@ Check out the JavaDoc to find out more about
 **Step 1: Compile** (Terminal 1)
 
 ```
-cd ~/kafka-training/labs/lab-kafka-protobuf
+cd ~/kafka-advanced/labs/lab-kafka-protobuf
 
 mvn clean compile
 ```

@@ -2,10 +2,10 @@
 
 # Lab 3: Writing a Kafka Consumer in Java
 
-Welcome to the session 3 lab. The work for this lab is done in `~/kafka-training/labs/lab3`.
+Welcome to the session 3 lab. The work for this lab is done in `~/kafka-advanced/labs/lab3`.
 In this lab, you are going to create simple Java Kafka consumer.
 
-The latest version of this lab lives [here](https://github.com/fenago/kafka-training/tree/master/lab_guides).
+The latest version of this lab lives [here](https://github.com/fenago/kafka-advanced/tree/master/lab_guides).
 
 In this lab, you are going to create a simple *Kafka Consumer*.
 This consumer consumes messages from the Kafka Producer you wrote in the last lab.
@@ -32,7 +32,7 @@ Next, you import the Kafka packages and define a constant for the topic and a co
 servers that the consumer will connect.
 
 #### KafkaConsumerExample.java - imports and constants
-#### ~/kafka-training/labs/lab3/src/main/java/com/fenago/kafka/KafkaConsumerExample.java
+#### ~/kafka-advanced/labs/lab3/src/main/java/com/fenago/kafka/KafkaConsumerExample.java
 
 ```java
 
@@ -75,7 +75,7 @@ ____
 Now, that you imported the Kafka classes and defined some constants, let's create the Kafka consumer.
 
 #### KafkaConsumerExample.java - Create Consumer to process Records
-#### ~/kafka-training/labs/lab3/src/main/java/com/fenago/kafka/KafkaConsumerExample.java
+#### ~/kafka-advanced/labs/lab3/src/main/java/com/fenago/kafka/KafkaConsumerExample.java
 
 ```java
 
@@ -138,7 +138,7 @@ ____
 Now, let's process some records with our Kafka Producer.
 
 #### KafkaConsumerExample.java - Process records from Consumer
-#### ~/kafka-training/labs/lab3/src/main/java/com/fenago/kafka/KafkaConsumerExample.java
+#### ~/kafka-advanced/labs/lab3/src/main/java/com/fenago/kafka/KafkaConsumerExample.java
 
 ```java
 public class KafkaConsumerExample {
@@ -217,7 +217,7 @@ ____
 Next you define the `main` method.
 
 #### KafkaConsumerExample.java - Running the Consumer
-#### ~/kafka-training/labs/lab3/src/main/java/com/fenago/kafka/KafkaConsumerExample.java
+#### ~/kafka-advanced/labs/lab3/src/main/java/com/fenago/kafka/KafkaConsumerExample.java
 
 ```java
 
@@ -256,7 +256,7 @@ Kafka like most Java libs these days uses `sl4j`. You can use Kafka with Log4j, 
 or JDK logging. We used logback in our gradle build (`compile 'ch.qos.logback:logback-classic:1.2.2'`).
 
 
-#### ~/kafka-training/labs/lab3/solution/src/main/resources/logback.xml
+#### ~/kafka-advanced/labs/lab3/solution/src/main/resources/logback.xml
 ```xml
 <configuration>
 
@@ -392,7 +392,7 @@ Then run the producer once from your IDE.  What happens? The consumers should ea
 First, let's modify the Consumer to make their group id unique as follows:
 
 #### KafkaConsumerExample - Make the Consumer group id unique
-#### ~/kafka-training/labs/lab3/src/main/java/com/fenago/kafka/KafkaConsumerExample.java
+#### ~/kafka-advanced/labs/lab3/src/main/java/com/fenago/kafka/KafkaConsumerExample.java
 ```java
 public class KafkaConsumerExample {
 

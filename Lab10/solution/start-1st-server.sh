@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 CONFIG=`pwd`/config
 
-cd ~/kafka-training
+cd ~/kafka-advanced
 
 ## Run Kafka
 kafka/bin/kafka-server-start.sh \

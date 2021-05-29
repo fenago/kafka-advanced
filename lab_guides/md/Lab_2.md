@@ -6,9 +6,9 @@
 Let's do a simple lab showing how to use producers and consumers from the Kafka command line.
 
 These files should be setup on your lab environment. You do the work for this lab
-in the directory `~/kafka-training/labs/lab1`.
+in the directory `~/kafka-advanced/labs/lab1`.
 You can find the latest versions of the instructions for
-Lab1 [here](https://github.com/fenago/kafka-training/tree/master/lab_guides).
+Lab1 [here](https://github.com/fenago/kafka-advanced/tree/master/lab_guides).
 
 
 
@@ -16,7 +16,7 @@ Next, we are going to run *ZooKeeper* and then run *Kafka Server/Broker*.
 We will use some Kafka command line utilities, to create Kafka topics,
 send messages via a producer and consume messages from the command line.
 
-You do the work for this lab in the directory `~/kafka-training/labs/lab1`.
+You do the work for this lab in the directory `~/kafka-advanced/labs/lab1`.
 
 <br />
 
@@ -24,20 +24,20 @@ You do the work for this lab in the directory `~/kafka-training/labs/lab1`.
 Kafka relies on ZooKeeper. To keep things simple, we will use a single ZooKeeper node.
 
 Kafka provides a startup script for ZooKeeper called `zookeeper-server-start.sh`
-which is located at `~/kafka-training/kafka/bin/zookeeper-server-start.sh`.
+which is located at `~/kafka-advanced/kafka/bin/zookeeper-server-start.sh`.
 
 The Kafka distribution also provide a ZooKeeper config file which is setup to
 run single node.
 
-To run ZooKeeper, we create this script in `kafka-training` and run it.
+To run ZooKeeper, we create this script in `kafka-advanced` and run it.
 
 <br />
 
-#### ~/kafka-training/run-zookeeper.sh
+#### ~/kafka-advanced/run-zookeeper.sh
 
 ```sh
 #!/usr/bin/env bash
-cd ~/kafka-training
+cd ~/kafka-advanced
 
 kafka/bin/zookeeper-server-start.sh \
    kafka/config/zookeeper.properties
@@ -47,7 +47,7 @@ kafka/bin/zookeeper-server-start.sh \
 
 #### Run run-zookeeper.sh
 ```sh
-~/kafka-training
+~/kafka-advanced
 $ ./run-zookeeper.sh
 ```
 
@@ -60,21 +60,21 @@ Wait about 30 seconds or so for ZooKeeper to startup.
 ### Run Kafka Server
 
 Kafka also provides a startup script for the Kafka server
-called `kafka-server-start.sh` which is located at `~/kafka-training/kafka/bin/kafka-server-start.sh`.
+called `kafka-server-start.sh` which is located at `~/kafka-advanced/kafka/bin/kafka-server-start.sh`.
 
 The Kafka distribution also provides a Kafka config file which is setup to run Kafka single node,
 and points to ZooKeeper running on `localhost:2181`.
 
-To run Kafka, we created the script `run-kafka.sh` in `kafka-training`.
+To run Kafka, we created the script `run-kafka.sh` in `kafka-advanced`.
 Please review it and then run it in another terminal window.
 
 <br />
 
-#### ~/kafka-training/run-kafka.sh
+#### ~/kafka-advanced/run-kafka.sh
 
 ```sh
 #!/usr/bin/env bash
-cd ~/kafka-training
+cd ~/kafka-advanced
 
 kafka/bin/kafka-server-start.sh \
     kafka/config/server.properties
@@ -87,7 +87,7 @@ kafka/bin/kafka-server-start.sh \
 
 #### Run run-kafka.sh
 ```sh
-~/kafka-training
+~/kafka-advanced
 $ ./run-kafka.sh
 ```
 
@@ -101,22 +101,22 @@ Now let's create the topic that we will send records on.
 
 
 Kafka also provides a utility to work with topics called `kafka-topics.sh`
-which is located at `~/kafka-training/kafka/bin/kafka-topics.sh`.
+which is located at `~/kafka-advanced/kafka/bin/kafka-topics.sh`.
 
 You will use this tool to create a topic called `my-topic` with a replication factor
 of 1 since we only have one server. We will use thirteen partitions for `my-topic`,
 which means we could have up to 13 Kafka consumers.
 
-To run Kafka, finish creating this script in `kafka-training\lab1`, and run it in another terminal window.
+To run Kafka, finish creating this script in `kafka-advanced\lab1`, and run it in another terminal window.
 
 <br />
 
-#### ~/kafka-training/labs/lab1/create-topic.sh
+#### ~/kafka-advanced/labs/lab1/create-topic.sh
 
 ```sh
 #!/usr/bin/env bash
 
-cd ~/kafka-training
+cd ~/kafka-advanced
 
 # Create a topic
 kafka/bin/kafka-topics.sh --create \
@@ -128,13 +128,13 @@ kafka/bin/kafka-topics.sh --create \
 
 <br />
 
-* ***ACTION*** Edit the file ~/kafka-training/labs/lab1/create-topic.sh so that it creates a topic called my-topic.
+* ***ACTION*** Edit the file ~/kafka-advanced/labs/lab1/create-topic.sh so that it creates a topic called my-topic.
 * ***ACTION*** Run `create-topic.sh` from a new terminal window.
 
-#### Run create-topic.sh from ~/kafka-training/labs/lab1
+#### Run create-topic.sh from ~/kafka-advanced/labs/lab1
 
 ```sh
-~/kafka-training/labs/lab1
+~/kafka-advanced/labs/lab1
 
 $ ./create-topic.sh
 
@@ -151,16 +151,16 @@ Notice we created a topic called `my-topic`.
 
 You can see which topics that Kafka is managing using `kafka-topics.sh` as follows.
 
-Finish creating the script in `~/kafka-training/labs/lab1/list-topics.sh` and run it.
+Finish creating the script in `~/kafka-advanced/labs/lab1/list-topics.sh` and run it.
 
 <br />
 
-#### ~/kafka-training/labs/lab1/list-topics.sh
+#### ~/kafka-advanced/labs/lab1/list-topics.sh
 
 ```sh
 #!/usr/bin/env bash
 
-cd ~/kafka-training
+cd ~/kafka-advanced
 
 # List existing topics
 kafka/bin/kafka-topics.sh --list \
@@ -175,15 +175,15 @@ Notice that we have to specify the location of the ZooKeeper cluster node which
 is running on `localhost` port `2181`.
 
 
-* ***ACTION*** Edit the file ~/kafka-training/labs/lab1/list-topic.sh so that it lists all of the topics in Kafka.
+* ***ACTION*** Edit the file ~/kafka-advanced/labs/lab1/list-topic.sh so that it lists all of the topics in Kafka.
 * ***ACTION*** Run `list-topic.sh` from a new terminal window.
 
 <br />
 
-#### Run list-topics.sh run from ~/kafka-training/labs/lab1
+#### Run list-topics.sh run from ~/kafka-advanced/labs/lab1
 
 ```sh
-~/kafka-training/labs/lab1
+~/kafka-advanced/labs/lab1
 $ ./list-topics.sh
 __consumer_offsets
 _schemas
@@ -205,18 +205,18 @@ It start up a terminal window where everything you type is sent to the Kafka top
 
 
 Kafka provides the utility `kafka-console-producer.sh`
-which is located at `~/kafka-training/kafka/bin/kafka-console-producer.sh` to send
+which is located at `~/kafka-advanced/kafka/bin/kafka-console-producer.sh` to send
 messages to a topic on the command line.
 
-Finish creating the script in `~/kafka-training/labs/lab1/start-producer-console.sh` and run it.
+Finish creating the script in `~/kafka-advanced/labs/lab1/start-producer-console.sh` and run it.
 
 <br />
 
-#### ~/kafka-training/labs/lab1/start-producer-console.sh
+#### ~/kafka-advanced/labs/lab1/start-producer-console.sh
 
 ```sh
 #!/usr/bin/env bash
-cd ~/kafka-training
+cd ~/kafka-advanced
 
 kafka/bin/kafka-console-producer.sh \
     --broker-list localhost:9092 \
@@ -227,7 +227,7 @@ kafka/bin/kafka-console-producer.sh \
 
 Notice that we specify the Kafka node which is running at `localhost:9092`.
 
-* ***ACTION*** Edit the file ~/kafka-training/labs/lab1/start-producer-console.sh so that it starts the Kafka producer.
+* ***ACTION*** Edit the file ~/kafka-advanced/labs/lab1/start-producer-console.sh so that it starts the Kafka producer.
 * ***ACTION*** Run `start-producer-console.sh` from a new terminal window.
 
 <br />
@@ -235,7 +235,7 @@ Notice that we specify the Kafka node which is running at `localhost:9092`.
 #### Run start-producer-console.sh and send at least four messages
 
 ```sh
-~/kafka-training/labs/lab1
+~/kafka-advanced/labs/lab1
 $ ./start-producer-console.sh
 This is message 1
 This is message 2
@@ -256,18 +256,18 @@ It displays the messages in various modes.
 
 
 Kafka provides the utility `kafka-console-consumer.sh`
-which is located at `~/kafka-training/kafka/bin/kafka-console-producer.sh` to receive
+which is located at `~/kafka-advanced/kafka/bin/kafka-console-producer.sh` to receive
 messages from a topic on the command line.
 
-Finish creating the script in `~/kafka-training/labs/lab1/start-consumer-console.sh` and run it.
+Finish creating the script in `~/kafka-advanced/labs/lab1/start-consumer-console.sh` and run it.
 
 <br />
 
-#### ~/kafka-training/labs/lab1/start-consumer-console.sh
+#### ~/kafka-advanced/labs/lab1/start-consumer-console.sh
 
 ```sh
 #!/usr/bin/env bash
-cd ~/kafka-training
+cd ~/kafka-advanced
 
 kafka/bin/kafka-console-consumer.sh \
     --bootstrap-server localhost:9092 \
@@ -281,7 +281,7 @@ kafka/bin/kafka-console-consumer.sh \
 Notice that we specify the Kafka node which is running at `localhost:9092` like we did before, but
 we also specify to read all of the messages from `my-topic` from the beginning `--from-beginning`.
 
-* ***ACTION*** Edit the file ~/kafka-training/labs/lab1/start-consumer-console.sh so that it starts the Kafka console consumer.
+* ***ACTION*** Edit the file ~/kafka-advanced/labs/lab1/start-consumer-console.sh so that it starts the Kafka console consumer.
 * ***ACTION*** Run `start-consumer-console.sh` from a new terminal window.
 
 <br />
@@ -289,7 +289,7 @@ we also specify to read all of the messages from `my-topic` from the beginning `
 #### Run start-consumer-console.sh in another terminal
 
 ```sh
-~/kafka-training/labs/lab1
+~/kafka-advanced/labs/lab1
 $ ./start-consumer-console.sh
 Message 4
 This is message 2

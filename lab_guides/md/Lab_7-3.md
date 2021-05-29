@@ -3,7 +3,7 @@
 
 # Lab 7.1: Avro
 
-Welcome to the session 7 lab 1. The work for this lab is done in `~/kafka-training/labs/lab7.1`. In this lab, you are going to use Avro.
+Welcome to the session 7 lab 1. The work for this lab is done in `~/kafka-advanced/labs/lab7.1`. In this lab, you are going to use Avro.
 
 
 
@@ -112,8 +112,7 @@ on Avro schemas.
 This `gradle-avro-plugin` is a Gradle plugin that uses Avro tools to do Java code generation
 for Apache Avro.
 This plugin supports Avro schema files (`.avsc`), and Avro RPC IDL (`.avdl`).
-For Kafka Training Course, Instructor led, onsite training")
-you only need `avsc` schema files.
+
 
 #### build.gradle - example using gradle-avro-plugin
 

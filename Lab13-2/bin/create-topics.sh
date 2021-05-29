@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-cd ~/kafka-training
+cd ~/kafka-advanced
 
 ## TODO create input topic
 ## TODO set the replication-factor to 1

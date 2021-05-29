@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-cd ~/kafka-training
+cd ~/kafka-advanced
 
 ## Create input topic
 kafka/bin/kafka-topics.sh --create \
