@@ -5,7 +5,7 @@
 #### Understanding Kafka Failover
 
 Welcome to session 1 lab 2.
-The work for this lab is done in `~/kafka-advanced/labs/lab1.2`.
+The work for this lab is done in `~/kafka-advanced/labs/Lab10`.
 This Kafka lab picks up right where the first lab left off.
 The first lab has instructions on how to run ZooKeeper and use Kafka utils.
 Please refer to Kafka [course notes](https://github.com/fenago/kafka-advanced/tree/master/lab_guides)
@@ -63,7 +63,7 @@ $ cp kafka/config/server.properties labs/lab1.2/config/server-2.properties
 
 
 
-***ACTION*** EDIT `~/kafka-advanced/labs/lab1.2/config/server-0.properties` as follows:
+***ACTION*** EDIT `~/kafka-advanced/labs/Lab10/config/server-0.properties` as follows:
 
 With your favorite text editor change server-0.properties so that `log.dirs` is set to `./logs/kafka-0`.
 Leave the rest of the file the same. Make sure `log.dirs` is only defined once.
@@ -72,7 +72,7 @@ Leave the rest of the file the same. Make sure `log.dirs` is only defined once.
 
 <br />
 
-#### ~/kafka-advanced/labs/lab1.2/config/server-0.properties
+#### ~/kafka-advanced/labs/Lab10/config/server-0.properties
 
 ```sh
 broker.id=0
@@ -84,11 +84,11 @@ log.dirs=./logs/kafka-0
 <br />
 
 
-***ACTION*** EDIT `~/kafka-advanced/labs/lab1.2/config/server-1.properties` as follows:
+***ACTION*** EDIT `~/kafka-advanced/labs/Lab10/config/server-1.properties` as follows:
 
 With your favorite text editor change `log.dirs`, `broker.id` and and `log.dirs` of `server-1.properties` as follows:
 
-#### ~/kafka-advanced/labs/lab1.2/config/server-1.properties
+#### ~/kafka-advanced/labs/Lab10/config/server-1.properties
 
 ```sh
 broker.id=1
@@ -101,11 +101,11 @@ log.dirs=./logs/kafka-1
 <br />
 
 
-***ACTION*** EDIT `~/kafka-advanced/labs/lab1.2/config/server-2.properties` as follows:
+***ACTION*** EDIT `~/kafka-advanced/labs/Lab10/config/server-2.properties` as follows:
 
 With your favorite text editor change `log.dirs`, `broker.id` and and `log.dirs` of `server-2.properties` as follows:
 
-#### ~/kafka-advanced/labs/lab1.2/config/server-2.properties
+#### ~/kafka-advanced/labs/Lab10/config/server-2.properties
 
 ```sh
 broker.id=2
@@ -123,11 +123,11 @@ log.dirs=./logs/kafka-2
 The startup scripts will just run `kafka-server-start.sh` with the corresponding properties file.
 
 
-***ACTION*** EDIT `~/kafka-advanced/labs/lab1.2/start-1st-server.sh` and follow instructions in file.
+***ACTION*** EDIT `~/kafka-advanced/labs/Lab10/start-1st-server.sh` and follow instructions in file.
 
 <br />
 
-#### ~/kafka-advanced/labs/lab1.2/start-1st-server.sh
+#### ~/kafka-advanced/labs/Lab10/start-1st-server.sh
 
 ```sh
 #!/usr/bin/env bash
@@ -146,10 +146,10 @@ kafka/bin/kafka-server-start.sh \
 
 
 
-***ACTION*** EDIT `~/kafka-advanced/labs/lab1.2/start-2nd-server.sh` and follow instructions in file.
+***ACTION*** EDIT `~/kafka-advanced/labs/Lab10/start-2nd-server.sh` and follow instructions in file.
 
 
-#### ~/kafka-advanced/labs/lab1.2/start-2nd-server.sh
+#### ~/kafka-advanced/labs/Lab10/start-2nd-server.sh
 
 ```sh
 #!/usr/bin/env bash
@@ -169,10 +169,10 @@ kafka/bin/kafka-server-start.sh \
 
 
 
-***ACTION*** EDIT `~/kafka-advanced/labs/lab1.2/start-3rd-server.sh` and follow instructions in file.
+***ACTION*** EDIT `~/kafka-advanced/labs/Lab10/start-3rd-server.sh` and follow instructions in file.
 
 
-#### ~/kafka-advanced/labs/lab1.2/start-3rd-server.sh
+#### ~/kafka-advanced/labs/Lab10/start-3rd-server.sh
 
 ```sh
 #!/usr/bin/env bash
@@ -196,9 +196,9 @@ Notice we are passing the Kafka server properties files that we created in the l
 
 Now run all three in separate terminals/shells.
 
-#### Run Kafka servers each in own terminal from ~/kafka-advanced/labs/lab1.2
+#### Run Kafka servers each in own terminal from ~/kafka-advanced/labs/Lab10
 ```sh
-$ cd ~/kafka-advanced/labs/lab1.2
+$ cd ~/kafka-advanced/labs/Lab10
 
 $ ./start-1st-server.sh
 
@@ -228,11 +228,11 @@ Now we will create a replicated topic that the console producers and console con
 
 
 
-***ACTION*** EDIT `~/kafka-advanced/labs/lab1.2/create-replicated-topic.sh` and follow instructions in file.
+***ACTION*** EDIT `~/kafka-advanced/labs/Lab10/create-replicated-topic.sh` and follow instructions in file.
 
 <br />
 
-#### ~/kafka-advanced/labs/lab1.2/create-replicated-topic.sh
+#### ~/kafka-advanced/labs/Lab10/create-replicated-topic.sh
 ```sh
 #!/usr/bin/env bash
 
@@ -254,7 +254,7 @@ Notice that the replication factor gets set to 3, and the topic name is `my-fail
 like before it has 13 partitions.
 
 
-***ACTION*** RUN `~/kafka-advanced/labs/lab1.2/create-replicated-topic.sh` as follows:
+***ACTION*** RUN `~/kafka-advanced/labs/Lab10/create-replicated-topic.sh` as follows:
 
 Then we just have to run the script to create the topic.
 
@@ -264,7 +264,7 @@ Then we just have to run the script to create the topic.
 
 #### Run create-replicated-topic.sh
 ```sh
-~/kafka-advanced/labs/lab1.2
+~/kafka-advanced/labs/Lab10
 $ ./create-replicated-topic.sh
 ```
 
@@ -278,7 +278,7 @@ Next, you finish creating a script that starts the consumer and then start the c
 
 <br />
 
-#### ~/kafka-advanced/labs/lab1.2/start-consumer-console-replicated.sh
+#### ~/kafka-advanced/labs/Lab10/start-consumer-console-replicated.sh
 ```sh
 #!/usr/bin/env bash
 cd ~/kafka-advanced
@@ -291,7 +291,7 @@ kafka/bin/kafka-console-consumer.sh \
 ```
 
 
-***ACTION*** EDIT `~/kafka-advanced/labs/lab1.2/start-consumer-console-replicated.sh` and follow instructions in file.
+***ACTION*** EDIT `~/kafka-advanced/labs/Lab10/start-consumer-console-replicated.sh` and follow instructions in file.
 
 
 <br />
@@ -308,7 +308,7 @@ Now we just run this script to start the consumer.
 
 #### Run start-consumer-console-replicated.sh
 ```sh
-~/kafka-advanced/labs/lab1.2
+~/kafka-advanced/labs/Lab10
 $ ./start-consumer-console-replicated.sh
 ```
 
@@ -322,7 +322,7 @@ Next, we create a script that starts the producer. Then launch the producer with
 
 <br />
 
-#### ~/kafka-advanced/labs/lab1.2/start-consumer-producer-replicated.sh
+#### ~/kafka-advanced/labs/Lab10/start-consumer-producer-replicated.sh
 ```sh
 #!/usr/bin/env bash
 cd ~/kafka-advanced
@@ -334,13 +334,13 @@ kafka/bin/kafka-console-producer.sh \
 ```
 
 
-***ACTION*** EDIT `~/kafka-advanced/labs/lab1.2/start-consumer-producer-replicated.sh` and follow instructions in file.
+***ACTION*** EDIT `~/kafka-advanced/labs/Lab10/start-consumer-producer-replicated.sh` and follow instructions in file.
 
 
 <br />
 
 
-***ACTION*** START `~/kafka-advanced/labs/lab1.2/start-consumer-producer-replicated.sh` as follows:
+***ACTION*** START `~/kafka-advanced/labs/Lab10/start-consumer-producer-replicated.sh` as follows:
 
 Notice we start Kafka producer and pass it a list of Kafka Brokers to use via the parameter `--broker-list`.
 
@@ -351,7 +351,7 @@ Now use the start producer script to launch the producer as follows.
 
 #### Run start-producer-console-replicated.sh
 ```sh
-$ cd ~/kafka-advanced/labs/lab1.2
+$ cd ~/kafka-advanced/labs/Lab10
 $ ./start-consumer-producer-replicated.sh
 ```
 
@@ -371,7 +371,7 @@ Now send some message from the producer to Kafka and see those messages consumed
 
 #### Producer Console
 ```sh
-~/kafka-advanced/labs/lab1.2
+~/kafka-advanced/labs/Lab10
 $ ./start-consumer-producer-replicated.sh
 Hi Mom
 How are you?
@@ -387,7 +387,7 @@ Good!
 
 #### Consumer Console
 ```sh
-~/kafka-advanced/labs/lab1.2
+~/kafka-advanced/labs/Lab10
 $ ./start-consumer-console-replicated.sh
 Hi Mom
 How are you?
@@ -407,7 +407,7 @@ Now Start two more consumers in their own terminal window and send more messages
 
 #### Producer Console
 ```sh
-~/kafka-advanced/labs/lab1.2
+~/kafka-advanced/labs/Lab10
 $ ./start-consumer-producer-replicated.sh
 Hi Mom
 How are you?
@@ -423,7 +423,7 @@ message 3
 
 #### Consumer Console 1st
 ```sh
-$ cd ~/kafka-advanced/labs/lab1.2
+$ cd ~/kafka-advanced/labs/Lab10
 $ ./start-consumer-console-replicated.sh
 Hi Mom
 How are you?
@@ -439,7 +439,7 @@ message 3
 
 #### Consumer Console 2nd in new Terminal
 ```sh
-$ cd ~/kafka-advanced/labs/lab1.2
+$ cd ~/kafka-advanced/labs/Lab10
 $ ./start-consumer-console-replicated.sh
 Hi Mom
 How are you?
@@ -455,7 +455,7 @@ message 3
 
 #### Consumer Console 2nd in new Terminal
 ```sh
-$ cd ~/kafka-advanced/labs/lab1.2
+$ cd ~/kafka-advanced/labs/Lab10
 $ ./start-consumer-console-replicated.sh
 Hi Mom
 How are you?
@@ -483,11 +483,11 @@ of partitions.
 
 
 
-***ACTION*** EDIT `~/kafka-advanced/labs/lab1.2/start-consumer-console-replicated.sh` and add `--consumer-property group.id=mygroup` as follows:
+***ACTION*** EDIT `~/kafka-advanced/labs/Lab10/start-consumer-console-replicated.sh` and add `--consumer-property group.id=mygroup` as follows:
 
 <br />
 
-#### ~/kafka-advanced/labs/lab1.2/start-consumer-console-replicated.sh
+#### ~/kafka-advanced/labs/Lab10/start-consumer-console-replicated.sh
 ```sh
 #!/usr/bin/env bash
 cd ~/kafka-advanced
@@ -515,7 +515,7 @@ Now we just run the producer and three consumers.
 
 #### Run this three times - start-consumer-console-replicated.sh
 ```sh
-~/kafka-advanced/labs/lab1.2
+~/kafka-advanced/labs/Lab10
 $ ./start-consumer-console-replicated.sh
 ```
 
@@ -527,7 +527,7 @@ $ ./start-consumer-console-replicated.sh
 
 #### Run Producer Console
 ```sh
-~/kafka-advanced/labs/lab1.2
+~/kafka-advanced/labs/Lab10
 $ ./start-consumer-producer-replicated.sh
 
 ```
@@ -540,7 +540,7 @@ Now send seven messages from the Kafka producer console.
 
 #### Producer Console
 ```sh
-~/kafka-advanced/labs/lab1.2
+~/kafka-advanced/labs/Lab10
 $ ./start-consumer-producer-replicated.sh
 m1
 m2
@@ -564,7 +564,7 @@ Notice that the messages are spread evenly among the consumers.
 
 #### 1st Kafka Consumer gets m3, m5
 ```sh
-~/kafka-advanced/labs/lab1.2
+~/kafka-advanced/labs/Lab10
 $ ./start-consumer-console-replicated.sh
 m3
 m5
@@ -581,7 +581,7 @@ Notice the first consumer gets messages m3 and m5.
 
 #### 2nd Kafka Consumer gets m2, m6
 ```sh
-~/kafka-advanced/labs/lab1.2
+~/kafka-advanced/labs/Lab10
 $ ./start-consumer-console-replicated.sh
 m2
 m6
@@ -597,7 +597,7 @@ Notice the second consumer gets messages m2 and m6.
 
 #### 3rd Kafka Consumer gets m1, m4, m7
 ```sh
-~/kafka-advanced/labs/lab1.2
+~/kafka-advanced/labs/Lab10
 $ ./start-consumer-console-replicated.sh
 m1
 m4
@@ -630,7 +630,7 @@ sending seven more messages. Kafka should divide up the work to the consumers th
 
 #### Producer Console - send seven more messages m8 through m14
 ```sh
-~/kafka-advanced/labs/lab1.2
+~/kafka-advanced/labs/Lab10
 $ ./start-consumer-producer-replicated.sh
 m1
 ...
@@ -657,7 +657,7 @@ Notice that the messages are spread evenly among the remaining consumers.
 
 #### 1st Kafka Consumer gets m8, m9, m11, m14
 ```sh
-~/kafka-advanced/labs/lab1.2
+~/kafka-advanced/labs/Lab10
 $ ./start-consumer-console-replicated.sh
 m3
 m5
@@ -678,7 +678,7 @@ The first consumer got m8, m9, m11 and m14.
 
 #### 2nd Kafka Consumer gets m10, m12, m13
 ```sh
-~/kafka-advanced/labs/lab1.2
+~/kafka-advanced/labs/Lab10
 $ ./start-consumer-console-replicated.sh
 m2
 m6
@@ -708,9 +708,9 @@ The  `---describe` will show  partitions, ISRs, and broker partition leadership.
 <br />
 
 
-***ACTION*** EDIT ~/kafka-advanced/labs/lab1.2/describe-topics.sh and follow instrucitons in file.
+***ACTION*** EDIT ~/kafka-advanced/labs/Lab10/describe-topics.sh and follow instrucitons in file.
 
-#### ~/kafka-advanced/labs/lab1.2/describe-topics.sh
+#### ~/kafka-advanced/labs/Lab10/describe-topics.sh
 ```sh
 #!/usr/bin/env bash
 
@@ -728,7 +728,7 @@ kafka/bin/kafka-topics.sh --describe \
 <br />
 
 
-***ACTION*** RUN ~/kafka-advanced/labs/lab1.2/describe-topics.sh as follows:
+***ACTION*** RUN ~/kafka-advanced/labs/Lab10/describe-topics.sh as follows:
 
 Let's run `kafka-topics.sh --describe` and see the topology of our
 `my-failsafe-topic`.
@@ -749,7 +749,7 @@ Remember there are 13 topics.
 
 #### Topology of Kafka Topic Partition Ownership
 ```sh
-~/kafka-advanced/labs/lab1.2
+~/kafka-advanced/labs/Lab10
 $ ./describe-topics.sh
 Topic: my-failsafe-topic    PartitionCount: 13    ReplicationFactor: 3    Configs:
     Topic: my-failsafe-topic    Partition: 0    Leader: 2    Replicas: 2,0,1    Isr: 2,0,1
@@ -805,7 +805,7 @@ Now that the first Kafka broker has stopped, let's use Kafka `topics describe` t
 ***ACTION*** Run describe-topics again to see leadership change as follows:
 
 ```sh
-$ cd ~/kafka-advanced/labs/lab1.2/solution
+$ cd ~/kafka-advanced/labs/Lab10/solution
 $ ./describe-topics.sh
 Topic:my-failsafe-topic    PartitionCount:13    ReplicationFactor:3    Configs:
     Topic: my-failsafe-topic    Partition: 0    Leader: 2    Replicas: 2,0,1    Isr: 2,1
@@ -843,7 +843,7 @@ Then notice if the consumers still get the messages.
 #### Producer Console - send m15 and m16
 
 ```sh
-~/kafka-advanced/labs/lab1.2
+~/kafka-advanced/labs/Lab10
 $ ./start-consumer-producer-replicated.sh
 m1
 ...
@@ -866,7 +866,7 @@ Notice that the messages are spread evenly among the remaining live consumers.
 #### 1st Kafka Consumer gets m16
 
 ```sh
-~/kafka-advanced/labs/lab1.2
+~/kafka-advanced/labs/Lab10
 $ ./start-consumer-console-replicated.sh
 m3
 m5
@@ -888,7 +888,7 @@ The first Kafka broker gets m16.
 #### 2nd Kafka Consumer gets m15
 
 ```sh
-~/kafka-advanced/labs/lab1.2
+~/kafka-advanced/labs/Lab10
 $ ./start-consumer-console-replicated.sh
 m2
 m6
