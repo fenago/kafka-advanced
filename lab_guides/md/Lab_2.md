@@ -87,7 +87,7 @@ kafka/bin/kafka-server-start.sh \
 
 #### Run run-kafka.sh
 ```sh
-~/kafka-advanced
+$ cd ~/kafka-advanced
 $ ./run-kafka.sh
 ```
 

@@ -1,0 +1,22 @@
+group 'fenago-kafka'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.apache.kafka:kafka-clients:1.1.0'
+    compile 'ch.qos.logback:logback-classic:1.2.2'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api' , version: '2.7'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.7'
+}
+
+wrapper {
+    gradleVersion = "4.7"
+}
+
