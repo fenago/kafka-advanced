@@ -1,657 +1,412 @@
 <img align="right" src="./logo.png">
 
-# Lab 7.2: Kafka Schema Registry with Avro.
-
-Welcome to the session 7 lab 2. The work for this lab is done in `~/kafka-training/labs/lab7.2`.
-In this lab, you are going to use the Schema Registry with Avro.
 
 
+Lab : Working with Protobuf in Apache Kafka
+============================================
+
+Since Confluent Platform version 5.5 Avro is no longer the only schema
+in town. Protobuf and JSON schemas are now supported as the first-class
+citizens in Confluent universe.
+
+
+Introduction to Protobuf
+========================
+
+
+Here’s an example of a Protobuf schema containing one message type:
+
+```
+syntax = "proto3";
+package com.fenago.protobuf;
+message SimpleMessage {
+ string content = 1;
+ string date_time = 2;
+}
+```
+
+In the first line, we define that we’re using protobuf version 3. Our
+message type called SimpleMessage defines two string fields: content and
+date\_time. Each field is assigned a so-called **field number**, which
+has to be unique in a message type. These numbers identify the fields
+when the message is serialized to the Protobuf binary format. Google
+suggests using numbers 1 through 15 for most frequently used fields
+because it takes one byte to encode them.
+
+
+Running a local Kafka cluster
+=============================
+
+Before we get started, let’s boot up a local Kafka cluster with the
+Schema Registry, so we can try our out code right away.
+
+Make sure that Zookeeper and Kafka are already running. Start them by running following script incase they are not running:
+
+
+`~/kafka-training/run-zookeeper.sh`
+
+Wait about 30 seconds or so for ZooKeeper to startup.
+
+`~/kafka-training/run-kafka.sh`
+
+
+
+#### Start Schema Registry
+
+Confluence 6.1.1 has already been downloaded and extracted at following path `~/kafka-training/confluent-6.1.1` . Start schema registry by running following script in the terminal:
+
+`~/kafka-training/run-schema_registry.sh`
+
+
+Your local Kafka cluster is now ready to be used. Kafka broker is available on
+port 9092, while the Schema Registry runs on port 8081. Make a note of
+that, because we’ll need it soon.
+
+
+
+#### Lab Solution 
+
+Complete lab solution is available at following path. Run mvn commands to compile using maven cli:
+
+
+```
+cd ~/kafka-training/labs/lab-kafka-protobuf
+
+mvn clean
+
+mvn install
+```
+
+#### Intellij IDE
+
+Open Intellij IDE and open following project headless/kafka-training/labs/lab-kafka-protobuf
+
+![](./images/1.png)
+
+
+Wait for some time for project to be imported
+
+![](./images/2.png)
 
 
 
 
-## Kafka Lab: Kafka, Avro Serialization and the Schema Registry
 
-Confluent Schema Registry stores Avro Schemas
-for Kafka producers and consumers. The Schema Registry and provides RESTful interface for
-managing Avro schemas It allows the storage of a history of schemas which are versioned.
-the ***Confluent Schema Registry*** supports checking schema compatibility for Kafka.
-You can configure compatibility setting which supports the evolution of schemas using Avro.
-Kafka Avro serialization project provides serializers. Kafka Producers and Consumers that
-use Kafka Avro serialization handle schema management and serialization of records using
-Avro and the Schema Registry. When using the ***Confluent Schema Registry***,  Producers
-don’t have to send schema just the schema id which is unique. The consumer uses the
-schema id to look up the full schema from the ***Confluent Schema Registry*** if not
-already cached.  Since you don't have to send the schema with each set of records,
-this saves time. Not sending the schema with each record or batch of records, speeds up
-the serialization as only the id of the schema is sent.
+Code generation in Java
+=======================
+
+Now we know how a protobuf schema looks and we know how it ends up
+in Schema Registry. Let’s see now how we use protobuf schemas from Java.
+
+The first thing that you need is a protobuf-java library. In these
+examples, I’m using maven, so let’s add the maven dependency:
+
+```
+<dependencies>
+ <dependency>
+  <groupId>com.google.protobuf</groupId>
+  <artifactId>protobuf-java</artifactId>
+  <version>3.12.2</version>
+ </dependency>
+</dependencies>
+```
+
+The next thing you want to do is use the **protoc** compiler to generate
+Java code from .proto files. But we’re not going to invite the
+compiler manually, we’ll use a maven plugin called
+**protoc-jar-maven-plugin**:
+
+```
+<plugin>
+    <groupId>com.github.os72</groupId>
+    <artifactId>protoc-jar-maven-plugin</artifactId>
+    <version>3.11.4</version>
+    <executions>
+        <execution>
+            <phase>generate-sources</phase>
+            <goals>
+                <goal>run</goal>
+            </goals>
+            <configuration>
+                <inputDirectories>
+                  <include>${project.basedir}/src/main/protobuf</include>
+                </inputDirectories>
+                <outputTargets>
+                    <outputTarget>
+                        <type>java</type>
+                        <addSources>main</addSources>
+                        <outputDirectory>${project.basedir}/target/generated-sources/protobuf</outputDirectory>
+                    </outputTarget>
+                </outputTargets>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+```
+
+The protobuf classes will be generated during the generate-sources
+phase. The plugin will look for proto files in the
+**src/main/protobuf** folder and the generated code will be created in
+the **target/generated-sources/protobuf** folder.
+
+To generate the class in the target folder run:
+
+```
+mvn clean generate-sources
+```
 
 
+Ok, now that we have our class generated, let’s send it to Kafka using
+the new Protobuf serializer.
 
-This lab is going to cover what is the Schema Registry and cover why you want to use it
-with Kafka. We drill down into understanding Avro *schema evolution* and setting up and
-using Schema Registry with Kafka Avro Serializers. We show how to manage Avro Schemas with
-REST interface of the Schema Registry and then how to write Avro Serializer based Producers
-and Avro Deserializer based Consumers for Kafka.
 
-The Kafka Producer creates a record/message, which is an Avro record. The record contains a
-schema id and data. With Kafka Avro Serializer, the schema is registered if needed and then
-it serializes the data and schema id. The Kafka Avro Serializer keeps a cache of registered
-schemas from Schema Registry their schema ids.
+Writing a Protobuf Producer
+===========================
 
-Consumers receive payloads and deserialize them with Kafka  Avro Deserializers which use the
-Confluent Schema Registry. Deserializer looks up the full schema from cache or Schema Registry
-based on id.
+With Kafka cluster up and running is now time to create a Java producer
+that will send our SimpleMessage to Kafka. First, let’s prepare the
+configuration for the Producer:
 
-### Why Schema Registry?
-Consumer has its schema which could be different than the producers. The consumer schema is
-the schema the consumer is expecting the record/message to conform to. With the Schema Registry
-a compatibility check is performed and if the two schemas don't match but are compatible, then
-the payload transformation happens via Avro Schema Evolution. Kafka records can have a `Key`
-and a `Value` and both can have a schema.
+```
+Properties properties = new Properties();
+properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaProtobufSerializer.class);
+properties.put(KafkaProtobufSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081");
+Producer<String, SimpleMessage> producer = new KafkaProducer<>(properties);
+```
 
-### Schema Registry Operations
-The Schema Registry can store schemas for keys and values of Kafka records. It can also list
-schemas by subject. It can list all versions of a subject (schema). It can retrieve a schema
-by version or id. It can get the latest version of a schema. Importantly,  the Schema Registry can
-check to see if schema is compatible with a certain version.  There is a compatibility level
-(BACKWARDS, FORWARDS, FULL, NONE) setting for the  Schema Registry and an individual subject.
-You can manage schemas via a REST API with the Schema registry.
+Notice that we are using **KafkaProtobufSerializer** as the value
+serializer class. This is the new serializer available in Confluent
+Platform since version 5.5. It works similarly to KafkaAvroSerializer:
+when publishing messages it will check with Schema Registry if the
+schema is available there. If the schema is not yet registered, it will
+write it to Schema Registry and then publish the message to Kafka. For
+this to work, the serializer needs the URL of the Schema Registry and in
+our case, that’s [*http://localhost:8081*.](http://localhost:8081./)
 
-### Schema Registry Schema Compatibility Settings
-***Backward compatibility*** means data written with older schema is readable with a newer schema.
-***Forward compatibility*** means data written with newer schema is readable with old schemas.
-***Full compatibility*** means a new version of a schema is backward and forward compatible.
-***None*** disables schema validation and it not recommended. If you set the level to none then Schema Registry just stores the schema and Schema will not be validated for compatibility at all.
+Next, we prepare the KafkaRecord, using the SimpleMessage class
+generated from the protobuf schema:
 
-#### Schema Registry Config
-The Schema compatibility checks can is configured globally or per subject.
+```
+SimpleMessage simpleMessage = SimpleMessage.newBuilder()
+     .setContent("Hello world")
+        .setDateTime(Instant.now().toString())
+        .build();
+    
+ProducerRecord<String, SimpleMessage> record
+    = new ProducerRecord<>("protobuf-topic", null, simpleMessage);
+```
 
-The compatibility checks value is one of the following:
+This record will be written to the topic called **protobuf-topic**. The
+last thing to do is to write the record to Kafka:
 
-* NONE - don’t check for schema compatibility
-* FORWARD - check to make sure last schema version is forward compatible with new schemas
-* BACKWARDS (default) - make sure new schema is backwards compatible with latest
-* FULL - make sure new schema is forwards and backwards compatible from latest to new and from new to latest
+```
+producer.send(record);
+producer.flush();
+producer.close();
+```
 
-### Schema Evolution
-If an Avro schema is changed after data has been written to store using an older version of that schema,
- then Avro might do a Schema Evolution when you try to read that data.
+Usually, you wouldn’t call **flush()** method, but since our application
+will be stopped after this, we need to ensure the message is written to
+Kafka before that happens.
 
-From Kafka perspective, Schema evolution happens only during deserialization at Consumer (read).  If
-Consumer’s schema is different from Producer’s schema, then value or key is automatically modified
-during deserialization to conform to consumers reader schema if possible.
+Writing a Protobuf Consumer
+===========================
 
-Avro *schema evolution* is an automatic transformation of Avro schema between the consumer schema
-version and what the schema the producer put into the Kafka log.
-When Consumer schema is not identical to the Producer schema used to serialize the Kafka Record, then
-a data transformation is performed on the Kafka record's key or value. If the schemas match then
-no need to do a transformation
+We said that the consumer doesn’t need to know the schema in advance to
+be able to deserialize the message, thanks to Schema Registry. But,
+having the schema available in advance allows us to generate the Java
+class out of it and use the class in our code. This helps with code
+readability and makes a code strongly typed.
 
-### Allowed Modification During Schema Evolution
-You can add a field with a default to a schema. You can remove a field that had a default value. You can
-change a field's order attribute.  You can change a field's default value to another value or add a
-default value to a field that did not have one.
-You can remove or add a field alias (keep in mind that this could break some consumers that depend
-on the alias).  You can change a type to a union that contains original type. If you do any of the
-above, then your schema can use Avro's schema evolution when reading with an old schema.
+Here’s how to do it. First, you will generate a java class(es) as
+explained in Code generation in Java section. Next, we prepare the
+configuration for the Kafka consumer:
 
-### Rules of the Road for modifying Schema
-If you want to make your schema evolvable, then follow these guidelines. Provide a default value for
-fields in your schema as this allows you to delete the field later. Never change a field's data type.
-When adding a new field to your schema, you have to provide a default value for the field.
-Don’t rename an existing field (use aliases instead). You can add an alias.
+```
+Properties properties = new Properties(); properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, 
+    "localhost:9092"); 
+properties.put(ConsumerConfig.GROUP_ID_CONFIG, 
+    "protobuf-consumer-group"); 
+properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest"); properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
+```
 
-Let's use an example to talk about this. The following example is from our
-`Avro tutorial`.
+Here we’re defining a broker URL, consumer group of our consumer and
+telling the consumer that we’ll handle offset commits ourselves.\
+Next, we define deserializer for the messages:
 
-#### Employee example Avro Schema
+```
+properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, 
+    StringDeserializer.class); properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, 
+    KafkaProtobufDeserializer.class); properties.put(KafkaProtobufDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081"); properties.put(KafkaProtobufDeserializerConfig.SPECIFIC_PROTOBUF_VALUE_TYPE, SimpleMessage.class.getName());
+```
 
-```javascript
-{"namespace": "com.fenago.phonebook",
-  "type": "record",
-  "name": "Employee",
-  "doc" : "Represents an Employee at a company",
-  "fields": [
-    {"name": "firstName", "type": "string", "doc": "The persons given name"},
-    {"name": "nickName", "type": ["null", "string"], "default" : null},
-    {"name": "lastName", "type": "string"},
-    {"name": "age",  "type": "int", "default": -1},
-    {"name": "emails", "default":[], "type":{"type": "array", "items": "string"}},
-    {"name": "phoneNumber",  "type":
-    [ "null",
-      { "type": "record",   "name": "PhoneNumber",
-        "fields": [
-          {"name": "areaCode", "type": "string"},
-          {"name": "countryCode", "type": "string", "default" : ""},
-          {"name": "prefix", "type": "string"},
-          {"name": "number", "type": "string"}
-        ]
-      }
-    ]
-    },
-    {"name":"status", "default" :"SALARY", "type": { "type": "enum", "name": "Status",
-      "symbols" : ["RETIRED", "SALARY", "HOURLY", "PART_TIME"]}
+We use string deserializer for the key, but for the value, we’re using
+the new KafkaProtobufDeserializer. For the protobuf deserializer, we
+need to provide the Schema Registry URL, as we did for the serializer
+above.
+
+The last line is the most important. It tells the deserializer to which
+class to deserializer the record values. In our case, it’s the
+SimpleMessage class (the one we generated from the protobuf schema using
+the protobuf maven plugin).
+
+Now we’re ready to create our consumer and subscribe it to
+**protobuf-topic**:
+
+```
+KafkaConsumer<String, SimpleMessage> consumer 
+    = new KafkaConsumer<>(properties);
+consumer.subscribe(Collections.singleton("protobuf-topic"));
+```
+
+And then we poll Kafka for records and print them to the console:
+
+```
+while (true) {
+ ConsumerRecords<String, SimpleMessage> records 
+     = consumer.poll(Duration.ofMillis(100));
+ for (ConsumerRecord<String, SimpleMessage> record : records) {
+  System.out.println("Message content: " + 
+      record.value().getContent());
+  System.out.println("Message time: " + 
+      record.value().getDateTime());
+ }
+ consumer.commitAsync();
+}
+```
+
+Here we’re consuming a batch of records and just printing the content to
+the console.
+
+Remember when we configured the consumer to let us handle committing
+offsets by setting ENABLE\_AUTO\_COMMIT\_CONFIG to false? That’s what
+we’re doing in the last line: only after we’ve fully processed the
+current group of records will we commit the consumer offset.
+
+That’s all there is to writing a simple protobuf consumer. Let’s now
+check one more variant.
+
+
+Generic Protobuf Consumer
+=========================
+
+What if you want to handle messages in a generic way in your consumer,
+without generating a Java class from a protobuf schema? Well, you can
+use an instance of DynamicMessage class from protobuf library.
+DynamicMessage has a reflective API, so you can navigate through message
+fields and read their values. Here’s how you can do it…
+
+First, let’s configure the consumer. Its configuration is very similar
+to the previous example:
+
+```
+Properties properties = new Properties();
+properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, 
+    "localhost:9092");
+properties.put(ConsumerConfig.GROUP_ID_CONFIG, 
+    "generic-protobuf-consumer-group");      
+properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
+properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, 
+    StringDeserializer.class);
+properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, 
+    KafkaProtobufDeserializer.class);
+properties.put(KafkaProtobufDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081");
+```
+
+The only thing missing is the **SPECIFIC\_PROTOBUF\_VALUE\_TYPE**
+configuration. Since we want to handle messages in a generic way, we
+don’t need this configuration.
+
+Now we’re ready to create our consumer and subscribe it to
+**protobuf-topic** topic, as in the previous example:
+
+```
+KafkaConsumer<String, SimpleMessage> consumer 
+    = new KafkaConsumer<>(properties);
+consumer.subscribe(Collections.singleton("protobuf-topic"));
+```
+
+And then we poll Kafka for records and print them to the console:
+
+```
+while (true) {
+  ConsumerRecords<String, DynamicMessage> records 
+      = consumer.poll(Duration.ofMillis(100));
+  for (ConsumerRecord<String, DynamicMessage> record : records) {
+    for (FieldDescriptor field : 
+        record.value().getAllFields().keySet()) {
+      System.out.println(field.getName() + ": " + 
+          record.value().getField(field));
     }
-  ]
+  }
+  consumer.commitAsync();
 }
 ```
 
-#### Avro Schema Evolution Scenario
+Without SPECIFIC\_PROTOBUF\_VALUE\_TYPE configured in our consumer, the
+consumer will always return the instance of DynamicMessage in the
+record’s value. Then we use the **DynamicMessage.getAllFields()** method
+to obtain the list of FieldDescriptors. Once we have all the descriptors
+we can simply iterate through them and print the value of each field.
 
-Let's say our `Employee` record did not have an `age` in version 1 of the schema and then later
-we decided to add an `age` field with a default value of -1. Now let’s say we have a Producer
-using version 2  of the schema with age, and a Consumer using version 1 with no age.
-
-The `Producer` uses version 2 of the `Employee` schema and creates a `com.fenago.Employee` record,
-and sets `age` field to `42`, then sends it to Kafka topic `new-employees`.
-The Consumer consumes records from `new-employees` using version 1 of the Employee Schema.
-Since Consumer is using version 1 of the schema, the `age` field gets removed during deserialization.
-
-The same consumer modifies some records and then writes the record to a NoSQL store. When the Consumer
-does this, the `age` field is missing from the record that it writes to the NoSQL store.
-Another client using version 2 of the schema which has the age, reads the record from the NoSQL store.
-The `age` field is missing from the record because the Consumer wrote it with version 1, thus the client
-reads the record and the `age` is set to default value of `-1`.
-
-If you added the `age` and it was not optional, i.e., the `age` field did not have a default, then the
-Schema Registry could reject the schema, and the Producer could never it add it to the Kafka log.
+Check out the JavaDoc to find out more about
+[DynamicMessage](https://developers.google.com/protocol-buffers/docs/reference/java/com/google/protobuf/DynamicMessage).
 
 
-## Using REST Schema Registry REST API
+#### Running Solution with Intellij
 
-Recall that the Schema Registry allows you to manage schemas using the following operations:
+**Starting Producer**
 
-* store schemas for keys and values of Kafka records
-* List schemas by subject.
-* list all versions of a subject (schema).
-* Retrieves a schema by version
-* Retrieves a schema by id
-* Retrieve the latest version of a schema
-* Perform compatibility checks
-* Set compatibility level globally
-* Set compatibility level globally
+![](./images/3.png)
 
-Recall that all of this is available via a REST API with the Schema Registry.
+![](./images/4.png)
 
-To post a new schema you could do the following:
+**Starting Consumer**
 
-#### Posting a new schema
+![](./images/5.png)
 
-```sh
-curl -X POST -H "Content-Type:
-application/vnd.schemaregistry.v1+json" \
-    --data '{"schema": "{\"type\": …}’ \
-    http://localhost:8081/subjects/Employee/versions
-```
-
-#### To list all of the schemas
-
-```sh
-curl -X GET http://localhost:8081/subjects
-```
-
-If you have a good HTTP client, you can basically perform all of the above operations via the REST
-interface for the Schema Registry. I wrote a little example to do this so I could understand the
-Schema registry a little better using the OkHttp client from Square (`com.squareup.okhttp3:okhttp:3.7.0+`) as follows:
-
-#### Using REST endpoints to try out all of the Schema Registry options
-```
-package com.fenago.kafka.schema;
-
-import okhttp3.*;
-
-import java.io.IOException;
-
-public class SchemaMain {
-
-    private final static MediaType SCHEMA_CONTENT =
-            MediaType.parse("application/vnd.schemaregistry.v1+json");
-
-    private final static String EMPLOYEE_SCHEMA = "{\n" +
-            "  \"schema\": \"" +
-            "  {" +
-            "    \\\"namespace\\\": \\\"com.fenago.phonebook\\\"," +
-            "    \\\"type\\\": \\\"record\\\"," +
-            "    \\\"name\\\": \\\"Employee\\\"," +
-            "    \\\"fields\\\": [" +
-            "        {\\\"name\\\": \\\"fName\\\", \\\"type\\\": \\\"string\\\"}," +
-            "        {\\\"name\\\": \\\"lName\\\", \\\"type\\\": \\\"string\\\"}," +
-            "        {\\\"name\\\": \\\"age\\\",  \\\"type\\\": \\\"int\\\"}," +
-            "        {\\\"name\\\": \\\"phoneNumber\\\",  \\\"type\\\": \\\"string\\\"}" +
-            "    ]" +
-            "  }\"" +
-            "}";
-
-    public static void main(String... args) throws IOException {
-
-        System.out.println(EMPLOYEE_SCHEMA);
-
-        final OkHttpClient client = new OkHttpClient();
-
-        //POST A NEW SCHEMA
-        Request request = new Request.Builder()
-                .post(RequestBody.create(SCHEMA_CONTENT, EMPLOYEE_SCHEMA))
-                .url("http://localhost:8081/subjects/Employee/versions")
-                .build();
-
-        String output = client.newCall(request).execute().body().string();
-        System.out.println(output);
-
-        //LIST ALL SCHEMAS
-        request = new Request.Builder()
-                .url("http://localhost:8081/subjects")
-                .build();
-
-        output = client.newCall(request).execute().body().string();
-        System.out.println(output);
-
-
-        //SHOW ALL VERSIONS OF EMPLOYEE
-        request = new Request.Builder()
-                .url("http://localhost:8081/subjects/Employee/versions/")
-                .build();
-
-        output = client.newCall(request).execute().body().string();
-        System.out.println(output);
-
-        //SHOW VERSION 2 OF EMPLOYEE
-        request = new Request.Builder()
-                .url("http://localhost:8081/subjects/Employee/versions/2")
-                .build();
-
-        output = client.newCall(request).execute().body().string();
-        System.out.println(output);
-
-        //SHOW THE SCHEMA WITH ID 3
-        request = new Request.Builder()
-                .url("http://localhost:8081/schemas/ids/3")
-                .build();
-
-        output = client.newCall(request).execute().body().string();
-        System.out.println(output);
-
-
-        //SHOW THE LATEST VERSION OF EMPLOYEE 2
-        request = new Request.Builder()
-                .url("http://localhost:8081/subjects/Employee/versions/latest")
-                .build();
-
-        output = client.newCall(request).execute().body().string();
-        System.out.println(output);
+![](./images/6.png)
 
 
 
-        //CHECK IF SCHEMA IS REGISTERED
-        request = new Request.Builder()
-                .post(RequestBody.create(SCHEMA_CONTENT, EMPLOYEE_SCHEMA))
-                .url("http://localhost:8081/subjects/Employee")
-                .build();
+#### Running Solution with Maven
 
-        output = client.newCall(request).execute().body().string();
-        System.out.println(output);
-
-
-        //TEST COMPATIBILITY
-        request = new Request.Builder()
-                .post(RequestBody.create(SCHEMA_CONTENT, EMPLOYEE_SCHEMA))
-                .url("http://localhost:8081/compatibility/subjects/Employee/versions/latest")
-                .build();
-
-        output = client.newCall(request).execute().body().string();
-        System.out.println(output);
-
-        // TOP LEVEL CONFIG
-        request = new Request.Builder()
-                .url("http://localhost:8081/config")
-                .build();
-
-        output = client.newCall(request).execute().body().string();
-        System.out.println(output);
-
-
-        // SET TOP LEVEL CONFIG
-        // VALUES are none, backward, forward and full
-        request = new Request.Builder()
-                .put(RequestBody.create(SCHEMA_CONTENT, "{\"compatibility\": \"none\"}"))
-                .url("http://localhost:8081/config")
-                .build();
-
-        output = client.newCall(request).execute().body().string();
-        System.out.println(output);
-
-        // SET CONFIG FOR EMPLOYEE
-        // VALUES are none, backward, forward and full
-        request = new Request.Builder()
-                .put(RequestBody.create(SCHEMA_CONTENT, "{\"compatibility\": \"backward\"}"))
-                .url("http://localhost:8081/config/Employee")
-                .build();
-
-        output = client.newCall(request).execute().body().string();
-        System.out.println(output);
-
-
-
-    }
-}
+**Step 1: Compile** (Terminal 1)
 
 ```
+cd ~/kafka-training/labs/lab-kafka-protobuf
 
-I suggest running the example and trying to force incompatible schemas to the Schema Registry and
-note the behavior for the various compatibility settings.
-
-#### Running Schema Registry
-
-```
-$ cat ~/kafka-training/confluent/etc/schema-registry/schema-registry.properties
-
-listeners=http://0.0.0.0:8081
-kafkastore.connection.url=localhost:2181
-kafkastore.topic=_schemas
-debug=false
+mvn clean compile
 ```
 
-Run following command in the terminal to start schema registry:
+ 
+**Step 2: Run ProtobufConsumer** (Terminal 1)
+
+Execute the class, ProtobufConsumer by running:
 
 ```
-$ 
-~/kafka-training/confluent/bin/schema-registry-start  ~/kafka-training/confluent/etc/schema-registry/schema-registry.properties
+mvn exec:java -Dexec.mainClass="com.fenago.kafka.protobuf.consumer.ProtobufConsumer"
 ```
 
-
-***ACTION*** - RUN the schema registry on port 8081
-
-***ACTION*** - EDIT SchemaMain and follow the instructions in the file.
-
-***ACTION*** - RUN SchemaMain from the IDE.
-
-***ACTION*** - TRY Add extra fields and then check compatibility
-
-## Writing Consumers and Producers that use Kafka Avro Serializers and the Schema Registry
+Open new terminal before proceeding to next step.
 
 
+**Step 3: Run ProtobufProducer** (Terminal 2)
 
-Now let's cover writing consumers and producers that use Kafka Avro Serializers which in turn use
-the Schema Registry and Avro.
-
-We will need to start up the Schema Registry server pointing to our Zookeeper cluster.
-Then we will need to import the Kafka Avro Serializer and Avro Jars into our gradle project.
-You will then need to configure the Producer to use Schema Registry and the `KafkaAvroSerializer`.
-To write the consumer, you will need to configure it to use Schema Registry
-and to use the KafkaAvroDeserializer.
-
-
-Here is our build file which shows the Avro jar files and such that we need.
-
-#### Gradle build file for Kafka Avro Serializer examples
-```
-plugins {
-    id "com.commercehub.gradle.plugin.avro" version "0.9.0"
-}
-
-group 'fenago'
-version '1.0-SNAPSHOT'
-apply plugin: 'java'
-sourceCompatibility = 1.8
-
-dependencies {
-    compile "org.apache.avro:avro:1.8.1"
-    compile 'com.squareup.okhttp3:okhttp:3.7.0'
-    testCompile 'junit:junit:4.11'
-    compile 'org.apache.kafka:kafka-clients:1.1.0'
-    compile 'io.confluent:kafka-avro-serializer:3.2.1'
-}
-repositories {
-    jcenter()
-    mavenCentral()
-    maven {
-        url "http://packages.confluent.io/maven/"
-    }
-}
-avro {
-    createSetters = false
-    fieldVisibility = "PRIVATE"
-}
-```
-
-
-***ACTION*** - MODIFY build.gradle then RUN it.
-
-Notice that we include the Kafka Avro Serializer lib (`io.confluent:kafka-avro-serializer:3.2.1`)
-and the Avro lib (`org.apache.avro:avro:1.8.1`).
-
-### Writing a Producer
-
-Next, let's write the Producer as follows.
-
-#### Producer that uses Kafka Avro Serialization and Kafka Registry
-#### src/main/java/com/fenago/kafka/schema/AvroProducer.java
-```java
-package com.fenago.kafka.schema;
-
-import com.fenago.phonebook.Employee;
-import com.fenago.phonebook.PhoneNumber;
-import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.serialization.LongSerializer;
-import io.confluent.kafka.serializers.KafkaAvroSerializer;
-
-import java.util.Properties;
-import java.util.stream.IntStream;
-
-public class AvroProducer {
-
-    private static Producer<Long, Employee> createProducer() {
-        Properties props = new Properties();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        props.put(ProducerConfig.CLIENT_ID_CONFIG, "AvroProducer");
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
-                LongSerializer.class.getName());
-
-        // Configure the KafkaAvroSerializer.
-       props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-                KafkaAvroSerializer.class.getName());
-
-        // Schema Registry location.
-        props.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG,
-                "http://localhost:8081");
-
-        return new KafkaProducer<>(props);
-    }
-
-    private final static String TOPIC = "new-employees";
-
-    public static void main(String... args) {
-
-        Producer<Long, Employee> producer = createProducer();
-
-        Employee bob = Employee.newBuilder().setAge(35)
-                .setFirstName("Bob")
-                .setLastName("Jones")
-                .setPhoneNumber(
-                        PhoneNumber.newBuilder()
-                                .setAreaCode("301")
-                                .setCountryCode("1")
-                                .setPrefix("555")
-                                .setNumber("1234")
-                                .build())
-                .build();
-
-        IntStream.range(1, 100).forEach(index->{
-            producer.send(new ProducerRecord<>(TOPIC, 1L * index, bob));
-
-        });
-
-        producer.flush();
-        producer.close();
-    }
-
-}
+Execute the class, ProtobufProducer by running:
 
 ```
-
-Notice that we configure the schema registry and the KafkaAvroSerializer as part of the Producer setup.
-
-```java
-// Configure the KafkaAvroSerializer.
-props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-                KafkaAvroSerializer.class.getName());
-
-// Schema Registry location.        props.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG,
-                "http://localhost:8081");
-
+mvn exec:java -Dexec.mainClass="com.fenago.kafka.protobuf.producer.ProtobufProducer"
 ```
 
-Then we use the Producer as expected.
+Run producer class multiple times and verify that message is displayed in consumer logs:
+
+![](./images/7.png)
 
 
-***ACTION*** - Edit AvroProducer and follow instructions in the file.
+Now you’re ready to start writing producers and consumers that send Protobuf messages to Apache Kafka with
+help of Schema Registry.
 
-### AvroConsumer
-
-### Writing a Consumer
-
-Next we have to write the Consumer.
-
-#### Consumer that uses Kafka Avro Serialization and Schema Registry
-#### src/main/java/com/fenago/kafka/schema/AvroConsumer.java
-```java
-package com.fenago.kafka.schema;
-
-import com.fenago.phonebook.Employee;
-import io.confluent.kafka.serializers.KafkaAvroDeserializer;
-import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
-import org.apache.kafka.clients.consumer.Consumer;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.serialization.LongDeserializer;
-
-import java.util.Collections;
-import java.util.Properties;
-import java.util.stream.IntStream;
-
-public class AvroConsumer {
-
-    private final static String BOOTSTRAP_SERVERS = "localhost:9092";
-    private final static String TOPIC = "new-employees";
-
-    private static Consumer<Long, Employee> createConsumer() {
-        Properties props = new Properties();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "KafkaExampleAvroConsumer");
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
-                LongDeserializer.class.getName());
-
-        //Use Kafka Avro Deserializer.
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-                KafkaAvroDeserializer.class.getName());  //<----------------------
-
-        //Use Specific Record or else you get Avro GenericRecord.
-        props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true");
-
-
-        //Schema registry location.
-        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG,
-                "http://localhost:8081"); //<----- Run Schema Registry on 8081
-
-
-        return new KafkaConsumer<>(props);
-    }
-
-
-
-
-
-    public static void main(String... args) {
-
-        final Consumer<Long, Employee> consumer = createConsumer();
-        consumer.subscribe(Collections.singletonList(TOPIC));
-
-        IntStream.range(1, 100).forEach(index -> {
-
-            final ConsumerRecords<Long, Employee> records =
-                    consumer.poll(100);
-
-            if (records.count() == 0) {
-                System.out.println("None found");
-            } else records.forEach(record -> {
-
-                Employee employeeRecord = record.value();
-
-                System.out.printf("%s %d %d %s \n", record.topic(),
-                        record.partition(), record.offset(), employeeRecord);
-            });
-        });
-    }
-
-
-}
-
-```
-
-
-
-Notice just like the producer we have to tell the consumer where to find the Registry, and we have
-to configure the Kafka Avro Deserializer.
-
-#### Configuring Schema Registry for Consumer
-```
-//Use Kafka Avro Deserializer.
-
-props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-                KafkaAvroDeserializer.class.getName());
-
-//Use Specific Record or else you get Avro GenericRecord.
-props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true");
-
-//Schema registry location.        props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG,
-                "http://localhost:8081"); //<----- Run Schema Registry on 8081
-```
-
-
-***ACTION*** - Edit AvroConsumer and follow instructions in the file.
-
-An additional step is we have to tell it to use the generated version of the `Employee` object.
-If we did not, then it would use Avro `GenericRecord` instead of our generated `Employee` object,
-which is a `SpecificRecord`.  To learn more about using GenericRecord and generating code from Avro, read the Avro Kafka tutorial
-
-To run the above example, you need to startup Kafka and Zookeeper. To learn how to do this if
-you have not done it before (You HAVE!) see Kafka Tutorial.
-
-Essentially, there is a startup script for Kafka and ZooKeeper like there was with the Schema Registry
-and there is default configuration, you pass the default configuration to the startup scripts,
-and Kafka is running locally on your machine.
-
-
-
-#### Running Zookeeper and Kafka
-```
-~/kafka-tutorial/kafka/bin/zookeeper-server-start.sh kafka/config/zookeeper.properties &
-
-~/kafka-tutorial/kafka/bin/kafka-server-start.sh kafka/config/server.properties
-```
-
-
-***ACTION*** - RUN ZooKeeper and a Kafka Broker
-
-***ACTION*** - RUN AvroProducer from the IDE
-
-***ACTION*** - RUN AvroConsumer from the IDE
-
-## Expected results.
-The consumer gets messages from the Kafka broker that was sent by the producer.
-
-## Conclusion
-
-Confluent provides Schema Registry to manage Avro Schemas for Kafka Consumers and Producers.
-Avro provides Schema Migration which is necessary for streaming and big data architectures.
-Confluent uses Schema compatibility checks to see if the Producer's schema and Consumer's schemas
-are compatible and to do Schema evolution if needed.
-You use KafkaAvroSerializer from the Producer and point to the Schema Registry.
-You use KafkaAvroDeserializer from Consumer and point to the Schema Registry.
-
-<br />

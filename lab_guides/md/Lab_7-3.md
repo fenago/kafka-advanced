@@ -1,412 +1,519 @@
 <img align="right" src="./logo.png">
 
 
+# Lab 7.1: Avro
 
-Lab : Working with Protobuf in Apache Kafka
-============================================
-
-Since Confluent Platform version 5.5 Avro is no longer the only schema
-in town. Protobuf and JSON schemas are now supported as the first-class
-citizens in Confluent universe.
+Welcome to the session 7 lab 1. The work for this lab is done in `~/kafka-training/labs/lab7.1`. In this lab, you are going to use Avro.
 
 
-Introduction to Protobuf
-========================
 
 
-Here’s an example of a Protobuf schema containing one message type:
 
-```
-syntax = "proto3";
-package com.fenago.protobuf;
-message SimpleMessage {
- string content = 1;
- string date_time = 2;
+## Avro Introduction for Big Data and Data Streaming Architectures
+
+Apache Avro™ is a data serialization system.
+Avro provides data structures, binary data format, container file format to
+store persistent data, and provides RPC capabilities. Avro does not require
+code generation to use and integrates well with JavaScript, Python, Ruby, C, C#, C++ and Java.
+Avro gets used in the *Hadoop ecosystem* as well as by *Kafka*.
+
+Avro is similar to Thrift, Protocol Buffers, JSON, etc. Avro does not require
+code generation. Avro needs less encoding as part of the data since it stores
+names and types in the schema reducing duplication. Avro supports the evolution
+of schemas.
+
+## Why Avro for Kafka and Hadoop?
+
+Avro supports direct mapping to JSON as well as a compact binary format.
+It is a very fast serialization format. Avro is widely used in the Hadoop ecosystem.
+Avro supports polyglot bindings to many programming languages and a code generation
+for static languages. For dynamically typed languages, code generation is not needed.
+Another key advantage of Avro is its support of evolutionary schemas which supports
+compatibility checks, and allows evolving your data over time.
+
+Avro supports platforms like Kafka that has multiple Producers and Consumers which evolve over
+time. Avro schemas help keep your data clean and robust.
+
+There was a trend towards schema-less as part of the NoSQL, but that pendulum has swung back a bit
+e.g., Cassandra has schemas REST/JSON was schema-less and IDL-less but not anymore with Swagger,
+API gateways, and RAML. Now the trend is more towards schemas that can evolve and Avro fits
+well in this space.
+
+### Avro Schema provides Future Proof Robustness
+Streaming architecture like Kafka supports decoupling by sending data in streams to an unknown number of consumers.
+Streaming architecture is challenging as Consumers and Producers evolve on different timelines.
+Producers send a stream of records that zero to many Consumers read.  Not only are
+there multiple consumers but data might end up in Hadoop or some other store
+and used for use cases you did not even imagine. Schemas help future proof your data and make
+it more robust. Supporting all use cases future (Big Data), past (older Consumers) and
+current use cases is not easy without a schema. Avro schema with its support for
+evolution is essential for making the data robust for streaming architectures like Kafka,
+and with the metadata that schema provides, you can reason on the data.  Having a schema
+provides robustness in providing meta-data about the data stored in Avro records which
+are self-documenting the data.
+
+### Avro provides future usability of data
+Data record format compatibility is a hard problem to solve with streaming architecture
+and Big Data. Avro schemas are not a cure-all, but essential for documenting and modeling
+your data. Avro Schema definitions capture a point in time of what your data looked like when
+it recorded since the schema is saved with the data. Data will evolve. New fields are added.
+Since streams often get recorded in data lakes like Hadoop and those records can represent
+historical data, not operational data, it makes sense that data streams and data lakes have a
+less rigid, more evolving schema than the schema of the operational relational database or
+Cassandra cluster.  It makes sense to have a rigid schema for operational data, but not
+data that ends up in a data lake.
+
+With a streaming platform, consumers and producers can change all of the time and evolve
+quite a bit. Producers can have Consumers that they never know. You can’t test a Consumer
+that you don’t know. For agility sakes, you don’t want to update every Consumer every time
+a Producers adds a field to a Record. These types of updates are not feasible without
+support for Schema.
+
+
+## Avro Schema
+Avro data format (wire format and file format) is defined by Avro schemas.
+When deserializing data, the schema is used. Data is serialized based on the schema,
+and schema is sent with data or in the case of files stored with the data.
+Avro data plus schema is fully self-describing data format.
+
+When Avro files store data it also stores schema. Avro RPC is also based on schema,
+and IDL. Part of the RPC protocol exchanges schemas as part of the handshake.
+Avro schemas and IDL are written in JSON.
+
+Let's take a look at an example Avro schema.
+
+#### ./src/main/avro/com/fenago/phonebook/Employee.avsc
+#### Example schema for an Employee record
+
+```javascript
+{"namespace": "com.fenago.phonebook",
+  "type": "record",  "name": "Employee",
+    "fields": [
+        {"name": "firstName", "type": "string"},
+        {"name": "lastName", "type": "string"},
+        {"name": "age",  "type": "int"},
+        {"name": "phoneNumber",  "type": "string"}
+    ]
 }
 ```
 
-In the first line, we define that we’re using protobuf version 3. Our
-message type called SimpleMessage defines two string fields: content and
-date\_time. Each field is assigned a so-called **field number**, which
-has to be unique in a message type. These numbers identify the fields
-when the message is serialized to the Protobuf binary format. Google
-suggests using numbers 1 through 15 for most frequently used fields
-because it takes one byte to encode them.
+The above defines an employee record with firstName, lastName, age and phoneNumber.
 
 
-Running a local Kafka cluster
-=============================
-
-Before we get started, let’s boot up a local Kafka cluster with the
-Schema Registry, so we can try our out code right away.
-
-Make sure that Zookeeper and Kafka are already running. Start them by running following script incase they are not running:
+***ACTION*** - EDIT Employee.avsc and modify it to match the above code listing.
 
 
-`~/kafka-training/run-zookeeper.sh`
+## Avro schema generation tools
 
-Wait about 30 seconds or so for ZooKeeper to startup.
+Avro comes with a set of tools for generating Java classes for Avro types that you
+define in Avro schema. There are plugins for Maven and Gradle to generate code based
+on Avro schemas.
 
-`~/kafka-training/run-kafka.sh`
+This `gradle-avro-plugin` is a Gradle plugin that uses Avro tools to do Java code generation
+for Apache Avro.
+This plugin supports Avro schema files (`.avsc`), and Avro RPC IDL (`.avdl`).
+For Kafka Training Course, Instructor led, onsite training")
+you only need `avsc` schema files.
 
+#### build.gradle - example using gradle-avro-plugin
 
+```java
+plugins {
+    id "com.commercehub.gradle.plugin.avro" version "0.9.0"
+}
 
-#### Start Schema Registry
+group 'fenago'
+version '1.0-SNAPSHOT'
+apply plugin: 'java'
+sourceCompatibility = 1.8
 
-Confluence 6.1.1 has already been downloaded and extracted at following path `~/kafka-training/confluent-6.1.1` . Start schema registry by running following script in the terminal:
+dependencies {
+    compile "org.apache.avro:avro:1.8.1"
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
 
-`~/kafka-training/run-schema_registry.sh`
+repositories {
+    jcenter()
+    mavenCentral()
+}
 
-
-Your local Kafka cluster is now ready to be used. Kafka broker is available on
-port 9092, while the Schema Registry runs on port 8081. Make a note of
-that, because we’ll need it soon.
-
-
-
-#### Lab Solution 
-
-Complete lab solution is available at following path. Run mvn commands to compile using maven cli:
-
-
-```
-cd ~/kafka-training/labs/lab-kafka-protobuf
-
-mvn clean
-
-mvn install
-```
-
-#### Intellij IDE
-
-Open Intellij IDE and open following project headless/kafka-training/labs/lab-kafka-protobuf
-
-![](./images/1.png)
-
-
-Wait for some time for project to be imported
-
-![](./images/2.png)
-
-
-
-
-
-Code generation in Java
-=======================
-
-Now we know how a protobuf schema looks and we know how it ends up
-in Schema Registry. Let’s see now how we use protobuf schemas from Java.
-
-The first thing that you need is a protobuf-java library. In these
-examples, I’m using maven, so let’s add the maven dependency:
-
-```
-<dependencies>
- <dependency>
-  <groupId>com.google.protobuf</groupId>
-  <artifactId>protobuf-java</artifactId>
-  <version>3.12.2</version>
- </dependency>
-</dependencies>
-```
-
-The next thing you want to do is use the **protoc** compiler to generate
-Java code from .proto files. But we’re not going to invite the
-compiler manually, we’ll use a maven plugin called
-**protoc-jar-maven-plugin**:
-
-```
-<plugin>
-    <groupId>com.github.os72</groupId>
-    <artifactId>protoc-jar-maven-plugin</artifactId>
-    <version>3.11.4</version>
-    <executions>
-        <execution>
-            <phase>generate-sources</phase>
-            <goals>
-                <goal>run</goal>
-            </goals>
-            <configuration>
-                <inputDirectories>
-                  <include>${project.basedir}/src/main/protobuf</include>
-                </inputDirectories>
-                <outputTargets>
-                    <outputTarget>
-                        <type>java</type>
-                        <addSources>main</addSources>
-                        <outputDirectory>${project.basedir}/target/generated-sources/protobuf</outputDirectory>
-                    </outputTarget>
-                </outputTargets>
-            </configuration>
-        </execution>
-    </executions>
-</plugin>
-```
-
-The protobuf classes will be generated during the generate-sources
-phase. The plugin will look for proto files in the
-**src/main/protobuf** folder and the generated code will be created in
-the **target/generated-sources/protobuf** folder.
-
-To generate the class in the target folder run:
-
-```
-mvn clean generate-sources
+avro {
+    createSetters = false
+    fieldVisibility = "PRIVATE"
+}
 ```
 
 
-Ok, now that we have our class generated, let’s send it to Kafka using
-the new Protobuf serializer.
+***ACTION*** - EDIT build.gradle and follow the instructions in the file.
 
+Notice that we did not generate setter methods, and we made the fields private.
+This makes the instances somewhat immutable.
 
-Writing a Protobuf Producer
-===========================
+Running `gradle build` will generate the Employee.java.
 
-With Kafka cluster up and running is now time to create a Java producer
-that will send our SimpleMessage to Kafka. First, let’s prepare the
-configuration for the Producer:
+#### ./build/generated-main-avro-java/com/fenago/phonebook/Employee.java
+#### Generated Avro code
 
-```
-Properties properties = new Properties();
-properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaProtobufSerializer.class);
-properties.put(KafkaProtobufSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081");
-Producer<String, SimpleMessage> producer = new KafkaProducer<>(properties);
-```
+```java
 
-Notice that we are using **KafkaProtobufSerializer** as the value
-serializer class. This is the new serializer available in Confluent
-Platform since version 5.5. It works similarly to KafkaAvroSerializer:
-when publishing messages it will check with Schema Registry if the
-schema is available there. If the schema is not yet registered, it will
-write it to Schema Registry and then publish the message to Kafka. For
-this to work, the serializer needs the URL of the Schema Registry and in
-our case, that’s [*http://localhost:8081*.](http://localhost:8081./)
+package com.fenago.phonebook;
 
-Next, we prepare the KafkaRecord, using the SimpleMessage class
-generated from the protobuf schema:
+import org.apache.avro.specific.SpecificData;
+
+@SuppressWarnings("all")
+@org.apache.avro.specific.AvroGenerated
+public class Employee extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
+  private static final long serialVersionUID = -6112285611684054927L;
+  public static final org.apache.avro.Schema SCHEMA$ = new
+                        org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Employee\"...");
+  public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
+  private java.lang.String firstName;
+  private java.lang.String lastName;
+  private int age;
+  private java.lang.String phoneNumber;
+  ...
 
 ```
-SimpleMessage simpleMessage = SimpleMessage.newBuilder()
-     .setContent("Hello world")
-        .setDateTime(Instant.now().toString())
+
+
+***ACTION*** - RUN `gradle build` from the project folder
+
+The gradle plugin calls the Avro utilities which generates the files and puts them under
+`build/generated-main-avro-java`
+
+Let's use the generated class as follows to construct an Employee instance.
+
+
+
+#### Using the new Employee class
+
+```java
+Employee bob = Employee.newBuilder().setAge(35)
+        .setFirstName("Bob")
+        .setLastName("Jones")
+        .setPhoneNumber("555-555-1212")
         .build();
-    
-ProducerRecord<String, SimpleMessage> record
-    = new ProducerRecord<>("protobuf-topic", null, simpleMessage);
-```
 
-This record will be written to the topic called **protobuf-topic**. The
-last thing to do is to write the record to Kafka:
+assertEquals("Bob", bob.getFirstName());
 
 ```
-producer.send(record);
-producer.flush();
-producer.close();
-```
 
-Usually, you wouldn’t call **flush()** method, but since our application
-will be stopped after this, we need to ensure the message is written to
-Kafka before that happens.
+The Employee class has a constructor and has a builder.
+We can use the builder to build a new Employee instance.
 
-Writing a Protobuf Consumer
-===========================
 
-We said that the consumer doesn’t need to know the schema in advance to
-be able to deserialize the message, thanks to Schema Registry. But,
-having the schema available in advance allows us to generate the Java
-class out of it and use the class in our code. This helps with code
-readability and makes a code strongly typed.
+Next we want to write the Employees to disk.
 
-Here’s how to do it. First, you will generate a java class(es) as
-explained in Code generation in Java section. Next, we prepare the
-configuration for the Kafka consumer:
+#### Writing a list of employees to an Avro file
 
-```
-Properties properties = new Properties(); properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, 
-    "localhost:9092"); 
-properties.put(ConsumerConfig.GROUP_ID_CONFIG, 
-    "protobuf-consumer-group"); 
-properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest"); properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
-```
+```java
+final List<Employee> employeeList = ...
+final DatumWriter<Employee> datumWriter = new SpecificDatumWriter<>(Employee.class);
+final DataFileWriter<Employee> dataFileWriter = new DataFileWriter<>(datumWriter);
 
-Here we’re defining a broker URL, consumer group of our consumer and
-telling the consumer that we’ll handle offset commits ourselves.\
-Next, we define deserializer for the messages:
+try {
+    dataFileWriter.create(employeeList.get(0).getSchema(),
+            new File("employees.avro"));
+    employeeList.forEach(employee -> {
+        try {
+            dataFileWriter.append(employee);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    });
+} finally {
+    dataFileWriter.close();
+}
 
 ```
-properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, 
-    StringDeserializer.class); properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, 
-    KafkaProtobufDeserializer.class); properties.put(KafkaProtobufDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081"); properties.put(KafkaProtobufDeserializerConfig.SPECIFIC_PROTOBUF_VALUE_TYPE, SimpleMessage.class.getName());
-```
 
-We use string deserializer for the key, but for the value, we’re using
-the new KafkaProtobufDeserializer. For the protobuf deserializer, we
-need to provide the Schema Registry URL, as we did for the serializer
-above.
+The above shows serializing an Employee list to disk. In Kafka, we will not be writing to
+disk directly. We are just showing how so you have a way to test Avro serialization, which
+is helpful when debugging schema incompatibilities. Note we create a `DatumWriter`, which
+converts Java instance into an in-memory serialized format. `SpecificDatumWriter` is used
+with generated classes like Employee. `DataFileWriter` writes the serialized records to
+the `employee.avro` file.
 
-The last line is the most important. It tells the deserializer to which
-class to deserializer the record values. In our case, it’s the
-SimpleMessage class (the one we generated from the protobuf schema using
-the protobuf maven plugin).
+Now let's demonstrate how to read data from an Avro file.
 
-Now we’re ready to create our consumer and subscribe it to
-**protobuf-topic**:
+#### Reading a list of employees from an avro file
 
-```
-KafkaConsumer<String, SimpleMessage> consumer 
-    = new KafkaConsumer<>(properties);
-consumer.subscribe(Collections.singleton("protobuf-topic"));
-```
+```java
+final File file = new File("employees.avro");
+final List<Employee> employeeList = new ArrayList<>();
+final DatumReader<Employee> empReader = new SpecificDatumReader<>(Employee.class);
+final DataFileReader<Employee> dataFileReader = new DataFileReader<>(file, empReader);
 
-And then we poll Kafka for records and print them to the console:
+while (dataFileReader.hasNext()) {
+    employeeList.add(dataFileReader.next(new Employee()));
+}
 
 ```
-while (true) {
- ConsumerRecords<String, SimpleMessage> records 
-     = consumer.poll(Duration.ofMillis(100));
- for (ConsumerRecord<String, SimpleMessage> record : records) {
-  System.out.println("Message content: " + 
-      record.value().getContent());
-  System.out.println("Message time: " + 
-      record.value().getDateTime());
- }
- consumer.commitAsync();
+
+The above deserializes employees from the `employees.avro` file into a `java.util.List` of
+Employee instances. Deserializing is similar to serializing but in reverse. We create a
+`SpecificDatumReader` to converts in-memory serialized items into instances of our generated
+`Employee` class. The `DatumReader` reads records from the file by calling next.
+Another way to read is using forEach as follows:
+
+
+#### Reading a list of employees from an avro file using forEach
+```java
+final DataFileReader<Employee> dataFileReader = new DataFileReader<>(file, empReader);
+dataFileReader.forEach(employeeList::add);
+```
+
+
+
+***ACTION*** - EDIT `src/test/java/com/fenago/phonebook/EmployeeTest.java` and follow the instructions in the file.
+
+***ACTION*** - RUN EmployeeTest from the IDE
+
+## Working with Generic Records
+
+You can use a `GenericRecord` instead of generating an Employee class as follows.
+
+#### Using GenericRecord to create an Employee record
+
+```java
+final String schemaLoc = "src/main/avro/com/fenago/phonebook/Employee.avsc";
+final File schemaFile = new File(schemaLoc);
+final Schema schema = new Schema.Parser().parse(schemaFile);
+
+GenericRecord bob = new GenericData.Record(schema);
+bob.put("firstName", "Bob");
+bob.put("lastName", "Smith");
+bob.put("age", 35);
+assertEquals("Bob", bob.get("firstName"));
+```
+
+You can write to Avro files using GenericRecords as well.
+
+
+#### Writing GenericRecords to an Avro file
+
+```java
+final List<GenericRecord> employeeList = new ArrayList<>();
+
+
+final DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<>(schema);
+final DataFileWriter<GenericRecord> dataFileWriter = new DataFileWriter<>(datumWriter);
+
+try {
+    dataFileWriter.create(employeeList.get(0).getSchema(),
+            new File("employees2.avro"));
+    employeeList.forEach(employee -> {
+        try {
+            dataFileWriter.append(employee);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    });
+} finally {
+    dataFileWriter.close();
 }
 ```
 
-Here we’re consuming a batch of records and just printing the content to
-the console.
-
-Remember when we configured the consumer to let us handle committing
-offsets by setting ENABLE\_AUTO\_COMMIT\_CONFIG to false? That’s what
-we’re doing in the last line: only after we’ve fully processed the
-current group of records will we commit the consumer offset.
-
-That’s all there is to writing a simple protobuf consumer. Let’s now
-check one more variant.
 
 
-Generic Protobuf Consumer
-=========================
+You can read from Avro files using `GenericRecord`s as well.
 
-What if you want to handle messages in a generic way in your consumer,
-without generating a Java class from a protobuf schema? Well, you can
-use an instance of DynamicMessage class from protobuf library.
-DynamicMessage has a reflective API, so you can navigate through message
-fields and read their values. Here’s how you can do it…
 
-First, let’s configure the consumer. Its configuration is very similar
-to the previous example:
+#### Reading GenericRecords from an Avro file
+```java
+final File file = new File("employees2.avro");
+final List<GenericRecord> employeeList = new ArrayList<>();
+final DatumReader<GenericRecord> empReader = new GenericDatumReader<>();
+final DataFileReader<GenericRecord> dataFileReader = new DataFileReader<>(file, empReader);
+
+while (dataFileReader.hasNext()) {
+    employeeList.add(dataFileReader.next(null));
+}
+
+employeeList.forEach(System.out::println);
 
 ```
-Properties properties = new Properties();
-properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, 
-    "localhost:9092");
-properties.put(ConsumerConfig.GROUP_ID_CONFIG, 
-    "generic-protobuf-consumer-group");      
-properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
-properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, 
-    StringDeserializer.class);
-properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, 
-    KafkaProtobufDeserializer.class);
-properties.put(KafkaProtobufDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081");
+
+Avro will validate the data types when it serializes and deserializes the data.
+
+#### Using the wrong type
+
+```java
+GenericRecord employee = new GenericData.Record(schema);
+employee.put("firstName", "Bob" + index);
+employee.put("lastName", "Smith"+ index);
+//employee.put("age", index % 35 + 25);
+employee.put("age", "OLD");
 ```
 
-The only thing missing is the **SPECIFIC\_PROTOBUF\_VALUE\_TYPE**
-configuration. Since we want to handle messages in a generic way, we
-don’t need this configuration.
-
-Now we’re ready to create our consumer and subscribe it to
-**protobuf-topic** topic, as in the previous example:
-
-```
-KafkaConsumer<String, SimpleMessage> consumer 
-    = new KafkaConsumer<>(properties);
-consumer.subscribe(Collections.singleton("protobuf-topic"));
+#### Stack trace from above
 ```
 
-And then we poll Kafka for records and print them to the console:
+org.apache.avro.file.DataFileWriter$AppendWriteException: java.lang.ClassCastException:
+java.lang.String cannot be cast to java.lang.Number
+
+    at org.apache.avro.file.DataFileWriter.append(DataFileWriter.java:308)
+    at com.fenago.phonebook.EmployeeTestNoGen.lambda$testWrite$1(EmployeeTestNoGen.java:71)
+    at java.util.ArrayList.forEach(ArrayList.java:1249)
+    at com.fenago.phonebook.EmployeeTestNoGen.testWrite(EmployeeTestNoGen.java:69)
+    ...
+Caused by: java.lang.ClassCastException: java.lang.String cannot be cast to java.lang.Number
+    at org.apache.avro.generic.GenericDatumWriter.writeWithoutConversion(GenericDatumWriter.java:117)
+    at org.apache.avro.generic.GenericDatumWriter.write(GenericDatumWriter.java:73)
+    at org.apache.avro.generic.GenericDatumWriter.writeField(GenericDatumWriter.java:153)
+    at org.apache.avro.generic.GenericDatumWriter.writeRecord(GenericDatumWriter.java:143)
+    at org.apache.avro.generic.GenericDatumWriter.writeWithoutConversion(GenericDatumWriter.java:105)
+    at org.apache.avro.generic.GenericDatumWriter.write(GenericDatumWriter.java:73)
+    at org.apache.avro.generic.GenericDatumWriter.write(GenericDatumWriter.java:60)
+    at org.apache.avro.file.DataFileWriter.append(DataFileWriter.java:302)
+```
+
+If you left out a required field like `firstName`, then you would get this.
+
+#### Stack trace from leaving out firstName
+```
+Caused by: java.lang.NullPointerException: null of string in field firstName of com.fenago.phonebook.Employee
+    at org.apache.avro.generic.GenericDatumWriter.npe(GenericDatumWriter.java:132)
+    at org.apache.avro.generic.GenericDatumWriter.writeWithoutConversion(GenericDatumWriter.java:126)
+    at org.apache.avro.generic.GenericDatumWriter.write(GenericDatumWriter.java:73)
+    at org.apache.avro.generic.GenericDatumWriter.write(GenericDatumWriter.java:60)
 
 ```
-while (true) {
-  ConsumerRecords<String, DynamicMessage> records 
-      = consumer.poll(Duration.ofMillis(100));
-  for (ConsumerRecord<String, DynamicMessage> record : records) {
-    for (FieldDescriptor field : 
-        record.value().getAllFields().keySet()) {
-      System.out.println(field.getName() + ": " + 
-          record.value().getField(field));
+
+In the Avro schema, you can define Records, Arrays, Enums, Unions, Maps and you can use primitive types like  String, Int, Boolean, Decimal, Timestamp, Date, and more.
+
+The [Avro schema and IDL specification document](https://avro.apache.org/docs/current/spec.html#Protocol+Declaration) describes all of the supported types.
+
+ Let's add to the Employee schema and show some of the different types that Avro supports.
+
+
+***ACTION*** - EDIT `src/test/java/com/fenago/phonebook/EmployeeTestNoGen.java` and follow the instructions in the file.
+
+***ACTION*** - RUN EmployeeTestNoGen from the IDE
+
+***ACTION*** - CHANGE Change a test and leave out the firstName what happens?
+
+***ACTION*** - CHANGE Change a test and use a string for age what happens?
+
+
+## Working with more advanced schema
+
+#### More advanced schema - `src/main/avro/com/fenago/phonebook/Employee.avsc`
+ ```javascript
+ {"namespace": "com.fenago.phonebook",
+  "type": "record",
+  "name": "Employee",
+  "fields": [
+    {"name": "firstName", "type": "string"},
+    {"name": "nickName", "type": ["null", "string"], "default" : null},
+    {"name": "lastName", "type": "string"},
+    {"name": "age",  "type": "int"},
+    {"name": "emails", "default":[], "type":{"type": "array", "items": "string"}},
+    {"name": "phoneNumber",  "type":
+      [ "null",
+        { "type": "record",   "name": "PhoneNumber",
+        "fields": [
+          {"name": "areaCode", "type": "string"},
+          {"name": "countryCode", "type": "string", "default" : ""},
+          {"name": "prefix", "type": "string"},
+          {"name": "number", "type": "string"}
+        ]
+        }
+      ]
+    },
+    {"name":"status", "default" :"SALARY", "type": { "type": "enum", "name": "Status",
+              "symbols" : ["RETIRED", "SALARY", "HOURLY", "PART_TIME"]}
     }
-  }
-  consumer.commitAsync();
+  ]
 }
 ```
 
-Without SPECIFIC\_PROTOBUF\_VALUE\_TYPE configured in our consumer, the
-consumer will always return the instance of DynamicMessage in the
-record’s value. Then we use the **DynamicMessage.getAllFields()** method
-to obtain the list of FieldDescriptors. Once we have all the descriptors
-we can simply iterate through them and print the value of each field.
 
-Check out the JavaDoc to find out more about
-[DynamicMessage](https://developers.google.com/protocol-buffers/docs/reference/java/com/google/protobuf/DynamicMessage).
+***ACTION*** - EDIT Employee.avsc and modify it to match the above code listing.
 
+***ACTION*** - RUN gradle build again to generate classes
 
-#### Running Solution with Intellij
+Avro record attributes are as follows:
 
-**Starting Producer**
+* name:  name of the record (required).
+* namespace: equates to packages or modules
+* doc: documentation for future user of this schema
+* aliases:  array aliases (alias names)
+* fields:  an array of fields
 
-![](./images/3.png)
+Avro field attributes are as follows:
 
-![](./images/4.png)
+* name:  name of the field (required)
+* doc: description of field (important for future usage)
+* type:  JSON object defining a schema, or a JSON string naming a record definition (required)
+* default: Default value for this field
+* order: specifies sort ordering of record (optional, ascending, descending, ignore)
+ * aliases: array of alternate names
 
-**Starting Consumer**
+The `doc` attribute is imperative for future usage as it documents what the fields and
+records are supposed to represent. Remember that this data can outlive systems that
+produced it. A self-documenting schema is critical for a robust system.
 
-![](./images/5.png)
+The above has examples of default values, arrays, primitive types, Records within records,
+enums, and more.
 
-![](./images/6.png)
+The PhoneNumber object gets generated as does the Status class.
 
+#### PhoneNumber record
+```java
 
+package com.fenago.phonebook;
 
-#### Running Solution with Maven
+import org.apache.avro.specific.SpecificData;
 
-**Step 1: Compile** (Terminal 1)
-
-```
-cd ~/kafka-training/labs/lab-kafka-protobuf
-
-mvn clean compile
-```
-
- 
-**Step 2: Run ProtobufConsumer** (Terminal 1)
-
-Execute the class, ProtobufConsumer by running:
-
-```
-mvn exec:java -Dexec.mainClass="com.fenago.kafka.protobuf.consumer.ProtobufConsumer"
-```
-
-Open new terminal before proceeding to next step.
-
-
-**Step 3: Run ProtobufProducer** (Terminal 2)
-
-Execute the class, ProtobufProducer by running:
+@SuppressWarnings("all")
+@org.apache.avro.specific.AvroGenerated
+public class PhoneNumber extends org.apache.avro.specific.SpecificRecordBase ...{
+  private static final long serialVersionUID = -3138777939618426199L;
+  public static final org.apache.avro.Schema SCHEMA$ =
+                   new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":...
+  public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
+   private java.lang.String areaCode;
+   private java.lang.String countryCode;
+   private java.lang.String prefix;
+   private java.lang.String number;
 
 ```
-mvn exec:java -Dexec.mainClass="com.fenago.kafka.protobuf.producer.ProtobufProducer"
+
+#### Status enum
+```java
+package com.fenago.phonebook;
+@SuppressWarnings("all")
+@org.apache.avro.specific.AvroGenerated
+public enum Status {
+  RETIRED, SALARY, HOURLY, PART_TIME  ;
+  ...
 ```
 
-Run producer class multiple times and verify that message is displayed in consumer logs:
 
-![](./images/7.png)
+***ACTION*** - MODIFY Using solution and slides as a guide modify unit tests to use Status and PhoneNumber. Then run tests.
 
 
-Now you’re ready to start writing producers and consumers that send Protobuf messages to Apache Kafka with
-help of Schema Registry.
+#### Tips for using Avro with Kafka and Hadoop
 
+Avoid advanced Avro features which are not supported by polyglot language mappings.
+Think simple data transfer objects or structs. Don't use magic strings,  use enums
+instead as they provide better validation.
+
+Document all records and fields in the schema.
+Documentation is imperative for future usage. Documents what the fields and records
+represent.  A self-documenting schema is critical for a robust streaming system and Big Data.
+Don't use complex union types. Use Unions for nullable fields only and avoid using
+recursive types at all costs.
+
+Use reasonable field names and use them consistently with other records. Example,
+`employee_id` instead of `id` and then use `employee_id` in all other records that
+have a field that refer to the `employee_id` from Employee.
+
+
+## Conclusion
+
+Avro provides fast, compact data serialization. It supports data structures like Records, Maps, Array, and basic types.
+You can use it direct or use Code Generation.
+Avro allows schema support to Kafka which we will demonstrate in another article.

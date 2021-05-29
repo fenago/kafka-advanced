@@ -1,519 +1,471 @@
-<img align="right" src="./logo.png">
+Apache Kafka using Confluent Platform (Local)
+-------------------------------------------------
 
 
-# Lab 7.1: Avro
+Use this quick start to get up and running with Confluent Platform and
+its main components in a development environment. This quick start uses
+Confluent Control Center included in Confluent Platform for topic
+management and event stream processing using ksqlDB.
 
-Welcome to the session 7 lab 1. The work for this lab is done in `~/kafka-training/labs/lab7.1`. In this lab, you are going to use Avro.
-
-
-
-
-
-## Avro Introduction for Big Data and Data Streaming Architectures
-
-Apache Avro™ is a data serialization system.
-Avro provides data structures, binary data format, container file format to
-store persistent data, and provides RPC capabilities. Avro does not require
-code generation to use and integrates well with JavaScript, Python, Ruby, C, C#, C++ and Java.
-Avro gets used in the *Hadoop ecosystem* as well as by *Kafka*.
-
-Avro is similar to Thrift, Protocol Buffers, JSON, etc. Avro does not require
-code generation. Avro needs less encoding as part of the data since it stores
-names and types in the schema reducing duplication. Avro supports the evolution
-of schemas.
-
-## Why Avro for Kafka and Hadoop?
-
-Avro supports direct mapping to JSON as well as a compact binary format.
-It is a very fast serialization format. Avro is widely used in the Hadoop ecosystem.
-Avro supports polyglot bindings to many programming languages and a code generation
-for static languages. For dynamically typed languages, code generation is not needed.
-Another key advantage of Avro is its support of evolutionary schemas which supports
-compatibility checks, and allows evolving your data over time.
-
-Avro supports platforms like Kafka that has multiple Producers and Consumers which evolve over
-time. Avro schemas help keep your data clean and robust.
-
-There was a trend towards schema-less as part of the NoSQL, but that pendulum has swung back a bit
-e.g., Cassandra has schemas REST/JSON was schema-less and IDL-less but not anymore with Swagger,
-API gateways, and RAML. Now the trend is more towards schemas that can evolve and Avro fits
-well in this space.
-
-### Avro Schema provides Future Proof Robustness
-Streaming architecture like Kafka supports decoupling by sending data in streams to an unknown number of consumers.
-Streaming architecture is challenging as Consumers and Producers evolve on different timelines.
-Producers send a stream of records that zero to many Consumers read.  Not only are
-there multiple consumers but data might end up in Hadoop or some other store
-and used for use cases you did not even imagine. Schemas help future proof your data and make
-it more robust. Supporting all use cases future (Big Data), past (older Consumers) and
-current use cases is not easy without a schema. Avro schema with its support for
-evolution is essential for making the data robust for streaming architectures like Kafka,
-and with the metadata that schema provides, you can reason on the data.  Having a schema
-provides robustness in providing meta-data about the data stored in Avro records which
-are self-documenting the data.
-
-### Avro provides future usability of data
-Data record format compatibility is a hard problem to solve with streaming architecture
-and Big Data. Avro schemas are not a cure-all, but essential for documenting and modeling
-your data. Avro Schema definitions capture a point in time of what your data looked like when
-it recorded since the schema is saved with the data. Data will evolve. New fields are added.
-Since streams often get recorded in data lakes like Hadoop and those records can represent
-historical data, not operational data, it makes sense that data streams and data lakes have a
-less rigid, more evolving schema than the schema of the operational relational database or
-Cassandra cluster.  It makes sense to have a rigid schema for operational data, but not
-data that ends up in a data lake.
-
-With a streaming platform, consumers and producers can change all of the time and evolve
-quite a bit. Producers can have Consumers that they never know. You can’t test a Consumer
-that you don’t know. For agility sakes, you don’t want to update every Consumer every time
-a Producers adds a field to a Record. These types of updates are not feasible without
-support for Schema.
+In this quick start, you create Apache Kafka® topics, use Kafka Connect
+to generate mock data to those topics, and create ksqlDB streaming
+queries on those topics. You then go to Control Center to monitor and
+analyze the streaming queries.
 
 
-## Avro Schema
-Avro data format (wire format and file format) is defined by Avro schemas.
-When deserializing data, the schema is used. Data is serialized based on the schema,
-and schema is sent with data or in the case of files stored with the data.
-Avro data plus schema is fully self-describing data format.
+Step 1: Download and Start Confluent Platform
+-----------------------------------------------------------------------------------------------------------------------------------
 
-When Avro files store data it also stores schema. Avro RPC is also based on schema,
-and IDL. Part of the RPC protocol exchanges schemas as part of the handshake.
-Avro schemas and IDL are written in JSON.
 
-Let's take a look at an example Avro schema.
+1.  Go to the [downloads page](https://www.confluent.io/download/).
 
-#### ./src/main/avro/com/fenago/phonebook/Employee.avsc
-#### Example schema for an Employee record
+2.  Select **Confluent Platform** and click **DOWNLOAD FREE**.
 
-```javascript
-{"namespace": "com.fenago.phonebook",
-  "type": "record",  "name": "Employee",
-    "fields": [
-        {"name": "firstName", "type": "string"},
-        {"name": "lastName", "type": "string"},
-        {"name": "age",  "type": "int"},
-        {"name": "phoneNumber",  "type": "string"}
-    ]
-}
+    Tip
+
+    You can download a previous version from [Previous
+    Versions](https://www.confluent.io/previous-versions/).
+
+3.  Provide the following:
+
+    -   Email: Your email address
+    -   Deployment Type: `Manual Deployment`{.docutils .literal
+        .notranslate}
+    -   Type: `zip`
+
+4.  Click **DOWNLOAD FREE**.
+
+5.  Decompress the file. You should have the directories, such as
+    `bin` and `etc`.
+
+6.  Set the environment variable for the Confluent Platform directory.
+
+        `export CONFLUENT_HOME=<path-to-confluent>`
+
+
+7.  Add the Confluent Platform `bin`
+    directory to your
+    [PATH](https://askubuntu.com/questions/720678/what-does-export-path-somethingpath-mean).
+
+        `export PATH=$PATH:$CONFLUENT_HOME/bin`
+
+
+8.  Install the [Kafka Connect
+    Datagen](https://www.confluent.io/hub/confluentinc/kafka-connect-datagen/)
+    source connector using the Confluent Hub client. This connector
+    generates mock data for demonstration purposes and is not suitable
+    for production. [Confluent
+    Hub](https://docs.confluent.io/home/connect/confluent-hub/index.html)
+    is an online library of pre-packaged and ready-to-install extensions
+    or add-ons for Confluent Platform and Kafka.
+	
 ```
-
-The above defines an employee record with firstName, lastName, age and phoneNumber.
-
-
-***ACTION*** - EDIT Employee.avsc and modify it to match the above code listing.
-
-
-## Avro schema generation tools
-
-Avro comes with a set of tools for generating Java classes for Avro types that you
-define in Avro schema. There are plugins for Maven and Gradle to generate code based
-on Avro schemas.
-
-This `gradle-avro-plugin` is a Gradle plugin that uses Avro tools to do Java code generation
-for Apache Avro.
-This plugin supports Avro schema files (`.avsc`), and Avro RPC IDL (`.avdl`).
-For Kafka Training Course, Instructor led, onsite training")
-you only need `avsc` schema files.
-
-#### build.gradle - example using gradle-avro-plugin
-
-```java
-plugins {
-    id "com.commercehub.gradle.plugin.avro" version "0.9.0"
-}
-
-group 'fenago'
-version '1.0-SNAPSHOT'
-apply plugin: 'java'
-sourceCompatibility = 1.8
-
-dependencies {
-    compile "org.apache.avro:avro:1.8.1"
-    testCompile group: 'junit', name: 'junit', version: '4.11'
-}
-
-repositories {
-    jcenter()
-    mavenCentral()
-}
-
-avro {
-    createSetters = false
-    fieldVisibility = "PRIVATE"
-}
-```
-
-
-***ACTION*** - EDIT build.gradle and follow the instructions in the file.
-
-Notice that we did not generate setter methods, and we made the fields private.
-This makes the instances somewhat immutable.
-
-Running `gradle build` will generate the Employee.java.
-
-#### ./build/generated-main-avro-java/com/fenago/phonebook/Employee.java
-#### Generated Avro code
-
-```java
-
-package com.fenago.phonebook;
-
-import org.apache.avro.specific.SpecificData;
-
-@SuppressWarnings("all")
-@org.apache.avro.specific.AvroGenerated
-public class Employee extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -6112285611684054927L;
-  public static final org.apache.avro.Schema SCHEMA$ = new
-                        org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Employee\"...");
-  public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
-  private java.lang.String firstName;
-  private java.lang.String lastName;
-  private int age;
-  private java.lang.String phoneNumber;
-  ...
+        confluent-hub install \
+           --no-prompt confluentinc/kafka-connect-datagen:latest
 
 ```
 
+9.  Start Confluent Platform using the Confluent CLI [confluent local
+    services
+    start](https://docs.confluent.io/confluent-cli/current/command-reference/local/services/confluent_local_services_start.html)
+    command. This command starts all of the Confluent Platform
+    components, including Kafka, ZooKeeper, Schema Registry, HTTP REST
+    Proxy for Kafka, Kafka Connect, ksqlDB, and Control Center.
 
-***ACTION*** - RUN `gradle build` from the project folder
+    Important
 
-The gradle plugin calls the Avro utilities which generates the files and puts them under
-`build/generated-main-avro-java`
+    The [confluent
+    local](https://docs.confluent.io/ccloud-cli/current/command-reference/index.html)
+    commands are intended for a single-node development environment and
+    are not suitable for a production environment. The data that are
+    produced are transient and are intended to be temporary. For
+    production-ready workflows, see [Install and Upgrade Confluent
+    Platform](https://docs.confluent.io/platform/current/installation/index.html#installation-overview).
 
-Let's use the generated class as follows to construct an Employee instance.
-
-
-
-#### Using the new Employee class
-
-```java
-Employee bob = Employee.newBuilder().setAge(35)
-        .setFirstName("Bob")
-        .setLastName("Jones")
-        .setPhoneNumber("555-555-1212")
-        .build();
-
-assertEquals("Bob", bob.getFirstName());
+```
+		confluent local services start
 
 ```
 
-The Employee class has a constructor and has a builder.
-We can use the builder to build a new Employee instance.
+    Your output should resemble:
 
-
-Next we want to write the Employees to disk.
-
-#### Writing a list of employees to an Avro file
-
-```java
-final List<Employee> employeeList = ...
-final DatumWriter<Employee> datumWriter = new SpecificDatumWriter<>(Employee.class);
-final DataFileWriter<Employee> dataFileWriter = new DataFileWriter<>(datumWriter);
-
-try {
-    dataFileWriter.create(employeeList.get(0).getSchema(),
-            new File("employees.avro"));
-    employeeList.forEach(employee -> {
-        try {
-            dataFileWriter.append(employee);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-    });
-} finally {
-    dataFileWriter.close();
-}
+```
+        Starting Zookeeper
+        Zookeeper is [UP]
+        Starting Kafka
+        Kafka is [UP]
+        Starting Schema Registry
+        Schema Registry is [UP]
+        Starting Kafka REST
+        Kafka REST is [UP]
+        Starting Connect
+        Connect is [UP]
+        Starting KSQL Server
+        KSQL Server is [UP]
+        Starting Control Center
+        Control Center is [UP]
 
 ```
 
-The above shows serializing an Employee list to disk. In Kafka, we will not be writing to
-disk directly. We are just showing how so you have a way to test Avro serialization, which
-is helpful when debugging schema incompatibilities. Note we create a `DatumWriter`, which
-converts Java instance into an in-memory serialized format. `SpecificDatumWriter` is used
-with generated classes like Employee. `DataFileWriter` writes the serialized records to
-the `employee.avro` file.
+Step 2: Create Kafka Topics[¶](https://docs.confluent.io/platform/current/quickstart/ce-quickstart.html#step-2-create-ak-topics "Permalink to this headline")
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Now let's demonstrate how to read data from an Avro file.
+In this step, you create Kafka topics using [Confluent Control
+Center](https://docs.confluent.io/platform/current/control-center/index.html#control-center).
+Confluent Control Center provides the functionality for building and
+monitoring production data pipelines and event streaming applications.
 
-#### Reading a list of employees from an avro file
+1.  Navigate to the Control Center web interface at
+    [http://localhost:9021](http://localhost:9021/).
 
-```java
-final File file = new File("employees.avro");
-final List<Employee> employeeList = new ArrayList<>();
-final DatumReader<Employee> empReader = new SpecificDatumReader<>(Employee.class);
-final DataFileReader<Employee> dataFileReader = new DataFileReader<>(file, empReader);
+    If you installed Confluent Platform on a different host, replace
+    `localhost` with the host name in
+    the address.
 
-while (dataFileReader.hasNext()) {
-    employeeList.add(dataFileReader.next(new Employee()));
-}
+    It may take a minute or two for Control Center to come online.
+
+    Note
+
+    Control Center won’t connect to ksqlDB if Control Center isn’t open
+    and running in a `localhost`
+    browser session.
+
+2.  Click the **controlcenter.cluster** tile.
+
+    [![../\_images/c3-landing-page.png](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-landing-page.png)](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-landing-page.png)
+
+3.  In the navigation bar, click **Topics** to open the topics list, and
+    then click **Add a topic**.
+
+    [![../\_images/c3-create-topic.png](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-create-topic.png)](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-create-topic.png)
+
+4.  In the Topic name field, specify `pageviews`{.docutils .literal
+    .notranslate} and click **Create with defaults**.
+
+    Note that topic names are case-sensitive.
+
+    [![../\_images/c3-create-topic-name.png](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-create-topic-name.png)](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-create-topic-name.png)
+
+5.  In the navigation bar, click **Topics** to open the topics list, and
+    then click **Add a topic**.
+
+6.  In the Topic name field, specify `users`{.docutils .literal
+    .notranslate} and click **Create with defaults**.
+
+Step 3: Install a Kafka Connector and Generate Sample Data
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+In this step, you use Kafka Connect to run a demo source connector
+called `kafka-connect-datagen` that
+creates sample data for the Kafka topics `pageviews` and `users`.
+
+Tip
+
+The Kafka Connect Datagen connector was installed manually in [Step 1:
+Download and Start Confluent
+Platform](https://docs.confluent.io/platform/current/quickstart/ce-quickstart.html#download-start-cp).
+If you encounter issues locating the Datagen Connector, refer to the
+[Issue: Cannot locate the Datagen
+connector](https://docs.confluent.io/platform/current/quickstart/ce-quickstart.html#whereis-datagen-local)
+in the Troubleshooting section.
+
+1.  Run the first instance of the [Kafka Connect
+    Datagen](https://www.confluent.io/hub/confluentinc/kafka-connect-datagen/)
+    connector to produce Kafka data to the `pageviews`{.docutils
+    .literal .notranslate} topic in AVRO format.
+
+    1.  In the navigation bar, click **Connect**.
+
+    2.  Click the `connect-default`
+        cluster in the **Connect Clusters** list.
+
+    3.  Click **Add connector**.
+
+    4.  Select the `DatagenConnector`
+        tile.
+
+        Tip
+
+        To narrow displayed connectors, click **Filter by category** and
+        click **Sources**.
+
+    5.  In the **Name** field, enter `datagen-pageviews`{.docutils
+        .literal .notranslate} as the name of the connector.
+
+    6.  Enter the following configuration values:
+
+        -   **Key converter class:**
+            `org.apache.kafka.connect.storage.StringConverter`{.docutils
+            .literal .notranslate}.
+        -   **kafka.topic:** `pageviews`{.docutils .literal
+            .notranslate}.
+        -   **max.interval:** `100`.
+        -   **quickstart:** `pageviews`{.docutils .literal
+            .notranslate}.
+
+    7.  Click **Continue**.
+
+    8.  Review the connector configuration and click **Launch**.
+
+        [![../\_images/connect-review-pageviews.png](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/connect-review-pageviews.png)](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/connect-review-pageviews.png)
+
+2.  Run the second instance of the [Kafka Connect
+    Datagen](https://www.confluent.io/hub/confluentinc/kafka-connect-datagen/?_ga=2.152015097.1716755252.1622296314-281762746.1621876473)
+    connector to produce Kafka data to the `users`{.docutils .literal
+    .notranslate} topic in AVRO format.
+
+    1.  In the navigation bar, click **Connect**.
+
+    2.  Click the `connect-default`
+        cluster in the **Connect Clusters** list.
+
+    3.  Click **Add connector**.
+
+    4.  Select the `DatagenConnector`
+        tile.
+
+        Tip
+
+        To narrow displayed connectors, click **Filter by category** and
+        click **Sources**.
+
+    5.  In the **Name** field, enter `datagen-users`{.docutils .literal
+        .notranslate} as the name of the connector.
+
+    6.  Enter the following configuration values:
+
+        -   **Key converter class:**
+            `org.apache.kafka.connect.storage.StringConverter`{.docutils
+            .literal .notranslate}
+        -   **kafka.topic:** `users`
+        -   **max.interval:** `1000`
+        -   **quickstart:** `users`
+
+    7.  Click **Continue**.
+
+    8.  Review the connector configuration and click **Launch**.
+
+Step 4: Create and Write to a Stream and Table using ksqlDB[¶](https://docs.confluent.io/platform/current/quickstart/ce-quickstart.html#step-4-create-and-write-to-a-stream-and-table-using-ksqldb "Permalink to this headline")
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Tip
+
+You can also run these commands using the [ksqlDB
+CLI](https://docs.confluent.io/platform/current/ksqldb/installing.html#install-ksql-cli)
+from your terminal with this command:
+`<path-to-confluent>/bin/ksql http://localhost:8088`.
+
+### Create Streams and Tables
+
+In this step, you use ksqlDB to create a stream for the
+`pageviews` topic and a table for the
+`users` topic.
+
+1.  In the navigation bar, click **ksqlDB**.
+
+2.  Select the `ksqlDB` application.
+
+3.  Copy the following code into the editor window and click **Run
+    query** to create the `PAGEVIEWS`
+    stream. Stream names are not case-sensitive.
+
+        CREATE STREAM PAGEVIEWS
+           (VIEWTIME BIGINT, USERID VARCHAR, PAGEID varchar)
+           WITH (KAFKA_TOPIC='pageviews', VALUE_FORMAT='AVRO');
+
+    Copy
+
+4.  Copy the following code into the editor window and click **Run
+    query** to create the `USERS`
+    table. Table names are not case-sensitive.
+
+
+```
+        CREATE TABLE USERS
+           (USERID VARCHAR PRIMARY KEY, REGISTERTIME BIGINT, GENDER VARCHAR, REGIONID VARCHAR)
+           WITH (KAFKA_TOPIC='users', VALUE_FORMAT='AVRO');
 
 ```
 
-The above deserializes employees from the `employees.avro` file into a `java.util.List` of
-Employee instances. Deserializing is similar to serializing but in reverse. We create a
-`SpecificDatumReader` to converts in-memory serialized items into instances of our generated
-`Employee` class. The `DatumReader` reads records from the file by calling next.
-Another way to read is using forEach as follows:
+### Write Queries[¶](https://docs.confluent.io/platform/current/quickstart/ce-quickstart.html#write-queries "Permalink to this headline")
+
+In this step, you create ksqlDB queries against the stream and the table
+you created above.
+
+1.  In the **Editor** tab, click **Add query properties** to add a
+    custom query property.
+
+2.  Set the `auto.offset.reset`
+    parameter to `Earliest`.
+
+    The setting instructs ksqlDB queries to read all available topic
+    data from the beginning. This configuration is used for each
+    subsequent query. For more information, see the [ksqlDB
+    Configuration Parameter
+    Reference](https://docs.ksqldb.io/en/0.14.0-ksqldb/operate-and-deploy/installation/server-config/config-reference/).
+
+3.  Create the following queries.
+
+    1.  Click **Stop** to stop the current running query.
+
+    2.  Create a non-persistent query that returns data from a stream
+        with the results limited to a maximum of three rows:
+
+        Enter the following query in the editor:
+
+            SELECT PAGEID FROM PAGEVIEWS EMIT CHANGES LIMIT 3;
+
+        Copy
+
+    3.  Click **Run query**. Your output should resemble:
+
+        [![../\_images/c3-ksql-query-results-pageid.png](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-ksql-query-results-pageid.png)](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-ksql-query-results-pageid.png)
+
+        Click the **Card view** or **Table view** icon to change the
+        output layout.
+
+    4.  Create a persistent query (as a stream) that filters the
+        `PAGEVIEWS` stream for female
+        users. The results from this query are written to the Kafka
+        `PAGEVIEWS_FEMALE` topic:
+
+        Enter the following query in the editor:
+
+            CREATE STREAM PAGEVIEWS_FEMALE
+               AS SELECT USERS.USERID AS USERID, PAGEID, REGIONID
+               FROM PAGEVIEWS LEFT JOIN USERS ON PAGEVIEWS.USERID = USERS.USERID
+               WHERE GENDER = 'FEMALE'
+               EMIT CHANGES;
+
+        Copy
+
+    5.  Click **Run query**. Your output should resemble:
+
+        [![../\_images/c3-ksql-persist-query-pv-female-results.png](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-ksql-persist-query-pv-female-results.png)](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-ksql-persist-query-pv-female-results.png)
+
+    6.  Create a persistent query where `REGIONID`{.docutils .literal
+        .notranslate} ends with `8` or
+        `9`. Results from this query
+        are written to the Kafka topic named
+        `pageviews_enriched_r8_r9` as
+        explicitly specified in the query:
+
+        Enter the following query in the editor:
+
+            CREATE STREAM PAGEVIEWS_FEMALE_LIKE_89
+               WITH (kafka_topic='pageviews_enriched_r8_r9', value_format='AVRO')
+               AS SELECT * FROM PAGEVIEWS_FEMALE
+               WHERE REGIONID LIKE '%_8' OR REGIONID LIKE '%_9'
+               EMIT CHANGES;
+
+        Copy
+
+    7.  Click **Run query**. Your output should resemble:
+
+        [![../\_images/c3-ksql-persist-query-pv-female89-results.png](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-ksql-persist-query-pv-female89-results.png)](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-ksql-persist-query-pv-female89-results.png)
+
+    8.  Create a persistent query that counts the `PAGEVIEWS`{.docutils
+        .literal .notranslate} for each `REGION`{.docutils .literal
+        .notranslate} and `GENDER`
+        combination in a [tumbling
+        window](https://docs.confluent.io/platform/current/streams/developer-guide/dsl-api.html#windowing-tumbling)
+        of 30 seconds when the count is greater than 1. Because the
+        procedure is grouping and counting, the result is now a table,
+        rather than a stream. Results from this query are written to a
+        Kafka topic called `PAGEVIEWS_REGIONS`{.docutils .literal
+        .notranslate}:
+
+        Enter the following query in the editor:
+
+            CREATE TABLE PAGEVIEWS_REGIONS
+               AS SELECT GENDER, REGIONID , COUNT(*) AS NUMUSERS
+               FROM PAGEVIEWS LEFT JOIN USERS ON PAGEVIEWS.USERID = USERS.USERID
+               WINDOW TUMBLING (size 30 second)
+               GROUP BY GENDER, REGIONID
+               HAVING COUNT(*) > 1
+               EMIT CHANGES;
+
+        Copy
+
+    9.  Click **Run query**. Your output should resemble:
+
+        [![../\_images/c3-ksql-persist-query-table-results.png](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-ksql-persist-query-table-results.png)](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-ksql-persist-query-table-results.png)
+
+    10. Click the **Running queries** tab. You should see the following
+        persisted queries:
+
+        -   PAGEVIEWS\_FEMALE
+        -   PAGEVIEWS\_FEMALE\_LIKE\_89
+        -   PAGEVIEWS\_REGIONS
+
+    11. Click the **Editor** tab. The **All available streams and
+        tables** pane shows all of the streams and tables that you can
+        access.
+
+        [![../\_images/c3-ksql-stream-table-view-1.png](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-ksql-stream-table-view-1.png)](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-ksql-stream-table-view-1.png)
+
+    12. In the **All available streams and tables** section, click
+        **KSQL\_PROCESSING\_LOG** to view the stream’s schema, including
+        nested data structures.
+
+### Run Queries[¶](https://docs.confluent.io/platform/current/quickstart/ce-quickstart.html#run-queries "Permalink to this headline")
+
+In this step, you run the ksqlDB queries you save as streams and tables
+above in the previous section.
+
+1.  In the **Streams** tab, select the `PAGEVIEWS_FEMALE`{.docutils
+    .literal .notranslate} stream.
+
+2.  Click **Query stream**.
+
+    The editor opens, and streaming output of the query displays.
+
+3.  Click **Stop** to stop the output generation.
+
+4.  In the **Tables** tab, select `PAGEVIEWS_REGIONS`{.docutils .literal
+    .notranslate} table.
+
+5.  Click **Query table**.
+
+    The editor opens, and streaming output of the query displays.
+
+6.  Click **Stop** to stop the output generation.
+
+Step 5: Monitor Consumer Lag[¶](https://docs.confluent.io/platform/current/quickstart/ce-quickstart.html#step-5-monitor-consumer-lag "Permalink to this headline")
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+1.  In the navigation bar, click **Consumers** to view the consumers
+    created by ksqlDB.
+
+2.  Click the consumer group ID to view details for the
+    `_confluent-ksql-default_query_CSAS_PAGEVIEWS_FEMALE_5`{.docutils
+    .literal .notranslate} consumer group.
+
+    From the page, you can see the consumer lag and consumption values
+    for your streaming query.
 
 
-#### Reading a list of employees from an avro file using forEach
-```java
-final DataFileReader<Employee> dataFileReader = new DataFileReader<>(file, empReader);
-dataFileReader.forEach(employeeList::add);
+Step 6: Stop Confluent Platform
+------------------------------------------------------------------------------------------------
+
+
+When you are done working with the local install, you can stop Confluent
+Platform.
+
+1.  Stop Confluent Platform using the [Confluent
+    CLI](https://docs.confluent.io/confluent-cli/current/index.html)
+    [confluent local services connect
+    stop](https://docs.confluent.io/confluent-cli/current/command-reference/local/services/connect/confluent_local_services_connect_stop.html)
+    command.
+	
 ```
-
-
-
-***ACTION*** - EDIT `src/test/java/com/fenago/phonebook/EmployeeTest.java` and follow the instructions in the file.
-
-***ACTION*** - RUN EmployeeTest from the IDE
-
-## Working with Generic Records
-
-You can use a `GenericRecord` instead of generating an Employee class as follows.
-
-#### Using GenericRecord to create an Employee record
-
-```java
-final String schemaLoc = "src/main/avro/com/fenago/phonebook/Employee.avsc";
-final File schemaFile = new File(schemaLoc);
-final Schema schema = new Schema.Parser().parse(schemaFile);
-
-GenericRecord bob = new GenericData.Record(schema);
-bob.put("firstName", "Bob");
-bob.put("lastName", "Smith");
-bob.put("age", 35);
-assertEquals("Bob", bob.get("firstName"));
-```
-
-You can write to Avro files using GenericRecords as well.
-
-
-#### Writing GenericRecords to an Avro file
-
-```java
-final List<GenericRecord> employeeList = new ArrayList<>();
-
-
-final DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<>(schema);
-final DataFileWriter<GenericRecord> dataFileWriter = new DataFileWriter<>(datumWriter);
-
-try {
-    dataFileWriter.create(employeeList.get(0).getSchema(),
-            new File("employees2.avro"));
-    employeeList.forEach(employee -> {
-        try {
-            dataFileWriter.append(employee);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    });
-} finally {
-    dataFileWriter.close();
-}
-```
-
-
-
-You can read from Avro files using `GenericRecord`s as well.
-
-
-#### Reading GenericRecords from an Avro file
-```java
-final File file = new File("employees2.avro");
-final List<GenericRecord> employeeList = new ArrayList<>();
-final DatumReader<GenericRecord> empReader = new GenericDatumReader<>();
-final DataFileReader<GenericRecord> dataFileReader = new DataFileReader<>(file, empReader);
-
-while (dataFileReader.hasNext()) {
-    employeeList.add(dataFileReader.next(null));
-}
-
-employeeList.forEach(System.out::println);
-
-```
-
-Avro will validate the data types when it serializes and deserializes the data.
-
-#### Using the wrong type
-
-```java
-GenericRecord employee = new GenericData.Record(schema);
-employee.put("firstName", "Bob" + index);
-employee.put("lastName", "Smith"+ index);
-//employee.put("age", index % 35 + 25);
-employee.put("age", "OLD");
-```
-
-#### Stack trace from above
-```
-
-org.apache.avro.file.DataFileWriter$AppendWriteException: java.lang.ClassCastException:
-java.lang.String cannot be cast to java.lang.Number
-
-    at org.apache.avro.file.DataFileWriter.append(DataFileWriter.java:308)
-    at com.fenago.phonebook.EmployeeTestNoGen.lambda$testWrite$1(EmployeeTestNoGen.java:71)
-    at java.util.ArrayList.forEach(ArrayList.java:1249)
-    at com.fenago.phonebook.EmployeeTestNoGen.testWrite(EmployeeTestNoGen.java:69)
-    ...
-Caused by: java.lang.ClassCastException: java.lang.String cannot be cast to java.lang.Number
-    at org.apache.avro.generic.GenericDatumWriter.writeWithoutConversion(GenericDatumWriter.java:117)
-    at org.apache.avro.generic.GenericDatumWriter.write(GenericDatumWriter.java:73)
-    at org.apache.avro.generic.GenericDatumWriter.writeField(GenericDatumWriter.java:153)
-    at org.apache.avro.generic.GenericDatumWriter.writeRecord(GenericDatumWriter.java:143)
-    at org.apache.avro.generic.GenericDatumWriter.writeWithoutConversion(GenericDatumWriter.java:105)
-    at org.apache.avro.generic.GenericDatumWriter.write(GenericDatumWriter.java:73)
-    at org.apache.avro.generic.GenericDatumWriter.write(GenericDatumWriter.java:60)
-    at org.apache.avro.file.DataFileWriter.append(DataFileWriter.java:302)
-```
-
-If you left out a required field like `firstName`, then you would get this.
-
-#### Stack trace from leaving out firstName
-```
-Caused by: java.lang.NullPointerException: null of string in field firstName of com.fenago.phonebook.Employee
-    at org.apache.avro.generic.GenericDatumWriter.npe(GenericDatumWriter.java:132)
-    at org.apache.avro.generic.GenericDatumWriter.writeWithoutConversion(GenericDatumWriter.java:126)
-    at org.apache.avro.generic.GenericDatumWriter.write(GenericDatumWriter.java:73)
-    at org.apache.avro.generic.GenericDatumWriter.write(GenericDatumWriter.java:60)
-
-```
-
-In the Avro schema, you can define Records, Arrays, Enums, Unions, Maps and you can use primitive types like  String, Int, Boolean, Decimal, Timestamp, Date, and more.
-
-The [Avro schema and IDL specification document](https://avro.apache.org/docs/current/spec.html#Protocol+Declaration) describes all of the supported types.
-
- Let's add to the Employee schema and show some of the different types that Avro supports.
-
-
-***ACTION*** - EDIT `src/test/java/com/fenago/phonebook/EmployeeTestNoGen.java` and follow the instructions in the file.
-
-***ACTION*** - RUN EmployeeTestNoGen from the IDE
-
-***ACTION*** - CHANGE Change a test and leave out the firstName what happens?
-
-***ACTION*** - CHANGE Change a test and use a string for age what happens?
-
-
-## Working with more advanced schema
-
-#### More advanced schema - `src/main/avro/com/fenago/phonebook/Employee.avsc`
- ```javascript
- {"namespace": "com.fenago.phonebook",
-  "type": "record",
-  "name": "Employee",
-  "fields": [
-    {"name": "firstName", "type": "string"},
-    {"name": "nickName", "type": ["null", "string"], "default" : null},
-    {"name": "lastName", "type": "string"},
-    {"name": "age",  "type": "int"},
-    {"name": "emails", "default":[], "type":{"type": "array", "items": "string"}},
-    {"name": "phoneNumber",  "type":
-      [ "null",
-        { "type": "record",   "name": "PhoneNumber",
-        "fields": [
-          {"name": "areaCode", "type": "string"},
-          {"name": "countryCode", "type": "string", "default" : ""},
-          {"name": "prefix", "type": "string"},
-          {"name": "number", "type": "string"}
-        ]
-        }
-      ]
-    },
-    {"name":"status", "default" :"SALARY", "type": { "type": "enum", "name": "Status",
-              "symbols" : ["RETIRED", "SALARY", "HOURLY", "PART_TIME"]}
-    }
-  ]
-}
-```
-
-
-***ACTION*** - EDIT Employee.avsc and modify it to match the above code listing.
-
-***ACTION*** - RUN gradle build again to generate classes
-
-Avro record attributes are as follows:
-
-* name:  name of the record (required).
-* namespace: equates to packages or modules
-* doc: documentation for future user of this schema
-* aliases:  array aliases (alias names)
-* fields:  an array of fields
-
-Avro field attributes are as follows:
-
-* name:  name of the field (required)
-* doc: description of field (important for future usage)
-* type:  JSON object defining a schema, or a JSON string naming a record definition (required)
-* default: Default value for this field
-* order: specifies sort ordering of record (optional, ascending, descending, ignore)
- * aliases: array of alternate names
-
-The `doc` attribute is imperative for future usage as it documents what the fields and
-records are supposed to represent. Remember that this data can outlive systems that
-produced it. A self-documenting schema is critical for a robust system.
-
-The above has examples of default values, arrays, primitive types, Records within records,
-enums, and more.
-
-The PhoneNumber object gets generated as does the Status class.
-
-#### PhoneNumber record
-```java
-
-package com.fenago.phonebook;
-
-import org.apache.avro.specific.SpecificData;
-
-@SuppressWarnings("all")
-@org.apache.avro.specific.AvroGenerated
-public class PhoneNumber extends org.apache.avro.specific.SpecificRecordBase ...{
-  private static final long serialVersionUID = -3138777939618426199L;
-  public static final org.apache.avro.Schema SCHEMA$ =
-                   new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":...
-  public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
-   private java.lang.String areaCode;
-   private java.lang.String countryCode;
-   private java.lang.String prefix;
-   private java.lang.String number;
+        confluent local services stop
 
 ```
 
-#### Status enum
-```java
-package com.fenago.phonebook;
-@SuppressWarnings("all")
-@org.apache.avro.specific.AvroGenerated
-public enum Status {
-  RETIRED, SALARY, HOURLY, PART_TIME  ;
-  ...
+2.  Destroy the data in the Confluent Platform instance with the
+    confluent local destroy command.
+	
 ```
-
-
-***ACTION*** - MODIFY Using solution and slides as a guide modify unit tests to use Status and PhoneNumber. Then run tests.
-
-
-#### Tips for using Avro with Kafka and Hadoop
-
-Avoid advanced Avro features which are not supported by polyglot language mappings.
-Think simple data transfer objects or structs. Don't use magic strings,  use enums
-instead as they provide better validation.
-
-Document all records and fields in the schema.
-Documentation is imperative for future usage. Documents what the fields and records
-represent.  A self-documenting schema is critical for a robust streaming system and Big Data.
-Don't use complex union types. Use Unions for nullable fields only and avoid using
-recursive types at all costs.
-
-Use reasonable field names and use them consistently with other records. Example,
-`employee_id` instead of `id` and then use `employee_id` in all other records that
-have a field that refer to the `employee_id` from Employee.
-
-
-## Conclusion
-
-Avro provides fast, compact data serialization. It supports data structures like Records, Maps, Array, and basic types.
-You can use it direct or use Code Generation.
-Avro allows schema support to Kafka which we will demonstrate in another article.
+        confluent local destroy
+```
