@@ -105,7 +105,7 @@ that will be used by Kafka clients and brokers. You can follow the link
 broker keys and certificate, the
 link <https://kafka.apache.org/documentation/#security_ssl_ca> to create
 your own certificate authority, and the
-link [https://kafka.apache.org/documentation/\#security\_ssl\_signing](https://kafka.apache.org/documentation/#security_ssl_signing%C2%A0){.ulink} to
+link [https://kafka.apache.org/documentation/\#security\_ssl\_signing](https://kafka.apache.org/documentation/#security_ssl_signing%C2%A0) to
 sign the certificates. You should perform the same activity for clients
 (producer and consumer applications) as well. Once you are done creating
 certificates, you can enable Kafka SSL using the following steps.
@@ -163,7 +163,7 @@ ssl.truststore.password = truststore_password
 
 Some other additional properties like security.inter.broker.protocol can
 also be used. Use the
-link [https://kafka.apache.org/documentation/\#security\_configbroker ](https://kafka.apache.org/documentation/#security_configbroker){.ulink}for
+link [https://kafka.apache.org/documentation/\#security\_configbroker ](https://kafka.apache.org/documentation/#security_configbroker)for
 additional properties.
 
 
@@ -805,7 +805,7 @@ see their meaning:
 Ranger is easy to configure and provides a nice user interface. You can
 install Ranger and try using this policy creation. All the diagram
 reference for Ranger is taken
-from [https://cwiki.apache.org/confluence/display/RANGER](https://cwiki.apache.org/confluence/display/RANGER/Index){.ulink}. 
+from [https://cwiki.apache.org/confluence/display/RANGER](https://cwiki.apache.org/confluence/display/RANGER/Index). 
 
 
 

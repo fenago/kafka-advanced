@@ -136,7 +136,7 @@ acknowledgement for all bolts.
 
 Detailed explanation of the internals of Storm are beyond the scope of
 this course. You may refer to Apache Storm documentation at
-[http://Storm.apache.org](http://storm.apache.org/){.ulink}. Our focus
+[http://Storm.apache.org](http://storm.apache.org/). Our focus
 will be on how we can leverage Apache Kafka with Apache Storm to build
 real-time processing application. 
 
