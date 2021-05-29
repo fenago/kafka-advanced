@@ -1,7 +1,7 @@
 
 # LAB Stream 1-2 Custom Word Count Example
 
-Welcome to the session Stream 1-2 lab. The work for this lab is done in `~/kafka-advanced/stream-lab2`.
+Welcome to the session Stream 1-2 lab. The work for this lab is done in `~/kafka-advanced/labs/Lab13-2`.
 In this lab, you are going to run a custom Word Count Example.
 You must write the java code 
 You create two new Kafka topics, one called `word-count-input` and the other `word-count-output`
@@ -15,7 +15,7 @@ and then run the Word Count Demo
 
 ## ***ACTION*** - REVIEW `create-topics.sh`
 
-#### ~/kafka-advanced/stream-lab2/bin/create-topics.sh
+#### ~/kafka-advanced/labs/Lab13-2/bin/create-topics.sh
 
 ```sh
 #!/usr/bin/env bash
@@ -46,7 +46,7 @@ Only 1 broker is necessary.
 ## ***ACTION*** - RUN `create-topics.sh` as follows:
 
 ```sh
-$ cd ~/kafka-advanced/stream-lab2/bin          
+$ cd ~/kafka-advanced/labs/Lab13-2/bin          
 $ ./create-topics.sh                        
 Created topic "word-count-input".   
 Created topic "word-count-output".   
@@ -59,7 +59,7 @@ Now add data to the input topic by starting a console producer and entering data
 
 ## ***ACTION*** - REVIEW `start-producer-console-input.sh`
 
-#### ~/kafka-advanced/stream-lab2/bin/start-producer-console-input.sh
+#### ~/kafka-advanced/labs/Lab13-2/bin/start-producer-console-input.sh
 
 ```sh
 #!/usr/bin/env bash
@@ -72,7 +72,7 @@ kafka/bin/kafka-console-producer.sh --broker-list localhost:9092 --topic streams
 ## ***ACTION*** - RUN `start-producer-console-input.sh`
 
 ```sh
-$ cd ~/kafka-advanced/stream-lab2
+$ cd ~/kafka-advanced/labs/Lab13-2
 $ ./start-producer-console-input.sh
 >
 ```
@@ -90,7 +90,7 @@ Enter the following 3 lines of data. Ctrl-C to stop the console.
 
 Run a console consumer against the input topic to verify the data is there.
 
-#### ~/kafka-advanced/stream-lab2/start-consumer-console-input.sh
+#### ~/kafka-advanced/labs/Lab13-2/start-consumer-console-input.sh
 ```sh
 #!/usr/bin/env bash
 cd ~/kafka-advanced
@@ -101,7 +101,7 @@ kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic st
 
 ## ***ACTION*** - RUN `start-consumer-console-input.sh`
 ```
-$ cd ~/kafka-advanced/stream-lab2/bin
+$ cd ~/kafka-advanced/labs/Lab13-2/bin
 $ ./start-consumer-console-input.sh
 > stock streams MSFT
 > stock data AAPL
@@ -119,9 +119,9 @@ Notice a few things about this consumer. These match the way the topic is popula
 * It has a message formatter specified.
 * It has key and value deserializers.
 
-## ***ACTION*** - EDIT `~/kafka-advanced/stream-lab2/bin/start-consumer-console-output.sh`, follow instructions in file.
+## ***ACTION*** - EDIT `~/kafka-advanced/labs/Lab13-2/bin/start-consumer-console-output.sh`, follow instructions in file.
 
-#### ~/kafka-advanced/stream-lab2/start-consumer-console-output.sh
+#### ~/kafka-advanced/labs/Lab13-2/start-consumer-console-output.sh
 ```sh
 #!/usr/bin/env bash
 cd ~/kafka-advanced
@@ -139,7 +139,7 @@ kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 \
 
 ## ***ACTION*** - RUN `start-consumer-console-output.sh`
 ```
-$ cd ~/kafka-advanced/stream-lab2/bin
+$ cd ~/kafka-advanced/labs/Lab13-2/bin
 $ ./start-consumer-console-output.sh
 ```
 
@@ -147,7 +147,7 @@ There will be no output until the demo code runs. Keep this window open so you c
 
 ## Create and Run the Custom Word Count
 
-## ***ACTION*** - EDIT `~/kafka-advanced/stream-lab2/WordCount.java`, follow instructions in file.
+## ***ACTION*** - EDIT `~/kafka-advanced/labs/Lab13-2/WordCount.java`, follow instructions in file.
 
 ## ***ACTION*** - RUN `WordCount`
 Run the java main.
