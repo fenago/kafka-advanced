@@ -29,7 +29,7 @@ public class KafkaReceiverWordCountJava {
         String groupName = "stream";
         int numThreads = 3;
         String topicsName = "test1";
-        SparkConf sparkConf = new SparkConf().setAppName("WordCountKafkaStream");
+        SparkConf sparkConf = new SparkConf().setAppName("WordCountKafkaStream").setMaster("local[2]");
 
         JavaStreamingContext javaStreamingContext = new JavaStreamingContext(sparkConf, new Duration(5000));
 
