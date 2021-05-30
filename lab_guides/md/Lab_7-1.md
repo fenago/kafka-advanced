@@ -107,19 +107,19 @@ monitoring production data pipelines and event streaming applications.
 
 2.  Click the **controlcenter.cluster** tile.
 
-    [![../\_images/c3-landing-page.png](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-landing-page.png)](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-landing-page.png)
+    [![../\_images/c3-landing-page.png](./images/c3-landing-page.png)](./images/c3-landing-page.png)
 
 3.  In the navigation bar, click **Topics** to open the topics list, and
     then click **Add a topic**.
 
-    [![../\_images/c3-create-topic.png](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-create-topic.png)](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-create-topic.png)
+    [![../\_images/c3-create-topic.png](./images/c3-create-topic.png)](./images/c3-create-topic.png)
 
 4.  In the Topic name field, specify `pageviews`{.docutils .literal
     .notranslate} and click **Create with defaults**.
 
     Note that topic names are case-sensitive.
 
-    [![../\_images/c3-create-topic-name.png](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-create-topic-name.png)](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-create-topic-name.png)
+    [![../\_images/c3-create-topic-name.png](./images/c3-create-topic-name.png)](./images/c3-create-topic-name.png)
 
 5.  In the navigation bar, click **Topics** to open the topics list, and
     then click **Add a topic**.
@@ -163,8 +163,7 @@ in the Troubleshooting section.
         To narrow displayed connectors, click **Filter by category** and
         click **Sources**.
 
-    5.  In the **Name** field, enter `datagen-pageviews`{.docutils
-        .literal .notranslate} as the name of the connector.
+    5.  In the **Name** field, enter `datagen-pageviews` as the name of the connector.
 
     6.  Enter the following configuration values:
 
@@ -181,7 +180,7 @@ in the Troubleshooting section.
 
     8.  Review the connector configuration and click **Launch**.
 
-        [![../\_images/connect-review-pageviews.png](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/connect-review-pageviews.png)](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/connect-review-pageviews.png)
+[![../\_images/connect-review-pageviews.png](./images/connect-review-pageviews.png)](./images/connect-review-pageviews.png)
 
 2.  Run the second instance of the [Kafka Connect
     Datagen](https://www.confluent.io/hub/confluentinc/kafka-connect-datagen/?_ga=2.152015097.1716755252.1622296314-281762746.1621876473)
@@ -203,8 +202,7 @@ in the Troubleshooting section.
         To narrow displayed connectors, click **Filter by category** and
         click **Sources**.
 
-    5.  In the **Name** field, enter `datagen-users`{.docutils .literal
-        .notranslate} as the name of the connector.
+    5.  In the **Name** field, enter `datagen-users` as the name of the connector.
 
     6.  Enter the following configuration values:
 
@@ -293,13 +291,13 @@ you created above.
 
 ```
 
-    3.  Click **Run query**. Your output should resemble:
+3.  Click **Run query**. Your output should resemble:
 
-        [![../\_images/c3-ksql-query-results-pageid.png](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-ksql-query-results-pageid.png)](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-ksql-query-results-pageid.png)
+![](./images/c3-ksql-query-results-pageid.png)
 
-        Click the **Card view** or **Table view** icon to change the output layout.
+Click the **Card view** or **Table view** icon to change the output layout.
 
-    4.  Create a persistent query (as a stream) that filters the
+4.  Create a persistent query (as a stream) that filters the
         `PAGEVIEWS` stream for female
         users. The results from this query are written to the Kafka
         `PAGEVIEWS_FEMALE` topic:
@@ -315,12 +313,11 @@ you created above.
 
 ```
 
-    5.  Click **Run query**. Your output should resemble:
+5.  Click **Run query**. Your output should resemble:
 
-        [![../\_images/c3-ksql-persist-query-pv-female-results.png](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-ksql-persist-query-pv-female-results.png)](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-ksql-persist-query-pv-female-results.png)
+![](./images/c3-ksql-persist-query-pv-female-results.png)
 
-    6.  Create a persistent query where `REGIONID`{.docutils .literal
-        .notranslate} ends with `8` or
+    6.  Create a persistent query where `REGIONID` ends with `8` or
         `9`. Results from this query
         are written to the Kafka topic named
         `pageviews_enriched_r8_r9` as
@@ -337,20 +334,18 @@ you created above.
 
 ```
 
-    7.  Click **Run query**. Your output should resemble:
+7.  Click **Run query**. Your output should resemble:
 
-        [![../\_images/c3-ksql-persist-query-pv-female89-results.png](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-ksql-persist-query-pv-female89-results.png)](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-ksql-persist-query-pv-female89-results.png)
+[![../\_images/c3-ksql-persist-query-pv-female89-results.png](./images/c3-ksql-persist-query-pv-female89-results.png)](./images/c3-ksql-persist-query-pv-female89-results.png)
 
-    8.  Create a persistent query that counts the `PAGEVIEWS`{.docutils
-        .literal .notranslate} for each `REGION`{.docutils .literal
-        .notranslate} and `GENDER`
+
+8.  Create a persistent query that counts the `PAGEVIEWS` for each `REGION` and `GENDER`
         combination in a [tumbling
         window](https://docs.confluent.io/platform/current/streams/developer-guide/dsl-api.html#windowing-tumbling)
         of 30 seconds when the count is greater than 1. Because the
         procedure is grouping and counting, the result is now a table,
         rather than a stream. Results from this query are written to a
-        Kafka topic called `PAGEVIEWS_REGIONS`{.docutils .literal
-        .notranslate}:
+        Kafka topic called `PAGEVIEWS_REGIONS`:
 
         Enter the following query in the editor:
 
@@ -365,24 +360,23 @@ you created above.
 
 ```
 
-    9.  Click **Run query**. Your output should resemble:
+9.  Click **Run query**. Your output should resemble:
 
-        [![../\_images/c3-ksql-persist-query-table-results.png](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-ksql-persist-query-table-results.png)](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-ksql-persist-query-table-results.png)
+![](./images/c3-ksql-persist-query-table-results.png)
 
-    10. Click the **Running queries** tab. You should see the following
-        persisted queries:
+10. Click the **Running queries** tab. You should see the following persisted queries:
 
-        -   PAGEVIEWS\_FEMALE
-        -   PAGEVIEWS\_FEMALE\_LIKE\_89
-        -   PAGEVIEWS\_REGIONS
+    -   PAGEVIEWS\_FEMALE
+    -   PAGEVIEWS\_FEMALE\_LIKE\_89
+    -   PAGEVIEWS\_REGIONS
 
-    11. Click the **Editor** tab. The **All available streams and
+11. Click the **Editor** tab. The **All available streams and
         tables** pane shows all of the streams and tables that you can
         access.
 
-        [![../\_images/c3-ksql-stream-table-view-1.png](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-ksql-stream-table-view-1.png)](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-ksql-stream-table-view-1.png)
+[![../\_images/c3-ksql-stream-table-view-1.png](./images/c3-ksql-stream-table-view-1.png)](./images/c3-ksql-stream-table-view-1.png)
 
-    12. In the **All available streams and tables** section, click
+12. In the **All available streams and tables** section, click
         **KSQL\_PROCESSING\_LOG** to view the stream’s schema, including
         nested data structures.
 
@@ -408,6 +402,7 @@ above in the previous section.
 
 6.  Click **Stop** to stop the output generation.
 
+
 Step 5: Monitor Consumer Lag
 -------------------------------
 
@@ -428,11 +423,7 @@ Step 6: Stop Confluent Platform
 When you are done working with the local install, you can stop Confluent
 Platform.
 
-1.  Stop Confluent Platform using the [Confluent
-    CLI](https://docs.confluent.io/confluent-cli/current/index.html)
-    [confluent local services connect
-    stop](https://docs.confluent.io/confluent-cli/current/command-reference/local/services/connect/confluent_local_services_connect_stop.html)
-    command.
+1.  Stop Confluent Platform using the Confluent CLI.
 	
 ```
         confluent local services stop
