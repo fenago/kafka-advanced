@@ -1,5 +1,5 @@
 
 **/confluent-6.1.1
 **/kafka/logs/*
-./kafka/
-./kafka_old/
+kafka/
+kafka_old/
