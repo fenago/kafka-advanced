@@ -13,7 +13,7 @@ public class KafkaSampleProducer {
 
 		// List of kafka borkers. Complete list of brokers is not required as
 		// the producer will auto discover the rest of the brokers.
-		props.put("bootstrap.servers", "10.191.208.89:9092");
+		props.put("bootstrap.servers", "localhost:9092");
 		props.put("batch.size", 1);
 		// Serializer used for sending data to kafka. Since we are sending string,
 		// we are using StringSerializer.

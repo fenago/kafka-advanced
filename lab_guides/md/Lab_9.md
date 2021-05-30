@@ -693,7 +693,12 @@ Verify the producer record using the console producer. Run the following
 command on the Kafka cluster:
 
 ```
-Kafka-console-consumer --zookeeper localhost:2181 --topic iprecord --from-beginning
+cd ~/kafka-advanced
+
+kafka/bin/kafka-console-consumer.sh \
+    --bootstrap-server localhost:9092 \
+    --topic iprecord \
+    --from-beginning
 ```
 
 Remember that we are producing multiple records by changing the IP

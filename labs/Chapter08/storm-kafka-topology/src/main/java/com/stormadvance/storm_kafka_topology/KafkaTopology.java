@@ -15,7 +15,7 @@ public class KafkaTopology {
 	public static void main(String[] args) {
 		try {
 			// zookeeper hosts for the Kafka cluster
-			BrokerHosts zkHosts = new ZkHosts("10.191.208.89:2183");
+			BrokerHosts zkHosts = new ZkHosts("localhost:2183");
 
 			// Create the KafkaSpout configuartion
 			// Second argument is the topic name

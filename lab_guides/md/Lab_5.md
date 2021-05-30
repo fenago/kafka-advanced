@@ -415,7 +415,7 @@ public class KafkaWordCountJava {
         String groupName = "stream";
         int numThreads = 3;
         String topicsName = "test";
-        SparkConf SparkConf = new SparkConf().setAppName("WordCountKafkaStream");
+        SparkConf SparkConf = new SparkConf().setAppName("WordCountKafkaStream").setMaster("local[2]");
 
         JavaStreamingContext javaStreamingContext = new JavaStreamingContext(SparkConf, new Duration(5000));
 
@@ -585,7 +585,7 @@ public class JavaDirectKafkaWordCount {
         String brokers = "localhost:9092";
         String topics = "test";
 
-        SparkConf SparkConf = new SparkConf().setAppName("DirectKafkaWordCount");
+        SparkConf SparkConf = new SparkConf().setAppName("DirectKafkaWordCount").setMaster("local[2]");
         JavaStreamingContext javaStreamingContext = new JavaStreamingContext(SparkConf, Durations.seconds(2));
 
         Set<String> topicsSet = new HashSet<>(Arrays.asList(topics.split(",")));
@@ -1056,44 +1056,6 @@ public class CacheIPLookup implements IIPScanner, Serializable {
 ```
 
 
-
-
-#### Expose hive table
-
-
-
-We will create hive table over base directory where a streaming record
-is getting pushed on HDFS. This will help us track the number of fraud
-records being generated over time:
-
-```
-hive> create database fenago;
-
-hive> create external table fenago.teststream (iprecords STRING) LOCATION '/user/fenago/streaming/fraudips';
-```
-
-You can also expose hive tables on top of the incoming data which is
-being pushed to Kafka topic in order to track the percentage of IPs
-being detected as fraud from an overall record. Create one more table
-and add the following line to your streaming application explained
-later:
-
-```
-ipRecords.dstream().saveAsTextFiles("hdfs://localhost:8020/user/fenago/streaming/iprecords", "");
-```
-
-Also, create the following table in hive: 
-
-```
-create external table fenago.iprecords(iprecords STRING) LOCATION '/user/fenago/streaming/iprecords';
-```
-
-Remember, we can also use `SqlContext` to push data to hive,
-but for this use case we made it very simple.
-
-
-
-
 #### Streaming code
 
 
@@ -1162,7 +1124,8 @@ public class FraudDetectionApp {
             }
         });
 
-        fraudIPs.dstream().saveAsTextFiles("hdfs://localhost:8020/user/fenago/streaming/fraudips", "");
+        DStream<String> fraudDstream = fraudIPs.dstream();
+        fraudDstream.saveAsTextFiles("FraudRecord", "");
 
         javaStreamingContext.start();
         javaStreamingContext.awaitTermination();
@@ -1173,11 +1136,10 @@ public class FraudDetectionApp {
 Run the application using the following command: 
 
 ```
-Spark-submit --class com.fenago.streaming.FraudDetectionApp --master yarn ip-fraud-detetion-1.0-SNAPSHOT-shaded.jar
+spark-submit --class com.fenago.streaming.FraudDetectionApp --master yarn ip-fraud-detetion-1.0-SNAPSHOT-shaded.jar
 ```
 
-Once the Spark Streaming application starts, run Kafka producer and
-check the records in respective hive tables.
+Once the Spark Streaming application starts, run Kafka producer and check the records.
 
 
 
