@@ -1,32 +1,10 @@
 <img align="right" src="./logo.png">
 
-# Lab 7.2: Kafka Schema Registry with Avro.
+# Lab 7.4: Kafka Schema Registry with Avro.
 
-Welcome to the session 7 lab 2. The work for this lab is done in `~/kafka-advanced/labs/lab7.2`.
 In this lab, you are going to use the Schema Registry with Avro.
 
-
-
-
-
-
 ## Kafka Lab: Kafka, Avro Serialization and the Schema Registry
-
-Confluent Schema Registry stores Avro Schemas
-for Kafka producers and consumers. The Schema Registry and provides RESTful interface for
-managing Avro schemas It allows the storage of a history of schemas which are versioned.
-the ***Confluent Schema Registry*** supports checking schema compatibility for Kafka.
-You can configure compatibility setting which supports the evolution of schemas using Avro.
-Kafka Avro serialization project provides serializers. Kafka Producers and Consumers that
-use Kafka Avro serialization handle schema management and serialization of records using
-Avro and the Schema Registry. When using the ***Confluent Schema Registry***,  Producers
-don’t have to send schema just the schema id which is unique. The consumer uses the
-schema id to look up the full schema from the ***Confluent Schema Registry*** if not
-already cached.  Since you don't have to send the schema with each set of records,
-this saves time. Not sending the schema with each record or batch of records, speeds up
-the serialization as only the id of the schema is sent.
-
-
 
 This lab is going to cover what is the Schema Registry and cover why you want to use it
 with Kafka. We drill down into understanding Avro *schema evolution* and setting up and
@@ -50,43 +28,6 @@ a compatibility check is performed and if the two schemas don't match but are co
 the payload transformation happens via Avro Schema Evolution. Kafka records can have a `Key`
 and a `Value` and both can have a schema.
 
-### Schema Registry Operations
-The Schema Registry can store schemas for keys and values of Kafka records. It can also list
-schemas by subject. It can list all versions of a subject (schema). It can retrieve a schema
-by version or id. It can get the latest version of a schema. Importantly,  the Schema Registry can
-check to see if schema is compatible with a certain version.  There is a compatibility level
-(BACKWARDS, FORWARDS, FULL, NONE) setting for the  Schema Registry and an individual subject.
-You can manage schemas via a REST API with the Schema registry.
-
-### Schema Registry Schema Compatibility Settings
-***Backward compatibility*** means data written with older schema is readable with a newer schema.
-***Forward compatibility*** means data written with newer schema is readable with old schemas.
-***Full compatibility*** means a new version of a schema is backward and forward compatible.
-***None*** disables schema validation and it not recommended. If you set the level to none then Schema Registry just stores the schema and Schema will not be validated for compatibility at all.
-
-#### Schema Registry Config
-The Schema compatibility checks can is configured globally or per subject.
-
-The compatibility checks value is one of the following:
-
-* NONE - don’t check for schema compatibility
-* FORWARD - check to make sure last schema version is forward compatible with new schemas
-* BACKWARDS (default) - make sure new schema is backwards compatible with latest
-* FULL - make sure new schema is forwards and backwards compatible from latest to new and from new to latest
-
-### Schema Evolution
-If an Avro schema is changed after data has been written to store using an older version of that schema,
- then Avro might do a Schema Evolution when you try to read that data.
-
-From Kafka perspective, Schema evolution happens only during deserialization at Consumer (read).  If
-Consumer’s schema is different from Producer’s schema, then value or key is automatically modified
-during deserialization to conform to consumers reader schema if possible.
-
-Avro *schema evolution* is an automatic transformation of Avro schema between the consumer schema
-version and what the schema the producer put into the Kafka log.
-When Consumer schema is not identical to the Producer schema used to serialize the Kafka Record, then
-a data transformation is performed on the Kafka record's key or value. If the schemas match then
-no need to do a transformation
 
 ### Allowed Modification During Schema Evolution
 You can add a field with a default to a schema. You can remove a field that had a default value. You can
@@ -102,8 +43,15 @@ fields in your schema as this allows you to delete the field later. Never change
 When adding a new field to your schema, you have to provide a default value for the field.
 Don’t rename an existing field (use aliases instead). You can add an alias.
 
-Let's use an example to talk about this. The following example is from our
-`Avro tutorial`.
+Let's use an example to talk about this. The following example is from our `Avro tutorial`.
+
+
+### Lab Solution
+
+Complete solution for this lab is available in the following directory:
+
+`~/kafka-advanced/labs/Lab07-4`
+
 
 #### Employee example Avro Schema
 

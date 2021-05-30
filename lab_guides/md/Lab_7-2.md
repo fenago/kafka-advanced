@@ -1,12 +1,9 @@
+<img align="right" src="./logo.png">
 
 
-Lab 7. Using Kafka with Confluent Platform
+
+Lab 7-2. Playing with Avro using Schema Registry 
 -------------------------------------------------------
-
-
-Playing with Avro using Schema Registry 
--------------------------------------------------------
-
 
 
 Schema Registry allows you to store Avro schemas for both producers and
@@ -22,13 +19,6 @@ schema in cache and stores data with the schemas matching the schema ID.
 The consumer also uses the schema ID to read records from Kafka topic,
 wherein the Avro deserializer uses the schema ID to deserialize the
 record. 
-
-
-### Note
-
-The Schema Registry also supports schema compatibility where we can
-modify the setting of schema compatibility to support forward and
-backward compatibility. 
 
 
 Here is an example of Avro schema and producer:

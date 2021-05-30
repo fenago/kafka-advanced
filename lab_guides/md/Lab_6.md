@@ -1,3 +1,5 @@
+<img align="right" src="./logo.png">
+
 
 Lab 6. Building Storm Applications with Kafka
 ----------------------------------------------------------

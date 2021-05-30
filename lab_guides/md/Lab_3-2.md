@@ -2,11 +2,6 @@
 
 # Lab 3-2: Writing a Kafka Consumer in Java
 
-Welcome to the session 3 lab. The work for this lab is done in `~/kafka-advanced/labs/Lab03-2`.
-In this lab, you are going to create simple Java Kafka consumer.
-
-The latest version of this lab lives [here](https://github.com/fenago/kafka-advanced/tree/master/lab_guides).
-
 In this lab, you are going to create a simple *Kafka Consumer*.
 This consumer consumes messages from the Kafka Producer you wrote in the last lab.
 This lab demonstrates how to process records from a *Kafka topic* with a *Kafka Consumer*.
@@ -15,7 +10,13 @@ This lab describes how *Kafka Consumers* in the same group divide up and
 share partitions while each *consumer group* appears to get its own copy of the same data.
 
 
-____
+### Lab Solution
+
+Complete solution for this lab is available in the following directory:
+
+`~/kafka-advanced/labs/Lab03-2`
+
+
 
 ### Construct a Kafka Consumer
 

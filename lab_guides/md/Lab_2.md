@@ -1,18 +1,19 @@
 <img align="right" src="./logo.png">
 
 
-# Getting started with Kafka Lab
+## Getting started with Kafka Lab
 
 Let's do a simple lab showing how to use producers and consumers from the Kafka command line.
 
-These files should be setup on your lab environment. You do the work for this lab
-in the directory `~/kafka-advanced/labs/Lab2`.
-You can find the latest versions of the instructions for
-Lab1 [here](https://github.com/fenago/kafka-advanced/tree/master/lab_guides).
+
+### Lab Solution
+
+Complete solution for this lab is available in the following directory:
+
+`cd ~/kafka-advanced/labs/Lab02`
 
 
-
-Next, we are going to run *ZooKeeper* and then run *Kafka Server/Broker*.
+First, we are going to run *ZooKeeper* and then run *Kafka Server/Broker*.
 We will use some Kafka command line utilities, to create Kafka topics,
 send messages via a producer and consume messages from the command line.
 

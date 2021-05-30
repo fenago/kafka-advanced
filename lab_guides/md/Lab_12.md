@@ -1,3 +1,4 @@
+<img align="right" src="./logo.png">
 
 
 Lab 12. Securing Kafka
@@ -15,8 +16,6 @@ different security aspects of Apache Kafka and will cover the following
 topics:
 
 
--   An overview of securing Kafka
--   Wire encryption using SSL
 -   Kerberos SASL for authentication
 -   Understanding ACL and authorization
 -   Understanding Zookeeper authentication
@@ -24,73 +23,6 @@ topics:
 -   Best practices for Kafka security 
 
 
-
-An overview of securing Kafka 
----------------------------------------------
-
-
-
-Kafka is used as a centralized event data store, receiving data from
-various sources, such as micro services and databases.
-
-In any enterprise deployment of Kafka, security should be looked at from
-five paradigms. They are as follows:
-
-
--   [**Authentication**]: This
-    establishes[*who*] the client(producer or consumer) is
-    that trying to use Kafka services. Kafka has support for the
-    Kerberos authentication mechanism. 
--   [**Authorization**]: This establishes [*what kind of
-    permission*] the client (producer or consumer) has on
-    topics. Kafka has support for ACLs for authorization. Apache tools,
-    such as Ranger, can also be used for Kafka authorization.
--   [**Wire encryption**]: This ensures that any sensitive data
-    traveling over the network is encrypted and not in plain text. Kafka
-    has support for SSL communication between the client (producer or
-    consumer) and the broker. Even inter-broker communication can be
-    encrypted.
--   [**Encryption at rest**]: This ensures that
-    any sensitive data that is stored on the disk is encrypted. Kafka
-    does not have any direct support for encrypting data on the disk.
-    However, you can utilize OS level disk encryption techniques for the
-    same. There are lot of third party paid services for the same.
--   [**Auditing**]: This is to ensure that every user activity
-    is logged and analyzed for security compliance. Kafka logs form a
-    very useful tool for auditing. Apart from that, Apache Ranger also
-    provides auditing capabilities.
-
-
-The following diagram summarizes the different Kafka security paradigms:
-
-
-![](./images/14e60a00-f849-49fb-8e64-9e3dcffab940.png)
-
-
-
-Wire encryption using SSL 
------------------------------------------
-
-
-
-In Kafka, you can enable support for [**Secure Sockets Layer**]
-([**SSL**]) wire encryption. Any data communication over the
-network in Kafka can be SSL-wire encrypted. Therefore, you can encrypt
-any communication between Kafka brokers (replication) or between client
-and broker (read or write).
-
-The following diagram represents how SSL encryption works in Kafka:
-
-
-![](./images/816bac83-dcfc-44bc-b608-d4c7e4978e36.png)
-
-The preceding diagram depicts how communication between broker and
-client is encrypted. This is valid for both producer and consumer
-communications. Every broker or client maintains their keys and
-certificates. They also maintain [**truststores**] containing
-certificates for authentication. Whenever certificates are presented for
-authentication, they are verified against certificates stored in
-truststores of respective components.
 
 
 
@@ -211,55 +143,11 @@ ssl.key.password = key_password
 Kerberos SASL for authentication 
 ------------------------------------------------
 
-
-
 Kerberos is an authentication mechanism of clients or servers over
 secured network. It provides authentication without transferring the
 password over the network. It works by using time-sensitive tickets that
 are generated using symmetric key cryptography.
 
-It was chosen over the most-widely-used SSL-based authentication.
-Kerberos has the following advantages:
-
-
--   [**Better performance**]: Kerberos uses symmetric key
-    operations. This helps in faster authentication, which is different
-    from SSL key-based authentication.
--   [**Easy integration with Enterprise Identity
-    Server**]: Kerberos is one of the established
-    authentication mechanisms. Identity servers such as Active Directory
-    have support for Kerberos. In this way, services such as Kafka can
-    be easily integrated with centralized authentication servers.
--   [**Simpler user management**]: Creating, deleting, and
-    updating users in Kerberos is very simple. For example, removing a
-    user can be done by simply deleting the user from the centrally
-    managed Kerberos servers. For SSL authentication, certificates have
-    to be removed from all server truststores.
--   [**No passwords over the network**]: Kerberos is a secured
-    network authentication protocol that provides strong authentication
-    for client/server applications without transferring the password
-    over the network. Kerberos works by using time-sensitive tickets
-    that are generated using the symmetric key cryptography.
--   [**Scalable**]: It is KDC that maintains the passwords or
-    secret keys. This makes the system scalable for authenticating a
-    large number of entities as the entities only need to know their own
-    secret keys and set the appropriate key in KDC.
-
-
-Let\'s also understand how Kerberos authentication flows work in Kafka.
-They need to be looked at from different perspectives. There is a need
-to understand how services and clients are authenticated and how
-communication happens between authenticated clients and authenticated
-services. We also need to understand in detail how symmetric key
-cryptography works in Kerberos authentication and how passwords are not
-communicated over the network. 
-
-Services authenticate themselves with Kerberos during startup. During
-startup, Kafka services will authenticate with KDC directly using the
-service principal and key tab using configuration files. Similarly, it
-is essential for the end user to authenticate to Kerberos when it
-accesses Kafka service via client tool or other mechanism, using his/her
-own user principals.
 
 The following diagram represents how Kerberos authentication works:
 

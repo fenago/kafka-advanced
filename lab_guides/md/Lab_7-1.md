@@ -1,5 +1,9 @@
-Apache Kafka using Confluent Platform (Local)
--------------------------------------------------
+<img align="right" src="./logo.png">
+
+
+
+Lab 7-1. Using Kafka with Confluent Platform
+---------------------------------------------
 
 
 Use this quick start to get up and running with Confluent Platform and
@@ -13,79 +17,48 @@ queries on those topics. You then go to Control Center to monitor and
 analyze the streaming queries.
 
 
-Step 1: Download and Start Confluent Platform
------------------------------------------------------------------------------------------------------------------------------------
+Step 1: Start Confluent Platform
+----------------------------------
 
 
-1.  Go to the [downloads page](https://www.confluent.io/download/).
+1.  Open new terminal and go to following directory:
 
-2.  Select **Confluent Platform** and click **DOWNLOAD FREE**.
-
-    Tip
-
-    You can download a previous version from [Previous
-    Versions](https://www.confluent.io/previous-versions/).
-
-3.  Provide the following:
-
-    -   Email: Your email address
-    -   Deployment Type: `Manual Deployment`{.docutils .literal
-        .notranslate}
-    -   Type: `zip`
-
-4.  Click **DOWNLOAD FREE**.
-
-5.  Decompress the file. You should have the directories, such as
-    `bin` and `etc`.
+```
+cd /headless/kafka-advanced/confluent-6.1.1/bin
+```
 
 6.  Set the environment variable for the Confluent Platform directory.
 
-        `export CONFLUENT_HOME=<path-to-confluent>`
+        `export CONFLUENT_HOME=/headless/kafka-advanced/confluent-6.1.1`
 
-
-7.  Add the Confluent Platform `bin`
-    directory to your
-    [PATH](https://askubuntu.com/questions/720678/what-does-export-path-somethingpath-mean).
-
-        `export PATH=$PATH:$CONFLUENT_HOME/bin`
 
 
 8.  Install the [Kafka Connect
     Datagen](https://www.confluent.io/hub/confluentinc/kafka-connect-datagen/)
     source connector using the Confluent Hub client. This connector
     generates mock data for demonstration purposes and is not suitable
-    for production. [Confluent
-    Hub](https://docs.confluent.io/home/connect/confluent-hub/index.html)
+    for production. [ConfluentHub](https://docs.confluent.io/home/connect/confluent-hub/index.html)
     is an online library of pre-packaged and ready-to-install extensions
     or add-ons for Confluent Platform and Kafka.
 	
 ```
-        confluent-hub install \
-           --no-prompt confluentinc/kafka-connect-datagen:latest
+        confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:latest
 
 ```
 
-9.  Start Confluent Platform using the Confluent CLI [confluent local
-    services
-    start](https://docs.confluent.io/confluent-cli/current/command-reference/local/services/confluent_local_services_start.html)
-    command. This command starts all of the Confluent Platform
+9.  Start Confluent Platform using the Confluent CLI confluent local
+    services start command. This command starts all of the Confluent Platform
     components, including Kafka, ZooKeeper, Schema Registry, HTTP REST
     Proxy for Kafka, Kafka Connect, ksqlDB, and Control Center.
 
-    Important
-
-    The [confluent
-    local](https://docs.confluent.io/ccloud-cli/current/command-reference/index.html)
-    commands are intended for a single-node development environment and
-    are not suitable for a production environment. The data that are
-    produced are transient and are intended to be temporary. For
-    production-ready workflows, see [Install and Upgrade Confluent
-    Platform](https://docs.confluent.io/platform/current/installation/index.html#installation-overview).
 
 ```
 		confluent local services start
 
 ```
+
+<span style="color:red;">Run above command again if any of the following services fail to start.</span>
+
 
     Your output should resemble:
 
@@ -107,8 +80,10 @@ Step 1: Download and Start Confluent Platform
 
 ```
 
-Step 2: Create Kafka Topics[¶](https://docs.confluent.io/platform/current/quickstart/ce-quickstart.html#step-2-create-ak-topics "Permalink to this headline")
--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Step 2: Create Kafka Topics
+-----------------------------------------------------------------------------
 
 In this step, you create Kafka topics using [Confluent Control
 Center](https://docs.confluent.io/platform/current/control-center/index.html#control-center).
@@ -153,7 +128,7 @@ monitoring production data pipelines and event streaming applications.
     .notranslate} and click **Create with defaults**.
 
 Step 3: Install a Kafka Connector and Generate Sample Data
------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------
 
 In this step, you use Kafka Connect to run a demo source connector
 called `kafka-connect-datagen` that
@@ -171,8 +146,7 @@ in the Troubleshooting section.
 
 1.  Run the first instance of the [Kafka Connect
     Datagen](https://www.confluent.io/hub/confluentinc/kafka-connect-datagen/)
-    connector to produce Kafka data to the `pageviews`{.docutils
-    .literal .notranslate} topic in AVRO format.
+    connector to produce Kafka data to the `pageviews` topic in AVRO format.
 
     1.  In the navigation bar, click **Connect**.
 
@@ -245,8 +219,9 @@ in the Troubleshooting section.
 
     8.  Review the connector configuration and click **Launch**.
 
-Step 4: Create and Write to a Stream and Table using ksqlDB[¶](https://docs.confluent.io/platform/current/quickstart/ce-quickstart.html#step-4-create-and-write-to-a-stream-and-table-using-ksqldb "Permalink to this headline")
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Step 4: Create and Write to a Stream and Table using ksqlDB
+--------------------------------------------------------------
+
 
 Tip
 
@@ -265,18 +240,18 @@ In this step, you use ksqlDB to create a stream for the
 
 2.  Select the `ksqlDB` application.
 
-3.  Copy the following code into the editor window and click **Run
-    query** to create the `PAGEVIEWS`
+3.  Copy the following code into the editor window and click **Run query** to create the `PAGEVIEWS`
     stream. Stream names are not case-sensitive.
 
+
+```
         CREATE STREAM PAGEVIEWS
            (VIEWTIME BIGINT, USERID VARCHAR, PAGEID varchar)
            WITH (KAFKA_TOPIC='pageviews', VALUE_FORMAT='AVRO');
 
-    Copy
+```
 
-4.  Copy the following code into the editor window and click **Run
-    query** to create the `USERS`
+4.  Copy the following code into the editor window and click **Run query** to create the `USERS`
     table. Table names are not case-sensitive.
 
 
@@ -287,7 +262,8 @@ In this step, you use ksqlDB to create a stream for the
 
 ```
 
-### Write Queries[¶](https://docs.confluent.io/platform/current/quickstart/ce-quickstart.html#write-queries "Permalink to this headline")
+
+### Write Queries
 
 In this step, you create ksqlDB queries against the stream and the table
 you created above.
@@ -312,17 +288,16 @@ you created above.
         with the results limited to a maximum of three rows:
 
         Enter the following query in the editor:
-
+```
             SELECT PAGEID FROM PAGEVIEWS EMIT CHANGES LIMIT 3;
 
-        Copy
+```
 
     3.  Click **Run query**. Your output should resemble:
 
         [![../\_images/c3-ksql-query-results-pageid.png](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-ksql-query-results-pageid.png)](./Quick%20Start%20for%20Apache%20Kafka%20using%20Confluent%20Platform%20(Local)%20_%20Confluent%20Documentation_files/c3-ksql-query-results-pageid.png)
 
-        Click the **Card view** or **Table view** icon to change the
-        output layout.
+        Click the **Card view** or **Table view** icon to change the output layout.
 
     4.  Create a persistent query (as a stream) that filters the
         `PAGEVIEWS` stream for female
@@ -331,13 +306,14 @@ you created above.
 
         Enter the following query in the editor:
 
+```
             CREATE STREAM PAGEVIEWS_FEMALE
                AS SELECT USERS.USERID AS USERID, PAGEID, REGIONID
                FROM PAGEVIEWS LEFT JOIN USERS ON PAGEVIEWS.USERID = USERS.USERID
                WHERE GENDER = 'FEMALE'
                EMIT CHANGES;
 
-        Copy
+```
 
     5.  Click **Run query**. Your output should resemble:
 
@@ -352,13 +328,14 @@ you created above.
 
         Enter the following query in the editor:
 
+```
             CREATE STREAM PAGEVIEWS_FEMALE_LIKE_89
                WITH (kafka_topic='pageviews_enriched_r8_r9', value_format='AVRO')
                AS SELECT * FROM PAGEVIEWS_FEMALE
                WHERE REGIONID LIKE '%_8' OR REGIONID LIKE '%_9'
                EMIT CHANGES;
 
-        Copy
+```
 
     7.  Click **Run query**. Your output should resemble:
 
@@ -377,6 +354,7 @@ you created above.
 
         Enter the following query in the editor:
 
+```
             CREATE TABLE PAGEVIEWS_REGIONS
                AS SELECT GENDER, REGIONID , COUNT(*) AS NUMUSERS
                FROM PAGEVIEWS LEFT JOIN USERS ON PAGEVIEWS.USERID = USERS.USERID
@@ -385,7 +363,7 @@ you created above.
                HAVING COUNT(*) > 1
                EMIT CHANGES;
 
-        Copy
+```
 
     9.  Click **Run query**. Your output should resemble:
 
@@ -408,13 +386,12 @@ you created above.
         **KSQL\_PROCESSING\_LOG** to view the stream’s schema, including
         nested data structures.
 
-### Run Queries[¶](https://docs.confluent.io/platform/current/quickstart/ce-quickstart.html#run-queries "Permalink to this headline")
+### Run Queries
 
 In this step, you run the ksqlDB queries you save as streams and tables
 above in the previous section.
 
-1.  In the **Streams** tab, select the `PAGEVIEWS_FEMALE`{.docutils
-    .literal .notranslate} stream.
+1.  In the **Streams** tab, select the `PAGEVIEWS_FEMALE` stream.
 
 2.  Click **Query stream**.
 
@@ -431,22 +408,21 @@ above in the previous section.
 
 6.  Click **Stop** to stop the output generation.
 
-Step 5: Monitor Consumer Lag[¶](https://docs.confluent.io/platform/current/quickstart/ce-quickstart.html#step-5-monitor-consumer-lag "Permalink to this headline")
-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Step 5: Monitor Consumer Lag
+-------------------------------
 
 1.  In the navigation bar, click **Consumers** to view the consumers
     created by ksqlDB.
 
 2.  Click the consumer group ID to view details for the
-    `_confluent-ksql-default_query_CSAS_PAGEVIEWS_FEMALE_5`{.docutils
-    .literal .notranslate} consumer group.
+    `_confluent-ksql-default_query_CSAS_PAGEVIEWS_FEMALE_5` consumer group.
 
     From the page, you can see the consumer lag and consumption values
     for your streaming query.
 
 
 Step 6: Stop Confluent Platform
-------------------------------------------------------------------------------------------------
+---------------------------------
 
 
 When you are done working with the local install, you can stop Confluent

@@ -34,6 +34,13 @@ suggests using numbers 1 through 15 for most frequently used fields
 because it takes one byte to encode them.
 
 
+### Lab Solution
+
+Complete solution for this lab is available in the following directory:
+
+`~/kafka-advanced/labs/Lab11`
+
+
 Running a local Kafka cluster
 =============================
 

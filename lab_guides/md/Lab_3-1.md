@@ -14,7 +14,14 @@ Later, you will send records asynchronously.
 
 
 
-____
+### Lab Solution
+
+Complete solution for this lab is available in the following directory:
+
+`cd ~/kafka-advanced/labs/Lab03-1`
+
+
+
 ## Create Replicated Kafka Topic
 
 Next, you need to create a replicated topic.

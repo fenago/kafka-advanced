@@ -3,8 +3,6 @@
 
 ### Lab 10: Kafka Cluster Deployment
 
-The work for this lab is done in `~/kafka-advanced/labs/Lab10`.
-
 
 In this lab, we are going to run many Kafka Nodes on our development machine so that you
 will need at least 16 GB of RAM for local dev machine. You can run just two servers if
@@ -16,7 +14,7 @@ But, when we put all of our consumers in the same group, Kafka will load share t
 to the consumers in the same group (more like a queue than a topic in a traditional MOM sense).
 
 
-If not already running, then start up ZooKeeper (`./run-zookeeper.sh` from the first lab).
+If not already running, then start up ZooKeeper (`./run-zookeeper.sh` ).
 Also, shut down Kafka from the first tutorial (use kill or CTRL-C from the terminal which is running Kafka).
 
 Next, you need to copy server properties for three brokers
@@ -26,16 +24,23 @@ servers up using these properties, and then start the servers. Lastly, we create
 to demonstrate Kafka consumer failover, and Kafka broker failover.
 
 
+### Lab Solution
+
+Complete solution for this lab is available in the following directory:
+
+`~/kafka-advanced/labs/Lab10`
+
+
 <br />
 
 ### Create three new Kafka server-n.properties files
 
 In this section, we will copy the existing Kafka `server.properties` to `server-0.properties`, `server-1.properties`,
 and `server-2.properties`.
-Then we change `server-0.properties` to set `log.dirs` to `“./logs/kafka-0`.
+Then we change `server-0.properties` to set `log.dirs` to `"./logs/kafka-0`.
 Then we modify `server-1.properties` to set `port` to `9093`, broker `id` to `1`, and `log.dirs`
-to `“./logs/kafka-1”`.
-Lastly modify  `server-2.properties` to use `port` 9094, broker `id` 2, and `log.dirs` `“./logs/kafka-2”`.
+to `"./logs/kafka-1"`.
+Lastly modify  `server-2.properties` to use `port` 9094, broker `id` 2, and `log.dirs` `"./logs/kafka-2"`.
 
 You modify the port by modifying the listeners `listeners=PLAINTEXT://localhost:9092`.
 

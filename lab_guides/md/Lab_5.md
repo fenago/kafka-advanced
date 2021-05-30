@@ -1,15 +1,9 @@
-=
+<img align="right" src="./logo.png">
+
 
 Lab 5. Building Spark Streaming Applications with Kafka
 --------------------------------------------------------------------
 
-
-
-We have gone through all the components of Apache Kafka and different
-APIs that can be used to develop an application which can use Kafka. In
-the previous lab, we learned about Kafka producer, brokers, and
-Kafka consumers, and different concepts related to best practices for
-using Kafka as a messaging system.
 
 In this lab, we will cover Apache Spark, which is distributed in
 memory processing engines and then we will walk through Spark Streaming
@@ -19,243 +13,23 @@ In short, we will cover the following topics:
 
 
 -   Introduction to Spark
--   Internals of Spark such as RDD
--   Spark Streaming
 -   Receiver-based approach (Spark-Kafka integration)
 -   Direct approach (Spark-Kafka integration)
 -   Use case (Log processing)
 
 
+### Lab Solution
 
-Introduction to Spark  
---------------------------------------
+Complete solution for this lab is available in the following directory:
 
-
-
-Apache Spark is distributed in-memory data processing system. It
-provides rich set of API in Java, Scala, and Python. Spark API can be
-used to develop applications which can do batch and real-time data
-processing and analytics, machine learning, and graph processing of huge
-volumes of data on a single clustering platform.
-
-
-### Note
-
-Spark development was started in 2009 by a team at Berkeley\'s AMPLab
-for improving the performance of MapReduce framework.
-
-
-MapReduce is another distributed batch processing framework developed by
-Yahoo in context to Google research paper.
-
-What they found was that an application which involves an iterative
-approach to solving certain problems can be improvised by reducing disk
-I/O. Spark allows us to cache a large set of data in memory and
-applications which uses iterative approach of transformation can use
-benefit of caching to improve performance. However, the iterative
-approach is just a small example of what Spark provides; there are a lot
-of features in the current version which can help you solve complex
-problems easily. 
-
-
-
-### Spark architecture
-
-
-
-Like Hadoop, Spark also follows the master/slave architecture, master
-daemons called [**Spark drivers**], and multiple slave daemons
-called [**executors**].Spark runs on a cluster and uses cluster
-resource managers such as YARN, Mesos, or Spark Standalone cluster
-manager.
-
-Let\'s walk through each component:
-
-
-![](./images/9658515d-0805-465f-8d61-1cdf3d8e2d7f.png)
-
-Spark architecture
-
-Spark driver is master in the Spark architecture. It is the entry point
-of Spark application.
-
-Spark driver is responsible for the following tasks:
-
-
--   [**Spark Context**]: Spark Context is created in Spark
-    driver. The Context object is also responsible for
-    initializing application configuration.
-
--   [**DAG creation**]: Spark driver is also responsible for
-    creating lineage based on RDD operations and submitting that to DAG
-    scheduler. Lineage is [**direct acyclic graph**]
-    ([**DAG**]). This graph is now submitted to DAG scheduler.
-
-     
-
--   [**Stage Creation**]: DAG Scheduler in a driver is
-    responsible for creating stages of tasks based on a lineage graph.
-
--   [**Task Schedule and Execution**]: Once the stage of tasks
-    is created, task scheduler in the driver schedule this task using
-    cluster manager and control its execution.
-
--   [**RDD metadata**]: Driver maintains metadata of RDD and
-    their partition. In case of partition failure, Spark can easily
-    recompute the partition or RDD.
-
-
-[**Spark workers**]:Spark workers are responsible for managing
-executors running on its own machine and making communication with
-master node.
-
-They are listed as follows:
-
-
--   [**Backend process**]: Each worker node contains one or
-    more backend process. Each backend process is responsible for
-    launching the executor.
--   [**Executors**]: Each executor consists of a thread pool
-    where each thread is responsible for executing tasks in parallel.
-    Executors are responsible for reading, processing, and writing data
-    to a target location or file.
-
-
-There is a lot more to the internals of the Spark architecture but they
-are beyond the scope of this course. However, we are going to give a basic
-overview of Spark.
-
-
-
-#### Pillars of Spark
-
-
-
-The following are the important pillars of Spark:
-
-[**Resilient Distributed Dataset**] ([**RDD**]): RDD
-is the backbone of Spark. RDD is an immutable, distributed, fault
-tolerant collection of objects. RDDs are divided into logical partitions
-which are computed on different worker machines.
-
-In short, if you read any file in Spark, the data of that file will
-together form a single, large RDD. Any filtering operation on this RDD
-will produce a new RDD. Remember, RDD is immutable. This means that
-every time we modify the RDD, we have a new RDD. This RDD is divided
-into logical chunks known as partitions, which is a unit of parallelism
-in Spark. Each chunk or partition is processed on a separate distributed
-machine.
-
-The following diagram will give you a better idea about partitioning:
-
-
-![](./images/6c519181-bd5d-4b33-b6a7-b256f37002ec.png)
-
-RDD partitions
-
-There are two types of operations performed on RDD:
-
-
--   [**Transformation**]: Transformation on RDD produces
-    another RDD. Transformation means applying some filtering or
-    modifying the existing RDD. This produces another RDD.
-
--   [**Action**]: An action operation is responsible for the
-    execution trigger to Spark. Spark lazily evaluates RDD, which means
-    unless Spark encounters an action, it does not start execution.
-    Action refers to storing the result in a file, dumping the result to
-    the console, and so on.
-
-
-[**Directed acyclic graph (DAG):**] As discussed earlier, RDD
-can be transformed and this results in a new RDD, and this process can
-go too deep until we execute some action on it. Whenever an action is
-encountered, Spark creates a DAG and then submits it to Scheduler.
-Let\'s take the following example of a word count in Spark:
-
-```
-val conf = new SparkConf().setAppName("wordCount")
-val sc = new SparkContext(conf)
-val input = sc.textFile(inputFile)
-val words = input.flatMap(line => line.split(" "))
-val word_counts = words.map(word => (word, 1)).reduceByKey{case (x, y) => x + y}
-word_counts.saveAsTextFile(outputFile)
-```
-
-Once DAG is submitted, DAG scheduler creates stages of tasks based on
-operators. Task scheduler then launches this task with the help of
-cluster manager and worker nodes execute it.
-
-
-
-
-#### The Spark ecosystem
-
-
-
-As discussed previously, Spark can be used for various purposes, such as
-real-time processing, machine learning, graph processing, and so on.
-Spark consists of different independent components which can be used
-depending on use cases. The following figures give a brief idea about
-Spark\'s ecosystem:
-
-
-![](./images/1965e01f-7093-44ea-9c1e-c9f295601469.png)
-
-Spark ecosystem
-
-
--   [**Spark core**]: Spark core is the base and
-    generalized layer in Spark ecosystem. It contains basic and common
-    functionality which can be used by all the layers preceding it. This
-    means that any performance improvement on the core is automatically
-    applied to all the components preceding it. RDD, which is main
-    abstraction of Spark, is also part of core layer. It also contains
-    API which can be used to manipulate RDDs.
-
-
-Other common functional components such as task scheduler, memory
-management, fault tolerance, and the storage interaction layer are also
-part of Spark core.
-
-
--   [**Spark Streaming**]: Spark Streamingcan be used for
-    processing the real-time streaming data. We will be using this while
-    discussing integration of Spark with Kafka. Spark Streaming is not
-    real-time but its near real-time as it processes data in micro
-    batches.
--   [**Spark SQL**]: Spark SQL provides the API that can be
-    used to run SQL like queries on a structured RDD, like JSONRDD and
-    CSVRDD.
--   [**Spark MLlib**]: MLlib is used to create scalable machine
-    learning solutions over Spark. It provides a rich set of machine
-    learning algorithms such as regressing, classification, clustering,
-    filtering, and so on.
--   [**Spark GraphX**]: GraphX is used to deal with use cases
-    where graph processing plays a significant role, such as building a
-    recommendation engine for complex social networks. It provides a
-    rich set of efficient algorithms and their API which can be used to
-    deal with graphs.
-
+`~/kafka-advanced/labs/Lab05`
 
 
 Spark Streaming  
 --------------------------------
 
 
-
-Spark Streaming is built on top of Spark core engine and can be used to
-develop a fast, scalable, high throughput, and fault tolerant real-time
-system. Streaming data can come from any source, such as production
-logs, click-stream data, Kafka, Kinesis, Flume, and many other data
-serving systems. Spark streaming provides an API to receive this data
-and apply complex algorithms on top of it to get business value out of
-this data. Finally, the processed data can be put into any storage
-system. We will talk more about Spark Streaming integration with Kafka
-in this section.
-
-Basically, we have two approaches to integrate Kafka with Spark and we
-will go into detail on each:
+We have two approaches to integrate Kafka with Spark and we will go into detail on each:
 
 
 -   Receiver-based approach 
@@ -268,115 +42,141 @@ receiver-based approach.
 
 
 
-### Receiver-based integration
+**Apache Spark Installation**
+
+Make sure you have compatible java installed on your machine. You can verify it by typing command:
+
+``` 
+java -version
+```
+
+Apache spark setup has been downloaded on the following path and added to $PATH variable:
+
+```
+/headless/Downloads/spark-2.4.7-bin-hadoop2.7/
+```
+
+
+#### Start Master
+
+
+```
+cd /headless/Downloads/spark-2.4.7-bin-hadoop2.7/
+
+./sbin/start-master.sh
+
+```
+
+
+Inspect the response:
+
+``` 
+starting org.apache.spark.deploy.master.Master, logging to /headless/Downloads/spark-2.4.7-bin-hadoop2.7/logs/spark--org.apache.spark.deploy.master.Master-1-SandboxHost-637493255759703205.out
+```
+
+
+![](./images/start1.png)
 
 
 
-Spark uses Kafka high level consumer API to implement receiver. This is
-an old approach and data received from Kafka topic partitions are stored
-in Spark executors and processes by streaming jobs. However, Spark
-receiver replicates the message across all the executors, so that if one
-executor fails, another executor should be able to provide replicated
-data for processing. In this way, Spark receiver provides fault
-tolerance for data.
+**Logs Path**
 
-The following diagram will give you a good idea about the receiver-based
-integration:
+Now inspect the `.out` file
 
 
-![](./images/4a5bc228-a08c-404d-b1e6-783f952d83c7.png)
+```
+cd /headless/Downloads/spark-2.4.7-bin-hadoop2.7/logs/
 
-Spark receiver based approach
+ls -ltr
 
-Spark receivers only acknowledge to broker when message is successfully
-replicated into executors otherwise it will not commit offset of
-messages to Zookeeper and message will be treated as unread. This seems
-to handle guaranteed processing but there are still some cases where it
-won\'t.
+cat filename
+```
 
-
-### Note
-
-What would happen if Spark driver fails? When Spark driver fails, it
-also kills all the executors, which causes data to be lost which was
-available on executor. What if Spark receiver has already sent
-acknowledgment for those messages and has successfully committed offset
-to Zookeeper? You lose those records because you don\'t know how many of
-them have been processed and how many of them have not.
+![](./images/start9.png)
 
 
-To avoid such problems, we can use a few techniques. Let\'s discuss
-them:
+![](./images/start10.png)
 
 
--   [**Write-ahead Log (WAL**][**)**]: We have
-    discussed data loss scenarios when a driver fails. To avoid data
-    loss, Spark introduced write-ahead logs in version 1.2, which allows
-    you to save buffered data into a storage system, such as HDFS or S3.
-    Once driver is recovered and executors are up, it can simply read
-    data from WAL and process it.
+Once started, the master will print out a spark://HOST:PORT URL for itself, which you can use to connect workers to it, or pass as the “master” argument to SparkContext. You can also find this URL on the master’s web UI, which is http://localhost:8080 by default.
+
+Similarly, you can start one or more workers and connect them to the master via:
 
 
-However, we need to explicitly enable the write-ahead log while
-executing the Spark streaming application and write the logic for
-processing the data available in WAL.
+#### Start Worker
+
+Start Worker and register the worker with master
 
 
--   [**Exactly one Processing**]: WAL may guarantee you no data
-    loss but there can be duplicate processing of data by Spark jobs.
-    WAL does not guarantee exactly one processing; in other words, it
-    does not ensure avoiding duplicate processing of data.
+Open `http://localhost:8080/` in browser and copy the master url
 
 
-Let\'s take a scenario. Spark reads data from Kafka stores into executor
-buffer, replicates it to another executor for fault tolerance. Once the
-replication is done, it writes the same message to a write-ahead log and
-before sending acknowledgment back to Kafka driver it fails. Now when
-the driver recovers from failure, it will first process the data
-available in WAL and then will start consuming the messages from Kafka
-which will also replay all the messages which have not been acknowledged
-by Spark receiver but have been written to WAL and it leads to duplicate
-processing of message.
-
-
--   [**Checkpoint**]: Spark also provides a way to put
-    checkpoints in a streaming application. Checkpoint stores the
-    information about what has been executed, what is still in the queue
-    to be executed, configuration of application, and so on.
+![](./images/start2.png)
 
 
 
-### Note
+now start the worker and register it with master using following command
 
-Enabling checkpoints helps in providing an application\'s important
-metadata information which can be useful when driver recovers from
-failure to know what it has to process and what it has to with processed
-data. Checkpoint data is again stored into persistent systems, such as
-HDFS.
+`./sbin/start-slave.sh spark://hostname:7077`
+
+
+![](./images/start3.png)
+
+
+Worker webUI: `http://localhost:8081`
+
+![](./images/start4.png)
+
+
+
+Once you have started a worker, look at the master’s web UI (http://localhost:8080 by default). You should see the new node listed there, along with its number of CPUs and memory (minus one gigabyte left for the OS).
 
 
 
 
-#### Disadvantages of receiver-based approach
+**Logs Path**
+
+```
+cd /headless/Downloads/spark-2.4.7-bin-hadoop2.7/logs/
+
+ls -ltr
+
+cat filename
+```
+
+
+Now inspect the `.out` file, you will see the log like this:
+
+```
+2019-09-12 13:41:07 INFO Worker:2612 - Started daemon with process name: 144697@hostname 2019-09-12 13:41:07 INFO SignalUtils:54 - Registered signal handler for TERM 2019-09-12 13:41:07 INFO SignalUtils:54 - Registered signal handler for HUP 2019-09-12 13:41:07 INFO SignalUtils:54 - Registered signal handler for INT 2019-09-12 13:41:08 WARN NativeCodeLoader:62 - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable 2019-09-12 13:41:08 INFO SecurityManager:54 - Changing view acls to: user 2019-09-12 13:41:08 INFO SecurityManager:54 - Changing modify acls to: user 2019-09-12 13:41:08 INFO SecurityManager:54 - Changing view acls groups to: 2019-09-12 13:41:08 INFO SecurityManager:54 - Changing modify acls groups to: 2019-09-12 13:41:08 INFO SecurityManager:54 - SecurityManager: authentication disabled; ui acls disabled; users with view permissions: Set(user); groups with view permissions: Set(); users with modify permissions: Set(user); groups with modify permissions: Set() 2019-09-12 13:41:08 INFO Utils:54 - Successfully started service 'sparkWorker' on port 35633. 2019-09-12 13:41:08 INFO Worker:54 - Starting Spark worker 100.2.101.101:35633 with 32 cores, 124.6 GB RAM 2019-09-12 13:41:08 INFO Worker:54 - Running Spark version 2.3.4 2019-09-12 13:41:08 INFO Worker:54 - Spark home: /headless/Downloads/spark-2.4.7-bin-hadoop2.7 2019-09-12 13:41:08 INFO log:192 - Logging initialized @1510ms 2019-09-12 13:41:08 INFO Server:351 - jetty-9.3.z-SNAPSHOT, build timestamp: unknown, git hash: unknown 2019-09-12 13:41:08 INFO Server:419 - Started @1576ms 2019-09-12 13:41:08 INFO AbstractConnector:278 - Started ServerConnector@3f9e3902{HTTP/1.1,[http/1.1]}{0.0.0.0:8081} 2019-09-12 13:41:08 INFO Utils:54 - Successfully started service 'WorkerUI' on port 8081. 2019-09-12 13:41:08 INFO ContextHandler:781 - Started o.s.j.s.ServletContextHandler@1dc21140{/logPage,null,AVAILABLE,@Spark} 2019-09-12 13:41:08 INFO ContextHandler:781 - Started o.s.j.s.ServletContextHandler@5896ed4f{/logPage/json,null,AVAILABLE,@Spark} 2019-09-12 13:41:08 INFO ContextHandler:781 - Started o.s.j.s.ServletContextHandler@1d9a25f0{/,null,AVAILABLE,@Spark} 2019-09-12 13:41:08 INFO ContextHandler:781 - Started o.s.j.s.ServletContextHandler@1ad57f24{/json,null,AVAILABLE,@Spark} 2019-09-12 13:41:08 INFO ContextHandler:781 - Started o.s.j.s.ServletContextHandler@754605a4{/static,null,AVAILABLE,@Spark} 2019-09-12 13:41:08 INFO ContextHandler:781 - Started o.s.j.s.ServletContextHandler@c5e9251{/log,null,AVAILABLE,@Spark} 2019-09-12 13:41:08 INFO WorkerWebUI:54 - Bound WorkerWebUI to 0.0.0.0, and started athttp://hostname.com:8081 2019-09-12 13:41:08 INFO Worker:54 - Connecting to master hostname.com:7077... 2019-09-12 13:41:08 INFO ContextHandler:781 - Started o.s.j.s.ServletContextHandler@4ac9255f{/metrics/json,null,AVAILABLE,@Spark} 2019-09-12 13:41:08 INFO TransportClientFactory:267 - Successfully created connection to hostname.com/199.6.212.152:7077 after 40 ms (0 ms spent in bootstraps) 2019-09-12 13:41:09 INFO Worker:54 - Successfully registered with master spark://hostname.com:7077
+```
 
 
 
-The following are a few disadvantages of the receiver-based approach:
+Note that above scripts must be executed on the machine you want to run the Spark master on, not your local machine.
+
+You can optionally configure the cluster further by setting environment variables in conf/spark-env.sh. Create this file by starting with the conf/spark-env.sh.template, and copy it to on your worker machine for the settings to take effect. The following settings are available:
+
+![](./images/start12.png)
 
 
--   [**Throughput**]: Enabling write-ahead log and checkpoint
-    may cause you less throughput because time may be consumed in
-    writing data to HDFS. It\'s obvious to have low throughput when
-    there is lot of disk I/O involved.
--   [**Storage**]: We store one set of data in Spark executor
-    buffer and another set of the same data in write-ahead log HDFS. We
-    are using two stores to store the same data and storage needs may
-    vary, based on application requirements.
--   [**Data Loss**]: If a write-ahead log is not enabled, there
-    is a huge possibility of losing data and it may be very critical for
-    some important applications.
 
 
+#### Spark Shell
+
+Your cluster on single node is ready now, you can test it using running command **spark-shell**
+
+```
+[user@hostname ~]$ spark-shell --master spark://hostname:7077
+```
+
+
+Reload the master webui. You will get one running application:
+
+![](./images/start5.png)
+
+
+You can exit the spark shell using typing `:q`  then enter
 
 
 
@@ -463,46 +263,6 @@ public class KafkaWordCountJava {
 ```
 
 
-
-
-#### Scala example for receiver-based integration
-
-
-
-Here is an example on Scala:
-
-```
-import org.apache.Spark.SparkConf
-import org.apache.Spark.streaming.{Minutes, Seconds, StreamingContext}
-import org.apache.Spark.streaming.kafka._
-
-object KafkaWordCount {
-  def main(args: Array[String]) {
-    val zkQuorum:String="localhost:2181"
-    val group:String="stream"
-    val numThreads:String="3"
-    val topics:String="test"
-
-    val SparkConf = new SparkConf().setAppName("KafkaWordCount")
-    val ssc = new StreamingContext(SparkConf, Seconds(2))
-    ssc.checkpoint("WALCheckpoint")
-    val topicMap = topics.split(",").map((_, numThreads.toInt)).toMap
-    val lines = KafkaUtils.createStream(ssc, zkQuorum, group, topicMap).map(_._2)
-    val words = lines.flatMap(_.split(" "))
-    val wordCounts = words.map(x => (x, 1L))
-      .reduceByKeyAndWindow(_ + _, _ - _, Minutes(10), Seconds(2), 2)
-    wordCounts.print()
-
-    ssc.start()
-    ssc.awaitTermination()
-  }
-}
-```
-
-
-
-
-
 ### Direct approach
 
 
@@ -511,47 +271,6 @@ In receiver-based approach, we saw issues of data loss, costing less
 throughput using write-ahead logs and difficulty in achieving exactly
 one semantic of data processing. To overcome all these problems, Spark
 introduced the direct stream approach of integrating Spark with Kafka.
-
-Spark periodically queries messages from Kafka with a range of offsets,
-which in short we call [**batch**]. Spark uses a low level
-consumer API and fetches messages directly from Kafka with a defined
-range of offsets. Parallelism is defined by a partition in Kafka and the
-Spark direct approach takes advantage of partitions.
-
-The following illustration gives a little detail about parallelism:
-
-
-![](./images/137bbe22-9b65-465b-85d0-65bd659c95c5.png)
-
-Direct approach 
-
-Let\'s look at a few features of the direct approach:
-
-
--   [**Parallelism and throughput**]: The number of partitions
-    in RDD is defined by the number of partitions in a Kafka topic.
-    These RDD partitions read messages from Kafka topic partitions in
-    parallel. In short, Spark Streaming creates RDD partition equal to
-    the number of Kafka partitions available to consume data in parallel
-    which increases throughput.
--   [**No write-ahead log**]: Direct approach does not use
-    write-ahead log to avoid data loss. Write-ahead log was causing
-    extra storage and possibility of leading to duplicate data
-    processing in few cases. Direct approach, instead, reads data
-    directly from Kafka and commits the offset of processed messages to
-    checkpoint. In case of failure, Spark knows where to start.
--   [**No Zookeeper**]: By default, direct approach does not
-    use Zookeeper for committing offset consumed by Spark. Spark uses a
-    checkpoint mechanism to deal with data loss and to start execution
-    from the last execution point in case of failure. However, Zookeeper
-    based offset commit can be done using Curator Client.
--   [**Exactly one processing**]: Direct approach provides
-    opportunity to achieve exactly one processing, which means that no
-    data is processed twice and no data is lost. This is done using
-    checkpoint maintained by Spark Streaming application which tells
-    Spark Streaming application about where to start in case of failure.
-
-
 
 
 #### Java example for direct approach
@@ -620,43 +339,6 @@ public class JavaDirectKafkaWordCount {
 
 
 
-#### Scala example for direct approach
-
-
-
-Here is the Scala example for direct approach:
-
-```
-import kafka.serializer.StringDecoder
-import org.apache.Spark.SparkConf
-import org.apache.Spark.streaming.kafka.KafkaUtils
-import org.apache.Spark.streaming.{Seconds, StreamingContext}
-
-object DirectKafkaWordCount {
-  def main(args: Array[String]) {
-
-
-    val brokers: String = "localhost:2181"
-    val topics: String = "test"
-
-    val SparkConf = new SparkConf().setAppName("DirectKafkaWordCount")
-    val ssc = new StreamingContext(SparkConf, Seconds(2))
-    val topicsSet = topics.split(",").toSet
-    val kafkaParams = Map[String, String]("metadata.broker.list" -> brokers)
-    val messages = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](
-      ssc, kafkaParams, topicsSet)
-
-    val lines = messages.map(_._2)
-    val words = lines.flatMap(_.split(" "))
-    val wordCounts = words.map(x => (x, 1L)).reduceByKey(_ + _)
-    wordCounts.print()
-
-    ssc.start()
-    ssc.awaitTermination()
-  }
-}
-```
-
 
 
 Use case log processing - fraud IP detection 
@@ -680,7 +362,6 @@ hit the server. We will cover the use case in the following:
 -   [**Spark Streaming**]: Spark Streaming application will
     read records from Kafka topic and will detect IPs and domains which
     are suspicious. 
-
 
 
 
@@ -1133,11 +814,6 @@ public class FraudDetectionApp {
 }
 ```
 
-Run the application using the following command: 
-
-```
-spark-submit --class com.fenago.streaming.FraudDetectionApp --master yarn ip-fraud-detetion-1.0-SNAPSHOT-shaded.jar
-```
 
 Once the Spark Streaming application starts, run Kafka producer and check the records.
 
@@ -1148,13 +824,9 @@ Summary
 
 
 
-In this lab, we learned about Apache Spark, its architecture, and
-Spark ecosystem in brief. Our focus was on covering different ways we
+In this lab, we learned about Apache Spark. Our focus was on covering different ways we
 can integrate Kafka with Spark and their advantages and disadvantages.
 We also covered APIs for the receiver-based approach and direct
 approach. Finally, we covered a small use case about IP fraud detection
 through the log file and lookup service. You can now create your own
-Spark streaming application. In the next lab, we will cover another
-real-time streaming application, Apache Heron (successor of Apache
-Storm). We will cover how Apache Heron is different from Apache Spark
-and when to use which one.
+Spark streaming application.

@@ -1,15 +1,11 @@
 <img align="right" src="./logo.png">
 
 
-# Lab 7.1: Avro
-
-Welcome to the session 7 lab 1. The work for this lab is done in `~/kafka-advanced/labs/lab7.1`. In this lab, you are going to use Avro.
+# Lab 7.3: Avro
 
 
 
-
-
-## Avro Introduction for Big Data and Data Streaming Architectures
+### Avro Introduction for Big Data and Data Streaming Architectures
 
 Apache Avro™ is a data serialization system.
 Avro provides data structures, binary data format, container file format to
@@ -22,7 +18,7 @@ code generation. Avro needs less encoding as part of the data since it stores
 names and types in the schema reducing duplication. Avro supports the evolution
 of schemas.
 
-## Why Avro for Kafka and Hadoop?
+### Why Avro for Kafka and Hadoop?
 
 Avro supports direct mapping to JSON as well as a compact binary format.
 It is a very fast serialization format. Avro is widely used in the Hadoop ecosystem.
@@ -39,35 +35,9 @@ e.g., Cassandra has schemas REST/JSON was schema-less and IDL-less but not anymo
 API gateways, and RAML. Now the trend is more towards schemas that can evolve and Avro fits
 well in this space.
 
-### Avro Schema provides Future Proof Robustness
-Streaming architecture like Kafka supports decoupling by sending data in streams to an unknown number of consumers.
-Streaming architecture is challenging as Consumers and Producers evolve on different timelines.
-Producers send a stream of records that zero to many Consumers read.  Not only are
-there multiple consumers but data might end up in Hadoop or some other store
-and used for use cases you did not even imagine. Schemas help future proof your data and make
-it more robust. Supporting all use cases future (Big Data), past (older Consumers) and
-current use cases is not easy without a schema. Avro schema with its support for
-evolution is essential for making the data robust for streaming architectures like Kafka,
-and with the metadata that schema provides, you can reason on the data.  Having a schema
-provides robustness in providing meta-data about the data stored in Avro records which
-are self-documenting the data.
+- Avro Schema provides Future Proof Robustness
+- Avro provides future usability of data
 
-### Avro provides future usability of data
-Data record format compatibility is a hard problem to solve with streaming architecture
-and Big Data. Avro schemas are not a cure-all, but essential for documenting and modeling
-your data. Avro Schema definitions capture a point in time of what your data looked like when
-it recorded since the schema is saved with the data. Data will evolve. New fields are added.
-Since streams often get recorded in data lakes like Hadoop and those records can represent
-historical data, not operational data, it makes sense that data streams and data lakes have a
-less rigid, more evolving schema than the schema of the operational relational database or
-Cassandra cluster.  It makes sense to have a rigid schema for operational data, but not
-data that ends up in a data lake.
-
-With a streaming platform, consumers and producers can change all of the time and evolve
-quite a bit. Producers can have Consumers that they never know. You can’t test a Consumer
-that you don’t know. For agility sakes, you don’t want to update every Consumer every time
-a Producers adds a field to a Record. These types of updates are not feasible without
-support for Schema.
 
 
 ## Avro Schema
@@ -79,6 +49,14 @@ Avro data plus schema is fully self-describing data format.
 When Avro files store data it also stores schema. Avro RPC is also based on schema,
 and IDL. Part of the RPC protocol exchanges schemas as part of the handshake.
 Avro schemas and IDL are written in JSON.
+
+
+### Lab Solution
+
+Complete solution for this lab is available in the following directory:
+
+`~/kafka-advanced/labs/Lab07-3`
+
 
 Let's take a look at an example Avro schema.
 
@@ -496,9 +474,6 @@ public enum Status {
 
 #### Tips for using Avro with Kafka and Hadoop
 
-Avoid advanced Avro features which are not supported by polyglot language mappings.
-Think simple data transfer objects or structs. Don't use magic strings,  use enums
-instead as they provide better validation.
 
 Document all records and fields in the schema.
 Documentation is imperative for future usage. Documents what the fields and records
