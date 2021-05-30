@@ -7,8 +7,8 @@
 **Key Features**
 
 - Build efficient real-time streaming applications in Apache Kafka to process data streams of data
-- Master the core Kafka APIs to set up Apache Kafka clusters and start writing message producers and consumers
-- A comprehensive guide to help you get a solid grasp of the Apache Kafka concepts in Apache Kafka with pracitcalpractical examples
+- Master the core Kafka APIs to set up Apache Kafka cluster and start writing message producers and consumers
+- A comprehensive guide to help you get a solid grasp of the Apache Kafka concepts in Apache Kafka with practical examples
 
 **What You Will Learn**
 
@@ -17,12 +17,11 @@
 - Design effective streaming applications with Kafka using Spark, Storm &, and Heron
 - Understand the importance of a low -latency , high- throughput, and fault-tolerant messaging system
 - Make effective capacity planning while deploying your Kafka Application
-- Understand and implement the best security practices
 
 
 ### Labs
 
-1. Introduction to Messaging Systems
+1. Introduction to Messaging Systems (No Lab)
 2. Introducing Kafka the Distributed Messaging Platform
 3. Deep Dive into Kafka Producers
 4. Deep Dive into Kafka Consumers
@@ -32,14 +31,12 @@
 8. Building ETL Pipelines Using Kafka
 9. Building Streaming Applications Using Kafka Streams
 10. Kafka Cluster Deployment
-11. Using Kafka in Big Data Applications
+11. Working with Protobuf in Apache Kafka
 12. Securing Kafka
 13. Streaming Application Design Considerations
 
 		
 		
 ### About
-
-Apache Kafka is a popular distributed streaming platform that acts as a messaging queue or an enterprise messaging system. It lets you publish and subscribe to a stream of records, and process them in a fault-tolerant way as they occur.
 
 This course is a comprehensive guide to designing and architecting enterprise-grade streaming applications using Apache Kafka and other big data tools. It includes best practices for building such applications, and tackles some common challenges such as how to use Kafka efficiently and handle high data volumes with ease. This course first takes you through understanding the type messaging system and then provides a thorough introduction to Apache Kafka and its internal details. The second part of the course takes you through designing streaming application using various frameworks and tools such as Apache Spark, Apache Storm, and more. Once you grasp the basics, we will take you through more advanced concepts in Apache Kafka such as capacity planning and security.
