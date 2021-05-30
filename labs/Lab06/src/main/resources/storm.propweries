@@ -1,8 +1,0 @@
-zkhost = localhost:2181
-inputTopic =locinput1
-outputTopic=locoutput
-KafkaBroker =localhost:9092
-consumerGroup=id7
-metaStoreURI = thrift://localhost:9083
-dbName = default
-tblName = location
