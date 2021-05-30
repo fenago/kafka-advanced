@@ -56,7 +56,6 @@ public class JavaDirectKafkaWordCount {
         )
                 .reduceByKey((i1, i2) -> i1 + i2);
 
-        //wordCounts.dstream().saveAsTextFiles("hdfs://10.200.99.197:8020/user/chanchal.singh/wordCounts", "result");
         wordCounts.print();
         javaStreamingContext.start();
         javaStreamingContext.awaitTermination();

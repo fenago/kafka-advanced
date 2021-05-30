@@ -1090,7 +1090,7 @@ simultaneously. Our Topology consist of following component:
 zkhost = localhost:2181
 inputTopic =iprecord
 outputTopic=fraudip
-KafkaBroker =localhost:6667
+KafkaBroker =localhost:9092
 consumerGroup=id7
 metaStoreURI = thrift://localhost:9083
 dbName = default

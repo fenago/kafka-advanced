@@ -24,7 +24,7 @@ public class FraudDetectionApp {
         String brokers = "localhost:9092";
         String topics = "iplog";
         CacheIPLookup cacheIPLookup = new CacheIPLookup();
-        SparkConf sparkConf = new SparkConf().setAppName("IP_FRAUD");
+        SparkConf sparkConf = new SparkConf().setAppName("IP_FRAUD").setMaster("local[2]");
         JavaStreamingContext javaStreamingContext = new JavaStreamingContext(sparkConf, Durations.seconds(2));
 
         Set<String> topicsSet = new HashSet<>(Arrays.asList(topics.split(",")));

@@ -2,13 +2,11 @@
 # Lab 1.2 Getting started with Kafka cluster
 ## Understanding Kafka Failover
 
-Welcome to session 1 lab 2.
+
 The work for this lab is done in `~/kafka-advanced/lab1.2`.
 This Kafka lab picks up right where the first lab left off.
 The first lab has instructions on how to run ZooKeeper and use Kafka utils.
-Please refer to Kafka [course notes](https://github.com/fenago/kafka-advanced/tree/master/lab_guides)
-for any changes. The latest version of this lab instructions can be found
-[here](https://github.com/fenago/kafka-advanced/tree/master/lab_guides).
+
 
 In this lab, we are going to run many Kafka Nodes on our development machine so that you
 will need at least 16 GB of RAM for local dev machine. You can run just two servers if

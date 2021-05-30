@@ -1127,7 +1127,7 @@ public class FraudDetectionApp {
     private static void main(String[] args) throws Exception {
         PropertyReader propertyReader = new PropertyReader();
         CacheIPLookup cacheIPLookup = new CacheIPLookup();
-        SparkConf SparkConf = new SparkConf().setAppName("IP_FRAUD");
+        SparkConf SparkConf = new SparkConf().setAppName("IP_FRAUD").setMaster("local[2]");
         JavaStreamingContext javaStreamingContext = new JavaStreamingContext(SparkConf, Durations.seconds(3));
 
         Set<String> topicsSet = new HashSet<>(Arrays.asList(propertyReader.getPropertyValue("topic").split(",")));
