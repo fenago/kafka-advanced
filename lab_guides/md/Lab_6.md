@@ -6,10 +6,7 @@ Lab 6. Building Storm Applications with Kafka
 
 cd ~/kafka-advanced
 
-kafka/bin/kafka-topics.sh --create \
-  --zookeeper localhost:2181 \
-  --replication-factor 1 --partitions 1 \
-  --topic new_topic
+kafka/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic new_topic
 
 
 
