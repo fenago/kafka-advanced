@@ -20,11 +20,15 @@ The consumer also uses the schema ID to read records from Kafka topic,
 wherein the Avro deserializer uses the schema ID to deserialize the
 record. 
 
+Open new terminal and go to following directory:
+
+`cd /headless/kafka-advanced/confluent-6.1.1/bin`
+
 
 Here is an example of Avro schema and producer:
 
 ```
-kafka-avro-console-producer \
+./kafka-avro-console-producer \
  --broker-list localhost:9092 --topic test \
  --property value.schema='{"type":"record","name":"testrecord","fields":[{"name":"country","type":"string"}]}'
 ```
@@ -32,7 +36,7 @@ kafka-avro-console-producer \
 Similarly, an example of Avro schema on consumer:
 
 ```
-kafka-avro-console-consumer --topic test\
+./kafka-avro-console-consumer --topic test\
          --Zookeeper localhost:2181 \
          --from-beginning
 ```
@@ -55,3 +59,28 @@ schema and configure their compatibility settings makes Schema
 Registry more special. Schema registry is very easy to use, and it also
 removes bottlenecks of the data format issue in a loosely coupled
 producer and consumer environment.
+
+
+Step 6: Stop Confluent Platform
+---------------------------------
+
+When you are done working with the local install, you can stop Confluent
+Platform. Open new terminal and go to following directory:
+
+`cd /headless/kafka-advanced/confluent-6.1.1/bin`
+
+
+1.  Stop Confluent Platform using the Confluent CLI.
+	
+```
+        ./confluent local services stop
+
+```
+
+2.  Destroy the data in the Confluent Platform instance with the
+    confluent local destroy command.
+	
+```
+        ./confluent local destroy
+```
+

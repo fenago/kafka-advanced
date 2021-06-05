@@ -149,16 +149,16 @@ creates sample data for the Kafka topics `pageviews` and `users`.
 
     5.  In the **Name** field, enter `datagen-pageviews` as the name of the connector.
 
-    6.  Enter the following configuration values:
+    6.  Enter the following configuration values: (Scroll down browser screen to view all fields and also leave other fields empty)
 
         -   **Key converter class:**
-            `org.apache.kafka.connect.storage.StringConverter`{.docutils
-            .literal .notranslate}.
-        -   **kafka.topic:** `pageviews`{.docutils .literal
-            .notranslate}.
+            `org.apache.kafka.connect.storage.StringConverter`.
+        -   **kafka.topic:** `pageviews`.
         -   **max.interval:** `100`.
-        -   **quickstart:** `pageviews`{.docutils .literal
-            .notranslate}.
+        -   **quickstart:** `pageviews`.
+
+![](./images/connect-add.png)
+
 
     7.  Click **Continue**.
 
@@ -177,28 +177,21 @@ creates sample data for the Kafka topics `pageviews` and `users`.
 
     3.  Click **Add connector**.
 
-    4.  Select the `DatagenConnector`
-        tile.
-
-        Tip
-
-        To narrow displayed connectors, click **Filter by category** and
-        click **Sources**.
+    4.  Select the `DatagenConnector` tile.
 
     5.  In the **Name** field, enter `datagen-users` as the name of the connector.
 
     6.  Enter the following configuration values:
 
-        -   **Key converter class:**
-            `org.apache.kafka.connect.storage.StringConverter`{.docutils
-            .literal .notranslate}
+        -   **Key converter class:** `org.apache.kafka.connect.storage.StringConverter`
         -   **kafka.topic:** `users`
         -   **max.interval:** `1000`
         -   **quickstart:** `users`
 
     7.  Click **Continue**.
 
-    8.  Review the connector configuration and click **Launch**.
+    8.  Review the connector configuration and click **Launch** (Scroll at bottom of screen).
+
 
 Step 4: Create and Write to a Stream and Table using ksqlDB
 --------------------------------------------------------------
@@ -208,7 +201,7 @@ Tip
 
 You can also run these commands using the ksqlDB CLI
 from your terminal with this command:
-`<path-to-confluent>/bin/ksql http://localhost:8088`.
+`/headless/kafka-advanced/confluent-6.1.1/bin/ksql http://localhost:8088`.
 
 ### Create Streams and Tables
 
@@ -393,24 +386,3 @@ Step 5: Monitor Consumer Lag
     From the page, you can see the consumer lag and consumption values
     for your streaming query.
 
-
-Step 6: Stop Confluent Platform
----------------------------------
-
-
-When you are done working with the local install, you can stop Confluent
-Platform.
-
-1.  Stop Confluent Platform using the Confluent CLI.
-	
-```
-        ./confluent local services stop
-
-```
-
-2.  Destroy the data in the Confluent Platform instance with the
-    confluent local destroy command.
-	
-```
-        ./confluent local destroy
-```
