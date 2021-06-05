@@ -40,8 +40,7 @@ cd /headless/kafka-advanced/confluent-6.1.1/bin
     or add-ons for Confluent Platform and Kafka.
 	
 ```
-        ./confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:latest
-
+./confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:latest
 ```
 
 4.  Start Confluent Platform using the Confluent CLI confluent local
@@ -51,14 +50,13 @@ cd /headless/kafka-advanced/confluent-6.1.1/bin
 
 
 ```
-		./confluent local services start
-
+./confluent local services start
 ```
 
 <span style="color:red;">Run above command again if any of the following services fail to start first time.</span>
 
 
-    Your output should resemble:
+Your output should resemble:
 
 ```
         Starting Zookeeper
@@ -103,18 +101,18 @@ monitoring production data pipelines and event streaming applications.
 
 2.  Click the **controlcenter.cluster** tile.
 
-    ![](./images/c3-landing-page.png)
+![](./images/c3-landing-page.png)
 
 3.  In the navigation bar, click **Topics** to open the topics list, and
     then click **Add a topic**.
 
-    ![](./images/c3-create-topic.png)
+![](./images/c3-create-topic.png)
 
 4.  In the Topic name field, specify `pageviews` and click **Create with defaults**.
 
     Note that topic names are case-sensitive.
 
-    ![](./images/c3-create-topic-name.png)
+![](./images/c3-create-topic-name.png)
 
 5.  In the navigation bar, click **Topics** to open the topics list, and
     then click **Add a topic**.
@@ -139,13 +137,7 @@ creates sample data for the Kafka topics `pageviews` and `users`.
 
     3.  Click **Add connector**.
 
-    4.  Select the `DatagenConnector`
-        tile.
-
-        Tip
-
-        To narrow displayed connectors, click **Filter by category** and
-        click **Sources**.
+    4.  Select the `DatagenConnector` tile.
 
     5.  In the **Name** field, enter `datagen-pageviews` as the name of the connector.
 
@@ -156,9 +148,7 @@ creates sample data for the Kafka topics `pageviews` and `users`.
         -   **kafka.topic:** `pageviews`.
         -   **max.interval:** `100`.
         -   **quickstart:** `pageviews`.
-
-![](./images/connect-add.png)
-
+    ![](./images/connect-add.png)
 
     7.  Click **Continue**.
 
@@ -259,10 +249,9 @@ you created above.
         with the results limited to a maximum of three rows:
 
         Enter the following query in the editor:
-```
-            SELECT PAGEID FROM PAGEVIEWS EMIT CHANGES LIMIT 3;
+            `SELECT PAGEID FROM PAGEVIEWS EMIT CHANGES LIMIT 3;`
 
-```
+
 
 3.  Click **Run query**. Your output should resemble:
 
@@ -296,8 +285,7 @@ Click the **Card view** or **Table view** icon to change the output layout.
         `pageviews_enriched_r8_r9` as
         explicitly specified in the query:
 
-        Enter the following query in the editor:
-
+Enter the following query in the editor:
 ```
             CREATE STREAM PAGEVIEWS_FEMALE_LIKE_89
                WITH (kafka_topic='pageviews_enriched_r8_r9', value_format='AVRO')
@@ -319,7 +307,7 @@ Click the **Card view** or **Table view** icon to change the output layout.
         rather than a stream. Results from this query are written to a
         Kafka topic called `PAGEVIEWS_REGIONS`:
 
-        Enter the following query in the editor:
+Enter the following query in the editor:
 
 ```
             CREATE TABLE PAGEVIEWS_REGIONS
@@ -348,9 +336,7 @@ Click the **Card view** or **Table view** icon to change the output layout.
 
 ![](./images/c3-ksql-stream-table-view-1.png)
 
-12. In the **All available streams and tables** section, click
-        **KSQL\_PROCESSING\_LOG** to view the stream’s schema, including
-        nested data structures.
+12. In the **All available streams and tables** section, click **KSQL\_PROCESSING\_LOG** to view the stream’s schema, including nested data structures.
 
 ### Run Queries
 
@@ -383,6 +369,5 @@ Step 5: Monitor Consumer Lag
 2.  Click the consumer group ID to view details for the
     `_confluent-ksql-default_query_CSAS_PAGEVIEWS_FEMALE_5` consumer group.
 
-    From the page, you can see the consumer lag and consumption values
-    for your streaming query.
+    From the page, you can see the consumer lag and consumption values for your streaming query.
 

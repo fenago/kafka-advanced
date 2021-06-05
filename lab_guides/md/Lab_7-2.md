@@ -73,14 +73,13 @@ Platform. Open new terminal and go to following directory:
 1.  Stop Confluent Platform using the Confluent CLI.
 	
 ```
-        ./confluent local services stop
-
+./confluent local services stop
 ```
 
 2.  Destroy the data in the Confluent Platform instance with the
     confluent local destroy command.
 	
 ```
-        ./confluent local destroy
+./confluent local destroy
 ```
 
