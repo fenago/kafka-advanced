@@ -27,37 +27,35 @@ Step 1: Start Confluent Platform
 cd /headless/kafka-advanced/confluent-6.1.1/bin
 ```
 
-6.  Set the environment variable for the Confluent Platform directory.
+2.  Set the environment variable for the Confluent Platform directory.
 
-        `export CONFLUENT_HOME=/headless/kafka-advanced/confluent-6.1.1`
+`export CONFLUENT_HOME=/headless/kafka-advanced/confluent-6.1.1`
 
 
-
-8.  Install the [Kafka Connect
-    Datagen](https://www.confluent.io/hub/confluentinc/kafka-connect-datagen/)
+3.  Install the [Kafka Connect Datagen
     source connector using the Confluent Hub client. This connector
     generates mock data for demonstration purposes and is not suitable
-    for production. [ConfluentHub](https://docs.confluent.io/home/connect/confluent-hub/index.html)
+    for production. ConfluentHub
     is an online library of pre-packaged and ready-to-install extensions
     or add-ons for Confluent Platform and Kafka.
 	
 ```
-        confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:latest
+        ./confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:latest
 
 ```
 
-9.  Start Confluent Platform using the Confluent CLI confluent local
+4.  Start Confluent Platform using the Confluent CLI confluent local
     services start command. This command starts all of the Confluent Platform
     components, including Kafka, ZooKeeper, Schema Registry, HTTP REST
     Proxy for Kafka, Kafka Connect, ksqlDB, and Control Center.
 
 
 ```
-		confluent local services start
+		./confluent local services start
 
 ```
 
-<span style="color:red;">Run above command again if any of the following services fail to start.</span>
+<span style="color:red;">Run above command again if any of the following services fail to start first time.</span>
 
 
     Your output should resemble:
@@ -85,8 +83,7 @@ cd /headless/kafka-advanced/confluent-6.1.1/bin
 Step 2: Create Kafka Topics
 -----------------------------------------------------------------------------
 
-In this step, you create Kafka topics using [Confluent Control
-Center](https://docs.confluent.io/platform/current/control-center/index.html#control-center).
+In this step, you create Kafka topics using Confluent Control Center.
 Confluent Control Center provides the functionality for building and
 monitoring production data pipelines and event streaming applications.
 
@@ -102,30 +99,27 @@ monitoring production data pipelines and event streaming applications.
     Note
 
     Control Center won’t connect to ksqlDB if Control Center isn’t open
-    and running in a `localhost`
-    browser session.
+    and running in a `localhost` browser session.
 
 2.  Click the **controlcenter.cluster** tile.
 
-    [![../\_images/c3-landing-page.png](./images/c3-landing-page.png)](./images/c3-landing-page.png)
+    ![](./images/c3-landing-page.png)
 
 3.  In the navigation bar, click **Topics** to open the topics list, and
     then click **Add a topic**.
 
-    [![../\_images/c3-create-topic.png](./images/c3-create-topic.png)](./images/c3-create-topic.png)
+    ![](./images/c3-create-topic.png)
 
-4.  In the Topic name field, specify `pageviews`{.docutils .literal
-    .notranslate} and click **Create with defaults**.
+4.  In the Topic name field, specify `pageviews` and click **Create with defaults**.
 
     Note that topic names are case-sensitive.
 
-    [![../\_images/c3-create-topic-name.png](./images/c3-create-topic-name.png)](./images/c3-create-topic-name.png)
+    ![](./images/c3-create-topic-name.png)
 
 5.  In the navigation bar, click **Topics** to open the topics list, and
     then click **Add a topic**.
 
-6.  In the Topic name field, specify `users`{.docutils .literal
-    .notranslate} and click **Create with defaults**.
+6.  In the Topic name field, specify `users` and click **Create with defaults**.
 
 Step 3: Install a Kafka Connector and Generate Sample Data
 -------------------------------------------------------------
@@ -134,18 +128,8 @@ In this step, you use Kafka Connect to run a demo source connector
 called `kafka-connect-datagen` that
 creates sample data for the Kafka topics `pageviews` and `users`.
 
-Tip
 
-The Kafka Connect Datagen connector was installed manually in [Step 1:
-Download and Start Confluent
-Platform](https://docs.confluent.io/platform/current/quickstart/ce-quickstart.html#download-start-cp).
-If you encounter issues locating the Datagen Connector, refer to the
-[Issue: Cannot locate the Datagen
-connector](https://docs.confluent.io/platform/current/quickstart/ce-quickstart.html#whereis-datagen-local)
-in the Troubleshooting section.
-
-1.  Run the first instance of the [Kafka Connect
-    Datagen](https://www.confluent.io/hub/confluentinc/kafka-connect-datagen/)
+1.  Run the first instance of the Kafka Connect Datagen
     connector to produce Kafka data to the `pageviews` topic in AVRO format.
 
     1.  In the navigation bar, click **Connect**.
@@ -180,12 +164,11 @@ in the Troubleshooting section.
 
     8.  Review the connector configuration and click **Launch**.
 
-[![../\_images/connect-review-pageviews.png](./images/connect-review-pageviews.png)](./images/connect-review-pageviews.png)
+![](./images/connect-review-pageviews.png)
 
 2.  Run the second instance of the [Kafka Connect
-    Datagen](https://www.confluent.io/hub/confluentinc/kafka-connect-datagen/?_ga=2.152015097.1716755252.1622296314-281762746.1621876473)
-    connector to produce Kafka data to the `users`{.docutils .literal
-    .notranslate} topic in AVRO format.
+    Datagen]
+    connector to produce Kafka data to the `users` topic in AVRO format.
 
     1.  In the navigation bar, click **Connect**.
 
@@ -223,8 +206,7 @@ Step 4: Create and Write to a Stream and Table using ksqlDB
 
 Tip
 
-You can also run these commands using the [ksqlDB
-CLI](https://docs.confluent.io/platform/current/ksqldb/installing.html#install-ksql-cli)
+You can also run these commands using the ksqlDB CLI
 from your terminal with this command:
 `<path-to-confluent>/bin/ksql http://localhost:8088`.
 
@@ -274,9 +256,7 @@ you created above.
 
     The setting instructs ksqlDB queries to read all available topic
     data from the beginning. This configuration is used for each
-    subsequent query. For more information, see the [ksqlDB
-    Configuration Parameter
-    Reference](https://docs.ksqldb.io/en/0.14.0-ksqldb/operate-and-deploy/installation/server-config/config-reference/).
+    subsequent query.
 
 3.  Create the following queries.
 
@@ -336,12 +316,11 @@ Click the **Card view** or **Table view** icon to change the output layout.
 
 7.  Click **Run query**. Your output should resemble:
 
-[![../\_images/c3-ksql-persist-query-pv-female89-results.png](./images/c3-ksql-persist-query-pv-female89-results.png)](./images/c3-ksql-persist-query-pv-female89-results.png)
+![](./images/c3-ksql-persist-query-pv-female89-results.png)
 
 
 8.  Create a persistent query that counts the `PAGEVIEWS` for each `REGION` and `GENDER`
-        combination in a [tumbling
-        window](https://docs.confluent.io/platform/current/streams/developer-guide/dsl-api.html#windowing-tumbling)
+        combination in a tumbling window
         of 30 seconds when the count is greater than 1. Because the
         procedure is grouping and counting, the result is now a table,
         rather than a stream. Results from this query are written to a
@@ -374,7 +353,7 @@ Click the **Card view** or **Table view** icon to change the output layout.
         tables** pane shows all of the streams and tables that you can
         access.
 
-[![../\_images/c3-ksql-stream-table-view-1.png](./images/c3-ksql-stream-table-view-1.png)](./images/c3-ksql-stream-table-view-1.png)
+![](./images/c3-ksql-stream-table-view-1.png)
 
 12. In the **All available streams and tables** section, click
         **KSQL\_PROCESSING\_LOG** to view the stream’s schema, including
@@ -393,8 +372,7 @@ above in the previous section.
 
 3.  Click **Stop** to stop the output generation.
 
-4.  In the **Tables** tab, select `PAGEVIEWS_REGIONS`{.docutils .literal
-    .notranslate} table.
+4.  In the **Tables** tab, select `PAGEVIEWS_REGIONS` table.
 
 5.  Click **Query table**.
 
@@ -426,7 +404,7 @@ Platform.
 1.  Stop Confluent Platform using the Confluent CLI.
 	
 ```
-        confluent local services stop
+        ./confluent local services stop
 
 ```
 
@@ -434,5 +412,5 @@ Platform.
     confluent local destroy command.
 	
 ```
-        confluent local destroy
+        ./confluent local destroy
 ```

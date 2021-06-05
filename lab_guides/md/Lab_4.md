@@ -2,7 +2,7 @@
 
 
 
-Lab 3. Deep Dive into Kafka Producers & Consumers
+Lab 4. Deep Dive into Kafka Producers & Consumers
 --------------------------------------------------
 
 
