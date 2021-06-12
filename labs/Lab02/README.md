@@ -5,7 +5,7 @@
 Let's do a simple lab showing how to use producers and consumers from the Kafka command line.
 
 These files should be setup on your virtual box image. You do the work for this lab
-in the directory `~/kafka-advanced/Lab02`.
+in the directory `~/kafka-advanced/labs/Lab02`.
 
 
 
@@ -22,7 +22,7 @@ Next, we are going to run *ZooKeeper* and then run *Kafka Server/Broker*.
 We will use some Kafka command line utilities, to create Kafka topics,
 send messages via a producer and consume messages from the command line.
 
-You do the work for this lab in the directory `~/kafka-advanced/Lab02`.
+You do the work for this lab in the directory `~/kafka-advanced/labs/Lab02`.
 
 <br />
 
@@ -117,7 +117,7 @@ To run Kafka, finish creating this script in `kafka-advanced\Lab02`, and run it 
 
 <br />
 
-#### ~/kafka-advanced/Lab02/create-topic.sh
+#### ~/kafka-advanced/labs/Lab02/create-topic.sh
 
 ```sh
 #!/usr/bin/env bash
@@ -134,13 +134,13 @@ kafka/bin/kafka-topics.sh --create \
 
 <br />
 
-* ***ACTION*** Edit the file ~/kafka-advanced/Lab02/create-topic.sh so that it creates a topic called my-topic.
+* ***ACTION*** Edit the file ~/kafka-advanced/labs/Lab02/create-topic.sh so that it creates a topic called my-topic.
 * ***ACTION*** Run `create-topic.sh` from a new terminal window.
 
-#### Run create-topic.sh from ~/kafka-advanced/Lab02
+#### Run create-topic.sh from ~/kafka-advanced/labs/Lab02
 
 ```sh
-~/kafka-advanced/Lab02
+~/kafka-advanced/labs/Lab02
 
 $ ./create-topic.sh
 
@@ -157,11 +157,11 @@ Notice we created a topic called `my-topic`.
 
 You can see which topics that Kafka is managing using `kafka-topics.sh` as follows.
 
-Finish creating the script in `~/kafka-advanced/Lab02/list-topics.sh` and run it.
+Finish creating the script in `~/kafka-advanced/labs/Lab02/list-topics.sh` and run it.
 
 <br />
 
-#### ~/kafka-advanced/Lab02/list-topics.sh
+#### ~/kafka-advanced/labs/Lab02/list-topics.sh
 
 ```sh
 #!/usr/bin/env bash
@@ -181,15 +181,15 @@ Notice that we have to specify the location of the ZooKeeper cluster node which
 is running on `localhost` port `2181`.
 
 
-* ***ACTION*** Edit the file ~/kafka-advanced/Lab02/list-topic.sh so that it lists all of the topics in Kafka.
+* ***ACTION*** Edit the file ~/kafka-advanced/labs/Lab02/list-topic.sh so that it lists all of the topics in Kafka.
 * ***ACTION*** Run `list-topic.sh` from a new terminal window.
 
 <br />
 
-#### Run list-topics.sh run from ~/kafka-advanced/Lab02
+#### Run list-topics.sh run from ~/kafka-advanced/labs/Lab02
 
 ```sh
-~/kafka-advanced/Lab02
+~/kafka-advanced/labs/Lab02
 $ ./list-topics.sh
 __consumer_offsets
 _schemas
@@ -214,11 +214,11 @@ Kafka provides the utility `kafka-console-producer.sh`
 which is located at `~/kafka-advanced/kafka/bin/kafka-console-producer.sh` to send
 messages to a topic on the command line.
 
-Finish creating the script in `~/kafka-advanced/Lab02/start-producer-console.sh` and run it.
+Finish creating the script in `~/kafka-advanced/labs/Lab02/start-producer-console.sh` and run it.
 
 <br />
 
-#### ~/kafka-advanced/Lab02/start-producer-console.sh
+#### ~/kafka-advanced/labs/Lab02/start-producer-console.sh
 
 ```sh
 #!/usr/bin/env bash
@@ -233,7 +233,7 @@ kafka/bin/kafka-console-producer.sh \
 
 Notice that we specify the Kafka node which is running at `localhost:9092`.
 
-* ***ACTION*** Edit the file ~/kafka-advanced/Lab02/start-producer-console.sh so that it starts the Kafka producer.
+* ***ACTION*** Edit the file ~/kafka-advanced/labs/Lab02/start-producer-console.sh so that it starts the Kafka producer.
 * ***ACTION*** Run `start-producer-console.sh` from a new terminal window.
 
 <br />
@@ -241,7 +241,7 @@ Notice that we specify the Kafka node which is running at `localhost:9092`.
 #### Run start-producer-console.sh and send at least four messages
 
 ```sh
-~/kafka-advanced/Lab02
+~/kafka-advanced/labs/Lab02
 $ ./start-producer-console.sh
 This is message 1
 This is message 2
@@ -265,11 +265,11 @@ Kafka provides the utility `kafka-console-consumer.sh`
 which is located at `~/kafka-advanced/kafka/bin/kafka-console-producer.sh` to receive
 messages from a topic on the command line.
 
-Finish creating the script in `~/kafka-advanced/Lab02/start-consumer-console.sh` and run it.
+Finish creating the script in `~/kafka-advanced/labs/Lab02/start-consumer-console.sh` and run it.
 
 <br />
 
-#### ~/kafka-advanced/Lab02/start-consumer-console.sh
+#### ~/kafka-advanced/labs/Lab02/start-consumer-console.sh
 
 ```sh
 #!/usr/bin/env bash
@@ -287,7 +287,7 @@ kafka/bin/kafka-console-consumer.sh \
 Notice that we specify the Kafka node which is running at `localhost:9092` like we did before, but
 we also specify to read all of the messages from `my-topic` from the beginning `--from-beginning`.
 
-* ***ACTION*** Edit the file ~/kafka-advanced/Lab02/start-consumer-console.sh so that it starts the Kafka console consumer.
+* ***ACTION*** Edit the file ~/kafka-advanced/labs/Lab02/start-consumer-console.sh so that it starts the Kafka console consumer.
 * ***ACTION*** Run `start-consumer-console.sh` from a new terminal window.
 
 <br />
@@ -295,7 +295,7 @@ we also specify to read all of the messages from `my-topic` from the beginning `
 #### Run start-consumer-console.sh in another terminal
 
 ```sh
-~/kafka-advanced/Lab02
+~/kafka-advanced/labs/Lab02
 $ ./start-consumer-console.sh
 Message 4
 This is message 2
