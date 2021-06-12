@@ -10,13 +10,7 @@ producer that uses this topic to send records. You will send records with the
 Kafka producer. You will send records synchronously.
 Later, you will send records asynchronously.
 
-To start Kafka and ZooKeeper use the same technique you did in lab1.2. You can use the start up
-scripts that you wrote in lab1.2.
 
-
-
-
-____
 ## Create Replicated Kafka Topic
 
 Next, you need to create a replicated topic.

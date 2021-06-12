@@ -28,7 +28,7 @@ to demonstrate Kafka consumer failover, and Kafka broker failover.
 
 Complete solution for this lab is available in the following directory:
 
-`~/kafka-advanced/labs/Lab10`
+`~/kafka-advanced/labs/Lab10/solution`
 
 
 <br />
@@ -49,12 +49,13 @@ You modify the port by modifying the listeners `listeners=PLAINTEXT://localhost:
 server-2.properties as follows:
 
 #### Copy server properties file
+
 ```sh
 $ cd ~/kafka-advanced
-$ mkdir -p lab1.2/config
-$ cp kafka/config/server.properties labs/lab1.2/config/server-0.properties
-$ cp kafka/config/server.properties labs/lab1.2/config/server-1.properties
-$ cp kafka/config/server.properties labs/lab1.2/config/server-2.properties
+$ mkdir -p labs/Lab10/config
+$ cp kafka/config/server.properties labs/Lab10/config/server-0.properties
+$ cp kafka/config/server.properties labs/Lab10/config/server-1.properties
+$ cp kafka/config/server.properties labs/Lab10/config/server-2.properties
 ```
 
 
