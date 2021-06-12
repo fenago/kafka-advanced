@@ -14,8 +14,8 @@
 
 - Learn the basics of Apache Kafka from scratch
 - Use the basic building blocks of a streaming application
-- Design effective streaming applications with Kafka using Spark, Storm &, and Heron
-- Understand the importance of a low -latency , high- throughput, and fault-tolerant messaging system
+- Design effective streaming applications with Kafka using Spark & Storm
+- Understand the importance of a low-latency , high-throughput, and fault-tolerant messaging system
 - Make effective capacity planning while deploying your Kafka Application
 
 
