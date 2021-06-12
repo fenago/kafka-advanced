@@ -7,19 +7,19 @@ Welcome to the session 2 lab. The work for this lab is done in `~/kafka-advanced
 
 In this lab, you are going to create simple Java Kafka producer.
 You create a new replicated Kafka topic called `my-example-topic`, then you create
-a Kafka
-producer that uses this topic to send records. You will send records with the
+a Kafka producer that uses this topic to send records. You will send records with the
 Kafka producer. You will send records synchronously.
 Later, you will send records asynchronously.
-
 
 
 ### Lab Solution
 
 Complete solution for this lab is available in the following directory:
 
-`cd ~/kafka-advanced/labs/Lab03-1`
+`cd ~/kafka-advanced/labs/Lab03-1/solution`
 
+
+<h4><span style="color:red;">Intellij IDE is already installed in the lab environment. Go through pdf `Intellij_IDE_guide.pdf` before starting the lab.</span></h4>
 
 
 ## Create Replicated Kafka Topic

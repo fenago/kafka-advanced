@@ -14,12 +14,10 @@ share partitions while each *consumer group* appears to get its own copy of the 
 
 Complete solution for this lab is available in the following directory:
 
-`~/kafka-advanced/labs/Lab03-2`
-
+`~/kafka-advanced/labs/Lab03-2/solution`
 
 
 ### Construct a Kafka Consumer
-
 
 Just like we did with the producer, you need to specify bootstrap servers.
 You also need to define a group.id that identifies which consumer group this consumer belongs.

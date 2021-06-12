@@ -10,14 +10,7 @@ In this lab, we will be covering the following topics:
 - Kafka Storm integration
 
 
-**Note:** Make sure that zookeeper and kafka are running first.
-
-
-### Lab Solution
-
-Complete solution for this lab is available in the following directory:
-
-`~/kafka-advanced/labs/Lab06`
+**Note:** Make sure that zookeeper and kafka are running before proceeding.
 
 
 <h3><span style="color:red;">Task 1: Kafka producers and publishing data into Kafka</span></h3>
@@ -166,30 +159,33 @@ public class KafkaSampleProducer {
 
 
 5.  Now, before running the producer, we need to create
-    `new_topic` in Kafka. To do so, execute the following
-    command:
+    `new_topic` in Kafka. To do so, execute the following command:
     
 ```
-> bin/kafka-topics.sh --zookeeper ZK1:2181 --replication-factor 1 --partition 1 --topic new_topic --create Created topic "new_topic1".
+cd ~/kafka-advanced
+
+kafka/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic new_topic
 ```
 
 
-6.  Now we can run the producer by executing the following command:
-```
-> mvn compile exec:java......103  [com.learningstorm.kafka.WordsProducer.main()] INFO                kafka.client.ClientUtils$  - Fetching metadata from broker                                    id:0,host:kafka1,port:9092 with correlation id 0 for 1                  topic(s) Set(words_topic)110  [com.learningstorm.kafka.WordsProducer.main()] INFO                kafka.producer.SyncProducer  - Connected to kafka1:9092 for             producing140  [com.learningstorm.kafka.WordsProducer.main()] INFO                kafka.producer.SyncProducer  - Disconnecting from                       kafka1:9092177  [com.learningstorm.kafka.WordsProducer.main()] INFO                kafka.producer.SyncProducer  - Connected to kafka1:9092 for             producing378  [com.learningstorm.kafka.WordsProducer.main()] INFO                kafka.producer.Producer  - Shutting down producer378  [com.learningstorm.kafka.WordsProducer.main()] INFO                kafka.producer.ProducerPool  - Closing all sync producers381  [com.learningstorm.kafka.WordsProducer.main()] INFO                kafka.producer.SyncProducer  - Disconnecting from                       kafka1:9092
-```
+6.  Now we can run the producer as shown below:
+
+
+![](./images/storm2.png)
 
 
 7.  Now let us verify that the message has been produced by using Kafka\'s console consumer and executing the following command:
 
 ```
-> bin/kafka-console-consumer.sh --zookeeper ZK:2181 --topic verification --from-beginning            One            morning,            when            Gregor            Samsa            woke            from            troubled            dreams,            he            found            himself            transformed            in            his            bed            into            a            horrible            vermin.            ......
+cd ~/kafka-advanced
+
+kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic new_topic --from-beginning
 ```
+
 
 So, we are able to produce messages into Kafka. In the next section, we
 will see how we can use `KafkaSpout` to read messages from
 Kafka and process them inside a Storm topology.
-
 
 
 
@@ -214,8 +210,8 @@ into sentences, which are then passed onto the `SentenceBolt`,
 which simply prints them on the output stream. We will be running this
 topology in a local mode.
 
-
 #### Lab Solution
+
 Complete solution for this task is available in the following directory:
 
 `~/kafka-advanced/labs/Lab06/storm-kafka-topology`
@@ -236,6 +232,7 @@ Follow the steps to create the Storm topology:
 1.  Create a new Maven project with `groupId`
     as `com.stormadvance` and `artifactId`
     as `kafka-storm-topology`.
+  
 2.  Add the following dependencies for Kafka-Storm and Storm in the `pom.xml` file:
 
 ```
@@ -492,10 +489,13 @@ public class KafkaTopology {
 7.  Now we will the run the topology. Make sure the Kafka cluster is
     running and you have executed the producer in the last section so
     that there are messages in Kafka for consumption.
-8.  Run the topology by executing the following command:
+
+8.  Run the topology by executing following commands:
 
 ```
-> mvn clean compile exec:java  -Dmain.class=com.stormadvance.kafka.KafkaTopology
+cd ~/kafka-advanced/labs/Lab06/storm-kafka-topology
+
+mvn clean compile exec:java  -Dmain.class=com.stormadvance.storm_kafka_topology.KafkaTopology
 ```
 
 This will execute the topology. You should see messages similar to the

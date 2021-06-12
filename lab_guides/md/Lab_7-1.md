@@ -32,7 +32,7 @@ cd /headless/kafka-advanced/confluent-6.1.1/bin
 `export CONFLUENT_HOME=/headless/kafka-advanced/confluent-6.1.1`
 
 
-3.  Install the [Kafka Connect Datagen
+3.  Install the Kafka Connect Datagen
     source connector using the Confluent Hub client. This connector
     generates mock data for demonstration purposes and is not suitable
     for production. ConfluentHub
@@ -189,8 +189,8 @@ Step 4: Create and Write to a Stream and Table using ksqlDB
 
 Tip
 
-You can also run these commands using the ksqlDB CLI
-from your terminal with this command:
+You can also run these commands using the ksqlDB CLI from your terminal with this command:
+
 `/headless/kafka-advanced/confluent-6.1.1/bin/ksql http://localhost:8088`.
 
 ### Create Streams and Tables

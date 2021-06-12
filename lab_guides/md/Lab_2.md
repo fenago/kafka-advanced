@@ -10,8 +10,12 @@ Let's do a simple lab showing how to use producers and consumers from the Kafka 
 
 Complete solution for this lab is available in the following directory:
 
-`cd ~/kafka-advanced/labs/Lab02`
+`cd ~/kafka-advanced/labs/Lab02/solution`
 
+
+**Protip:** VSCode is already installed in the lab environment, Click on `Applications` tab to open vscode.
+
+![](./images/vscode.png)
 
 First, we are going to run *ZooKeeper* and then run *Kafka Server/Broker*.
 We will use some Kafka command line utilities, to create Kafka topics,
