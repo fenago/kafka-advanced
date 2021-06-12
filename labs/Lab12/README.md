@@ -1,32 +1,36 @@
-<img align="right" src="./logo.png">
+# Lab 8.1: Kafka SSL
+
+Welcome to the session 8 lab 1. The work for this lab is done in `~/kafka-advanced/labs/Lab12`.
+In this lab, you are going to setup Kafka SSL support.
 
 
-Lab 12. Securing Kafka
------------------------------------
-
-In all the earlier labs, you learned how to use Kafka. In this
-lab, our focus is more towards securing Kafka. Securing Kafka is one
-of the important aspect in enterprise adoption of Kafka. In this lab, we focus on
-ways of securing sensitive information using SSL in Kafka. 
 
 
-### Lab Solution
 
-Complete solution for this lab is available in the following directory:
+# Lab 8: Kafka Security
 
-`~/kafka-advanced/labs/Lab12/solution`
-
+Kafka provides *authentication* via ***SASL*** (Simple Authentication and Security Layer) and ***SSL*** (Secure Sockets Layer) for encryption. Kafka also provides Authorization (pluggable) and encryption via SSL/TLS (in transit).
 
 ## Authentication
 
 Kafka Broker supports *authentication* in producers and consumers, brokers, tools with methods SSL and SASL.
 
-*Java SSL performance is not always that great. There is a Kafka performance degradation when SSL is enabled.*
+Kafka supports the following SASL mechanisms:
 
+***SASL/GSSAPI Kerberos (GSSAPI - Generic Security Services Application Program Interface -  offers a data-security layer)*** <br>
+***SASL/PLAIN (Simple cleartext password mechanism)*** <br>
+***SASL/SCRAM-SHA-256 (SCRAM - Salted Challenge Response Authentication Mechanism - modern challenge-response scheme based mechanism with channel binding support)*** <br>
+***SASL/SCRAM-SHA-512 (SCRAM - Salted Challenge Response Authentication Mechanism - modern challenge-response scheme based mechanism with channel binding support)*** <br>
+
+You also can use ZooKeeper Authentication (brokers to ZooKeeper).
+
+*Java SSL performance is not always that great. There is a Kafka performance degradation when SSL is enabled.*
 
 ## Encryption and Authorization
 
-Kafka provides encryption of data transferred (using SSL) via brokers, producers, and consumers. The *authorization* provided in Kafka occurs in read/write operations, you can also use integration with 3rd party providers for pluggable authorization.
+Kafka provides encryption of data transferred (using SSL) via brokers, producers, and consumers.
+
+The *authorization* provided in Kafka occurs in read/write operations, you can also use integration with 3rd party providers for pluggable authorization.
 
 ## Kafka and SSL
 
@@ -38,7 +42,8 @@ Understanding SSL/TLS support for Kafka is important for developers, DevOps and 
 
 If possible, use no encryption for cluster communication, and deploy your Kafka Cluster Broker nodes in a private subnet, and limit access to this subnet to client transport. Also if possible avoid using TLS/SSL on client transport and do client operations from your app tier, which is located in a non-public subnet.
 
-However, that is not always possible to avoid TLS/SSL. Regulations and commons sense:
+However, that is not always possible to avoid TLS/SSL.
+Regulations and commons sense:
 
 * U.S. Health Insurance Portability and Accountability Act (HIPAA),
 * Germany’s Federal Data Protection Act,
@@ -48,7 +53,6 @@ However, that is not always possible to avoid TLS/SSL. Regulations and commons s
 * Or it just might be a corporate policy to encrypt such transports.
 
 Kafka has essential security features: authentication, role-based authorization, transport encryption, but is missing data at rest encryption, up to you to encrypt records via OS file systems or use AWS KMS to encrypt EBS volume
-
 
 ### Encrypting client transports
 
@@ -70,8 +74,7 @@ To prevent forged certificates, you have to sign the certificates.  Certificate 
 
 ***Generate SSL key and certificate for each Kafka broker***
 
-
-***ACTION*** - EDIT `bin/create-ssl-key-keystore.sh` and follow instructions
+## ***ACTION*** - EDIT `bin/create-ssl-key-keystore.sh` and follow instructions
 
 ```sh
 #!/usr/bin/env bash
@@ -223,7 +226,6 @@ copy and/or move files so that each Broker, Producer or Consumer has access
 to `/opt/kafka/conf/certs/`.
 
 #### Running create-ssl-key-keystore.sh
-
 ```sh
 ~/kafka-advanced/labs/Lab12/solution
 
@@ -238,8 +240,7 @@ Import the Signed Cluster Certificate into the key store.
 Certificate reply was installed in keystore
 ```
 
-
-***ACTION*** - RUN `bin/create-ssl-key-keystore.sh`
+## ***ACTION*** - RUN `bin/create-ssl-key-keystore.sh`
 
 #### Copying cert files to /opt/kafka/
 
@@ -247,11 +248,9 @@ Certificate reply was installed in keystore
 $ sudo cp -R resources/opt/kafka/ /opt/
 ```
 
+## ***ACTION*** - COPY output of `bin/create-ssl-key-keystore.sh` to `/opt/kafka/`
 
-***ACTION*** - COPY output of `bin/create-ssl-key-keystore.sh` to `/opt/kafka/`
-
-
-***ACTION*** - See files generated `ls /opt/kafka/conf/certs/` (5 files)
+## ***ACTION*** - See files generated `ls /opt/kafka/conf/certs/` (5 files)
 
 ***ca-cert*** - Certificate Authority file  - don’t ship this around <br>
 ***kafka-cert*** - Kafka Certification File - public key and private key, don’t ship this around <br>
@@ -271,8 +270,7 @@ The setting `security.inter.broker.protocol=SSL` may not be needed if Kafka a cl
 a single private subnet. Remember that SSL makes it Kafka run slower, and adds extra CPU load
 on Kafka Brokers.
 
-
-***ACTION*** - EDIT `config/server-0.properties` and follow instructions
+## ***ACTION*** - EDIT `config/server-0.properties` and follow instructions
 
 ```sh
 broker.id=0
@@ -311,8 +309,7 @@ log.retention.check.interval.ms=300000
 zookeeper.connection.timeout.ms=6000
 ```
 
-
-***ACTION*** - EDIT `config/server-1.properties` and follow instructions
+## ***ACTION*** - EDIT `config/server-1.properties` and follow instructions
 
 ```sh
 broker.id=1
@@ -351,8 +348,7 @@ log.retention.check.interval.ms=300000
 zookeeper.connection.timeout.ms=6000
 ```
 
-
-***ACTION*** - EDIT `config/server-2.properties` and follow instructions
+## ***ACTION*** - EDIT `config/server-2.properties` and follow instructions
 
 ```sh
 broker.id=2
@@ -395,8 +391,7 @@ zookeeper.connection.timeout.ms=6000
 
 You will need to pass in truststore and keystore locations and passwords to the consumer.
 
-
-***ACTION*** - EDIT `src/main/java/com/fenago/kafka/consumer/ConsumerUtil.java` and follow instructions in file.
+## ***ACTION*** - EDIT `src/main/java/com/fenago/kafka/consumer/ConsumerUtil.java` and follow instructions in file.
 
 ```java
 package com.fenago.kafka.consumer;
@@ -460,8 +455,7 @@ public class ConsumerUtil {
 
 You will need to pass in truststore and keystore locations and passwords to the producer.
 
-
-***ACTION*** - EDIT `src/main/java/com/fenago/kafka/producer/support/ProducerUtils.java` and follow instructions in file.
+## ***ACTION*** - EDIT `src/main/java/com/fenago/kafka/producer/support/ProducerUtils.java` and follow instructions in file.
 
 ```java
 package com.fenago.kafka.producer.support;
@@ -512,12 +506,9 @@ public class StockPriceProducerUtils {
 
 ## Run the lab
 
-
-***ACTION*** - RUN ZooKeeper and three Kafka Brokers (scripts are under bin for ZooKeeper and Kafka Brokers).
-
-***ACTION*** - RUN ConsumerBlueMain from the IDE
-
-***ACTION*** - RUN StockPriceProducer from the IDE
+## ***ACTION*** - RUN ZooKeeper and three Kafka Brokers (scripts are under bin for ZooKeeper and Kafka Brokers).
+## ***ACTION*** - RUN ConsumerBlueMain from the IDE
+## ***ACTION*** - RUN StockPriceProducer from the IDE
 
 ## Expected results
 You should be able to send records from the producer to the broker and read records from the consumer to the broker using SSL.
