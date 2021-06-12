@@ -67,26 +67,3 @@ Caused by: io.confluent.kafka.schemaregistry.client.rest.exceptions.RestClientEx
 When the producer tried to send a message, it checked the schema with the Schema Registry, which returned an error indicating the schema was invalid because it does not preserve backwards compatibility (the default Schema Registry setting). The console producer simply reports this error and exits, but your own applications could handle the problem more gracefully. Most importantly, we’ve guaranteed no incompatible data was published to Kafka.
 ```
 
-
-Stop Confluent Platform
--------------------------
-
-When you are done working with the local install, you can stop Confluent
-Platform. Open new terminal and go to following directory:
-
-`cd /headless/kafka-advanced/confluent-6.1.1/bin`
-
-
-1.  Stop Confluent Platform using the Confluent CLI.
-	
-```
-./confluent local services stop
-```
-
-2.  Destroy the data in the Confluent Platform instance with the
-    confluent local destroy command.
-	
-```
-./confluent local destroy
-```
-
