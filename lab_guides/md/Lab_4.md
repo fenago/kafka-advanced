@@ -25,7 +25,6 @@ Complete solution for this lab is available in the following directory:
 `~/kafka-advanced/labs/Lab04`
 
 
-
 Kafka Producer APIs 
 -----------------------------------
 
@@ -97,33 +96,6 @@ producerProps.put("key.serializer",
       "org.apache.kafka.common.serialization.StringSerializer");
 KafkaProducer<String, String> producer = new KafkaProducer<String,String>(producerProps);
 ```
-
-The Producer API in Scala:
-
-```
-val producerProps = new Properties()
- producerProps.put("bootstrap.servers", "broker1:port,broker2:port");
-
-       producerProps.put("key.serializer",        "org.apache.kafka.common.serialization.StringSerializer")
-     producerProps.put("value.serializer",      "org.apache.kafka.common.serialization.StringSerializer")
-
- val producer = new KafkaProducer[String, String](producerProps)
-```
-
-The preceding code contains three specific points:
-
-
--   [**Properties object**]: We start with creating a property
-    object; this object contains the `put` method that is used
-    to put the configuration key-value pair in place
--   [**Serializer class**]: We will use
-    `StringSerializer` for both key and value as our key and
-    value will be of the string type
--   [**Producer object**]: We create a producer object by
-    passing the configuration object to it, which provides the producer
-    with specific information about broker servers, serializer classes,
-    and other configurations that we will see later
-
 
 
 
