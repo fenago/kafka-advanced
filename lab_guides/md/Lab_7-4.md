@@ -1,8 +1,11 @@
 <img align="right" src="./logo.png">
 
-# Lab 7.4: Kafka Schema Registry with Avro.
+### Lab 7.4: Kafka Schema Registry with Avro (Optional)
 
 In this lab, you are going to use the Schema Registry with Avro.
+
+<h4><span style="color:red;">This lab is optional, complete this lab exercise later.</span></h4>
+
 
 ## Kafka Lab: Kafka, Avro Serialization and the Schema Registry
 
@@ -144,6 +147,7 @@ interface for the Schema Registry. I wrote a little example to do this so I coul
 Schema registry a little better using the OkHttp client from Square (`com.squareup.okhttp3:okhttp:3.7.0+`) as follows:
 
 #### Using REST endpoints to try out all of the Schema Registry options
+
 ```
 package com.fenago.kafka.schema;
 
@@ -285,8 +289,10 @@ public class SchemaMain {
 
 ```
 
-I suggest running the example and trying to force incompatible schemas to the Schema Registry and
+#### Exercise
+Run the example and trying to force incompatible schemas to the Schema Registry and
 note the behavior for the various compatibility settings.
+
 
 #### Running Schema Registry
 
@@ -320,6 +326,7 @@ and to use the KafkaAvroDeserializer.
 Here is our build file which shows the Avro jar files and such that we need.
 
 #### Gradle build file for Kafka Avro Serializer examples
+
 ```
 plugins {
     id "com.commercehub.gradle.plugin.avro" version "0.9.0"
@@ -353,8 +360,7 @@ avro {
 
 ***ACTION*** - MODIFY build.gradle then RUN it.
 
-Notice that we include the Kafka Avro Serializer lib (`io.confluent:kafka-avro-serializer:3.2.1`)
-and the Avro lib (`org.apache.avro:avro:1.8.1`).
+Notice that we include the Kafka Avro Serializer lib (`io.confluent:kafka-avro-serializer:3.2.1`) and the Avro lib (`org.apache.avro:avro:1.8.1`).
 
 ### Writing a Producer
 
@@ -362,6 +368,7 @@ Next, let's write the Producer as follows.
 
 #### Producer that uses Kafka Avro Serialization and Kafka Registry
 #### src/main/java/com/fenago/kafka/schema/AvroProducer.java
+
 ```java
 package com.fenago.kafka.schema;
 
@@ -566,6 +573,7 @@ and Kafka is running locally on your machine.
 
 
 #### Running Zookeeper and Kafka
+
 ```
 ~/kafka-tutorial/kafka/bin/zookeeper-server-start.sh kafka/config/zookeeper.properties &
 

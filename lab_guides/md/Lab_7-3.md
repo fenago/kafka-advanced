@@ -4,6 +4,8 @@
 # Lab 7.3: Avro
 
 
+<h4><span style="color:red;">This lab is optional, complete this lab exercise later.</span></h4>
+
 
 ### Avro Introduction for Big Data and Data Streaming Architectures
 
