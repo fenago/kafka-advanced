@@ -47,10 +47,10 @@ server-2.properties as follows:
 #### Copy server properties file
 ```sh
 $ cd ~/kafka-advanced
-$ mkdir -p lab1.2/config
-$ cp kafka/config/server.properties lab1.2/config/server-0.properties
-$ cp kafka/config/server.properties lab1.2/config/server-1.properties
-$ cp kafka/config/server.properties lab1.2/config/server-2.properties
+$ mkdir -p Lab10/config
+$ cp kafka/config/server.properties Lab10/config/server-0.properties
+$ cp kafka/config/server.properties Lab10/config/server-1.properties
+$ cp kafka/config/server.properties Lab10/config/server-2.properties
 ```
 
 

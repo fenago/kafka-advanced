@@ -42,6 +42,7 @@ Perform the following step to create the producer:
     `artifactId`.
 2.  Add the following dependencies for Kafka in the `pom.xml` file:
 
+
 ```
 <dependency> 
   <groupId>org.apache.kafka</groupId> 
@@ -158,12 +159,14 @@ public class KafkaSampleProducer {
 ```
 
 
-5.  Now, before running the producer, we need to create
-    `new_topic` in Kafka. To do so, execute the following command:
-    
+5.  Now, before running the producer, we need to create `new_topic` in Kafka. To do so, execute the following command:
+
+
 ```
 cd ~/kafka-advanced
+```
 
+```
 kafka/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic new_topic
 ```
 
@@ -175,6 +178,7 @@ kafka/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-fact
 
 
 7.  Now let us verify that the message has been produced by using Kafka\'s console consumer and executing the following command:
+
 
 ```
 cd ~/kafka-advanced
@@ -282,7 +286,6 @@ Follow the steps to create the Storm topology:
   <version>15.0</version> 
 </dependency>  
 ```
-
 
 3.  Add the following Maven plugins to the `pom.xml` file so
     that we are able to run it from the command-line and also to package
@@ -394,6 +397,7 @@ public class WordBolt extends BaseBasicBolt {
     that it receives. Create `SentenceBolt` in
     the `com.stormadvance.kafka` package. The code is as
     follows, with explanations:
+
 ```
 public class SentenceBolt extends BaseBasicBolt { 
  
@@ -495,7 +499,7 @@ public class KafkaTopology {
 ```
 cd ~/kafka-advanced/labs/Lab06/storm-kafka-topology
 
-mvn clean compile exec:java  -Dmain.class=com.stormadvance.storm_kafka_topology.KafkaTopology
+mvn clean compile exec:java -Dmain.class=com.stormadvance.storm_kafka_topology.KafkaTopology
 ```
 
 This will execute the topology. You should see messages similar to the
