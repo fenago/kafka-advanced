@@ -17,7 +17,47 @@ Connectors based on our use case requirement. It also provides an API
 that can be used to build your own Connector. We will go through a
 example in this section.
 
-**Note:** Confluent services (started in lab 7) should be stopped before proceeding.
+
+**Note:** Confluent services (started in lab 7) should be stopped before proceeding:
+
+<h3><span style="color:red;">Stop Confluent Platform</span></h3>
+
+
+When you are done working with the local install, you can stop Confluent
+Platform. Open new terminal and go to following directory:
+
+`cd /headless/kafka-advanced/confluent-6.1.1/bin`
+
+
+1.  Stop Confluent Platform using the Confluent CLI.
+	
+```
+./confluent local services stop
+```
+
+2.  Destroy the data in the Confluent Platform instance with the
+    confluent local destroy command.
+	
+```
+./confluent local destroy
+```
+
+
+<h3><span style="color:red;">Start Kafka, Zookeeper and Schema Registry</span></h3>
+
+
+Open new terminal and start zookeeper:
+
+`~/kafka-advanced/run-zookeeper.sh`
+
+Open new terminal and start kafka:
+
+`~/kafka-advanced/run-kafka.sh`
+
+Open new terminal and start schema registry:
+
+`~/kafka-advanced/run-schema_registry.sh`
+
 
 
 <h3><span style="color:red;">JDBC Sink Connector</span></h3>
@@ -100,30 +140,6 @@ sqlite> select * from orders;
 ```
 
 Output: `foo|50.0|100|999`
-
-
-
-<h3><span style="color:red;">Stop Confluent Platform</span></h3>
-
-
-When you are done working with the local install, you can stop Confluent
-Platform. Open new terminal and go to following directory:
-
-`cd /headless/kafka-advanced/confluent-6.1.1/bin`
-
-
-1.  Stop Confluent Platform using the Confluent CLI.
-	
-```
-./confluent local services stop
-```
-
-2.  Destroy the data in the Confluent Platform instance with the
-    confluent local destroy command.
-	
-```
-./confluent local destroy
-```
 
 
 

@@ -1,5 +1,6 @@
 
-# Lab 1.2 Getting started with Kafka cluster
+# Lab 10: Getting started with Kafka cluster
+
 ## Understanding Kafka Failover
 
 

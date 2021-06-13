@@ -22,7 +22,11 @@ In short, we will cover the following topics:
 
 Complete solution for this lab is available in the following directory:
 
-`~/kafka-advanced/labs/Lab05`
+`~/kafka-advanced/labs/Lab05/ipfrauddetetion`
+
+
+![](./images/spark1.png)
+
 
 
 Spark Streaming  
@@ -50,7 +54,7 @@ Make sure you have compatible java installed on your machine. You can verify it 
 java -version
 ```
 
-Apache spark setup has been downloaded on the following path and added to $PATH variable:
+Apache spark setup has been downloaded already on the following path and added to $PATH variable:
 
 ```
 /headless/Downloads/spark-2.4.7-bin-hadoop2.7/
@@ -150,14 +154,6 @@ Now inspect the `.out` file, you will see the log like this:
 ```
 2019-09-12 13:41:07 INFO Worker:2612 - Started daemon with process name: 144697@hostname 2019-09-12 13:41:07 INFO SignalUtils:54 - Registered signal handler for TERM 2019-09-12 13:41:07 INFO SignalUtils:54 - Registered signal handler for HUP 2019-09-12 13:41:07 INFO SignalUtils:54 - Registered signal handler for INT 2019-09-12 13:41:08 WARN NativeCodeLoader:62 - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable 2019-09-12 13:41:08 INFO SecurityManager:54 - Changing view acls to: user 2019-09-12 13:41:08 INFO SecurityManager:54 - Changing modify acls to: user 2019-09-12 13:41:08 INFO SecurityManager:54 - Changing view acls groups to: 2019-09-12 13:41:08 INFO SecurityManager:54 - Changing modify acls groups to: 2019-09-12 13:41:08 INFO SecurityManager:54 - SecurityManager: authentication disabled; ui acls disabled; users with view permissions: Set(user); groups with view permissions: Set(); users with modify permissions: Set(user); groups with modify permissions: Set() 2019-09-12 13:41:08 INFO Utils:54 - Successfully started service 'sparkWorker' on port 35633. 2019-09-12 13:41:08 INFO Worker:54 - Starting Spark worker 100.2.101.101:35633 with 32 cores, 124.6 GB RAM 2019-09-12 13:41:08 INFO Worker:54 - Running Spark version 2.3.4 2019-09-12 13:41:08 INFO Worker:54 - Spark home: /headless/Downloads/spark-2.4.7-bin-hadoop2.7 2019-09-12 13:41:08 INFO log:192 - Logging initialized @1510ms 2019-09-12 13:41:08 INFO Server:351 - jetty-9.3.z-SNAPSHOT, build timestamp: unknown, git hash: unknown 2019-09-12 13:41:08 INFO Server:419 - Started @1576ms 2019-09-12 13:41:08 INFO AbstractConnector:278 - Started ServerConnector@3f9e3902{HTTP/1.1,[http/1.1]}{0.0.0.0:8081} 2019-09-12 13:41:08 INFO Utils:54 - Successfully started service 'WorkerUI' on port 8081. 2019-09-12 13:41:08 INFO ContextHandler:781 - Started o.s.j.s.ServletContextHandler@1dc21140{/logPage,null,AVAILABLE,@Spark} 2019-09-12 13:41:08 INFO ContextHandler:781 - Started o.s.j.s.ServletContextHandler@5896ed4f{/logPage/json,null,AVAILABLE,@Spark} 2019-09-12 13:41:08 INFO ContextHandler:781 - Started o.s.j.s.ServletContextHandler@1d9a25f0{/,null,AVAILABLE,@Spark} 2019-09-12 13:41:08 INFO ContextHandler:781 - Started o.s.j.s.ServletContextHandler@1ad57f24{/json,null,AVAILABLE,@Spark} 2019-09-12 13:41:08 INFO ContextHandler:781 - Started o.s.j.s.ServletContextHandler@754605a4{/static,null,AVAILABLE,@Spark} 2019-09-12 13:41:08 INFO ContextHandler:781 - Started o.s.j.s.ServletContextHandler@c5e9251{/log,null,AVAILABLE,@Spark} 2019-09-12 13:41:08 INFO WorkerWebUI:54 - Bound WorkerWebUI to 0.0.0.0, and started athttp://hostname.com:8081 2019-09-12 13:41:08 INFO Worker:54 - Connecting to master hostname.com:7077... 2019-09-12 13:41:08 INFO ContextHandler:781 - Started o.s.j.s.ServletContextHandler@4ac9255f{/metrics/json,null,AVAILABLE,@Spark} 2019-09-12 13:41:08 INFO TransportClientFactory:267 - Successfully created connection to hostname.com/199.6.212.152:7077 after 40 ms (0 ms spent in bootstraps) 2019-09-12 13:41:09 INFO Worker:54 - Successfully registered with master spark://hostname.com:7077
 ```
-
-
-
-Note that above scripts must be executed on the machine you want to run the Spark master on, not your local machine.
-
-You can optionally configure the cluster further by setting environment variables in conf/spark-env.sh. Create this file by starting with the conf/spark-env.sh.template, and copy it to on your worker machine for the settings to take effect. The following settings are available:
-
-![](./images/start12.png)
 
 
 
@@ -351,15 +347,15 @@ Streaming to detect a fraud IP, and the number of times the IP tried to
 hit the server. We will cover the use case in the following:
 
 
--    [**Producer**]: We will use Kafka Producer API, which will
+- **Producer**: We will use Kafka Producer API, which will
     read a log file and publish records to Kafka topic. However, in a
     real case, we may use Flume or producer application, which directly
     takes a log record on a real-time basis and publish to Kafka topic. 
--   [**Fraud IPs list**]: We will maintain a list of predefined
+- **Fraud IPs list**: We will maintain a list of predefined
     fraud IP range which can be used to identify fraud IPs. For this
     application we are using in memory IP list which can be replaced by
     fast key based lookup, such as HBase.
--   [**Spark Streaming**]: Spark Streaming application will
+- **Spark Streaming**: Spark Streaming application will
     read records from Kafka topic and will detect IPs and domains which
     are suspicious. 
 
@@ -595,6 +591,8 @@ public class PropertyReader {
 #### Producer code 
 
 
+<span style="color:red;">Do not run producer code yet,  we will build and run Spark Streaming application first</span>
+
 
 A producer application is designed to be like a real-time log producer
 where the producer runs every three seconds and produces a new record
@@ -816,6 +814,16 @@ public class FraudDetectionApp {
 
 
 Once the Spark Streaming application starts, run Kafka producer and check the records.
+
+**Step 1:** Run spark streaming code as shown below:
+
+![](./images/spark3.png)
+
+
+**Step 2:** Run producer code as shown below:
+
+![](./images/spark2.png)
+
 
 
 

@@ -1,4 +1,4 @@
-# Lab 8.1: Kafka SSL
+# Lab 12: Kafka SSL
 
 Welcome to the session 8 lab 1. The work for this lab is done in `~/kafka-advanced/labs/Lab12`.
 In this lab, you are going to setup Kafka SSL support.

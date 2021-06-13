@@ -1,4 +1,4 @@
-# Lab 3: Writing a Kafka Consumer in Java
+# Lab 3-2: Writing a Kafka Consumer in Java
 
 
 Welcome to the session 3 lab. The work for this lab is done in `~/kafka-advanced/lab3`.

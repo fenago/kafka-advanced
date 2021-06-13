@@ -14,18 +14,16 @@ Understanding tables and Streams together
 
 Before we start discussing tables and Streams, let\'s understand the
 following simple code of a word count program written in Java using a
-Kafka Stream API, and then we will look into the concepts of
-`KStream` and `KTable`. We have been discussing the
-concepts of Kafka Stream; in this section, we will discuss
-`KStream`, `KTable`, and their internals.
+Kafka Stream API.
 
 
 ### Lab Solution
 
 Complete solution for this lab is available in the following directory:
 
-`~/kafka-advanced/labs/Lab09`
+`~/kafka-advanced/labs/Lab09/kafkastream`
 
+![](./images/stream1.png)
 
 
 ### Maven dependency
@@ -104,82 +102,17 @@ public class KafkaStreamWordCount {
 }
 ```
 
-The application starts with a configuration where we define the set,
-Kafka Stream provides two important abstractions: one is
-`KStream`, and the other is `KTable`.
-
-`KStream` is an abstraction of a key-value pair record Stream
-of Kafka\'s topic record. In `KStream`, each record is
-independent, meaning that a record with a key does not replace an old
-record with the same key. `KStream` can be created in two
-ways:
+#### Run WordCount Example 
 
 
--   [**Using the Kafka topic**]: Any Kafka Stream application
-    starts with `KStream`, which consumes data from the Kafka
-    topic. If you look into the earlier program, the following lines
-    create `KStream topicRecords`, which will consume data
-    from the topic input:
+Run wordcount code as shown below:
 
-
-```
-KStream<String, String> topicRecords = StreamTopology.Stream(stringSerde, stringSerde, "input");
-```
-
-
--   [**Using transformation**]: `KStream` can be
-    created by doing transformation on the existing `KStream`.
-    If you look at the previous program, you will see that there are
-    transformations such as `flatMapValues` and
-    `map` that are used on `KStream topicRecords`.
-    `KStream` can also be created by converting
-    `KTable` into `KStream`. In the same example,
-    `countByKey` will create `KTable Count`, and
-    then we convert it to `KStream` using
-    `toStream()`:
-
-
-
-![](./images/0a48e642-2939-480c-9662-de1668586733.png)
-
-KStream record representation
-
-
-
-
-### KTable
-
-
-
-`KTable` is a representation of `Changelog`, which
-does not contain a record with the same key twice. This means that if
-`KTable` encounters a record with the same key in the table,
-it will simply replace the old record with the current record.
-
-If the same record represented in the previous diagram for
-`KStream` is converted to `KTable`, it will look
-like this: 
-
-
-![](./images/257e0b8c-8123-48fd-b1cc-7111ef37695f.png)
-
-KTable record representation
-
-In the previous figure, you can see that the records of
-`Rahul` and `Ajay` have been updated and the old
-entries have been removed. `KTable` is similar to the update
-operation in Map. Whenever a duplicate key is inserted, the old value
-gets replaced by a new value. We can perform various operations on
-`KTable` and join it to other `KStream` or
-`KTable` instances.
+![](./images/stream2.png)
 
 
 
 Use case example of Kafka Streams 
 -------------------------------------------------
-
-
-
 
 
 
@@ -355,6 +288,14 @@ public class IPLogProducer extends TimerTask {
 }
 ```
 
+
+#### Run IPFraudKafkaStreamApp Example 
+
+Run kafka producer code as shown below:
+
+![](./images/stream3.png)
+
+
 Verify the producer record using the console producer. Run the following
 command on the Kafka cluster:
 
@@ -373,6 +314,7 @@ following figure:
 
 
 ![](./images/1e3ddc5a-b04e-4e23-8df8-c727931fa71e.png)
+
 
 
 
@@ -519,6 +461,12 @@ public class IPFraudKafkaStreamApp {
 ```
 
 
+#### Run IPFraudKafkaStreamApp Example 
+
+Run kafka streaming application as shown below:
+
+![](./images/stream4.png)
+
 
 Summary 
 -----------------------
@@ -528,10 +476,7 @@ Summary
 In this lab, you learned about Kafka Stream and how it makes sense
 to use Kafka Stream to do transformation when we have Kafka in our
 pipeline. We also went through the architecture, internal working, and
-integrated framework advantages of Kafka Streams. We covered
-`KStream` and `KTable` in brief and understood how
-they are different from each other. A detailed explanation of the Kafka
-Stream API is out of the scope of this course.
+integrated framework advantages of Kafka Streams.
 
 In the next lab, we will cover the internals of Kafka clusters,
 capacity planning, single-cluster and multi-cluster deployment,

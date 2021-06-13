@@ -1,5 +1,5 @@
 
-# LAB Stream 1-1 Kafka Word Count Example
+# Lab Stream 13-1 Kafka Word Count Example
 
 Welcome to the session Stream 1-1 lab. The work for this lab is done in `~/kafka-advanced/labs/Lab13-1`.
 In this lab, you are going to run the Kafka Word Count Example.

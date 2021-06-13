@@ -1,5 +1,5 @@
 
-# LAB Stream 1-2 Custom Word Count Example
+# LAB Stream 13-2 Custom Word Count Example
 
 Welcome to the session Stream 1-2 lab. The work for this lab is done in `~/kafka-advanced/labs/Lab13-2`.
 In this lab, you are going to run a custom Word Count Example.

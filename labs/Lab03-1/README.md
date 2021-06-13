@@ -1,7 +1,6 @@
 
-# LAB 2 Writing a Kafka Producer in Java
+# LAB 3-1: Writing a Kafka Producer in Java
 
-Welcome to the session 2 lab. The work for this lab is done in `~/kafka-advanced/lab2`.
 
 In this lab, you are going to create simple Java Kafka producer.
 You create a new replicated Kafka topic called `my-example-topic`, then you create

@@ -19,7 +19,21 @@ Complete solution for this lab is available in the following directory:
 `cd ~/kafka-advanced/labs/Lab03-1/solution`
 
 
-<h4><span style="color:red;">Intellij IDE is already installed in the lab environment. Go through pdf `Intellij_IDE_guide.pdf` before starting the lab.</span></h4>
+<h4><span style="color:red;">IntelliJ IDE is already installed in the lab environment. Go through pdf `Intellij_IDE_guide.pdf` before starting the lab.</span></h4>
+
+
+
+Open IntelliJ IDE and run lab solution as shown below:
+
+![](./images/s1.png)
+
+![](./images/s2.png)
+
+![](./images/s3.png)
+
+
+**Note:** Open folder `~/kafka-advanced/labs/Lab03-1` in IntelliJ to open template project and write code.
+
 
 
 ## Create Replicated Kafka Topic
