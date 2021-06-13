@@ -17,6 +17,9 @@ queries on those topics. You then go to Control Center to monitor and
 analyze the streaming queries.
 
 
+<h4><span style="color:red;"> Zookeeper and Kafka services should be stopped before proceeding.</span></h4>
+
+
 Step 1: Start Confluent Platform
 ----------------------------------
 

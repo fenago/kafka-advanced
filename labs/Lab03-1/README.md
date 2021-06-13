@@ -14,9 +14,9 @@ Later, you will send records asynchronously.
 
 Next, you need to create a replicated topic.
 
-## ***ACTION*** - EDIT `~/kafka-advanced/lab2/create-topic.sh` and follow instructions in file.
+## ***ACTION*** - EDIT `~/kafka-advanced/Lab03-1/create-topic.sh` and follow instructions in file.
 
-#### ~/kafka-advanced/lab2/create-topic.sh
+#### ~/kafka-advanced/Lab03-1/create-topic.sh
 
 ```sh
 #!/usr/bin/env bash
@@ -45,7 +45,7 @@ Then we list the Kafka topics.
 #### Output from running create-topic.sh
 
 ```sh
-$ cd ~/kafka-advanced/lab2
+$ cd ~/kafka-advanced/Lab03-1
 $ ./create-topic.sh
 Created topic "my-example-topic".
 __consumer_offsets
@@ -59,10 +59,10 @@ ____
 
 For this example, we use gradle to build the project.
 
-## ***ACTION*** - EDIT `~/kafka-advanced/lab2/solution/build.gradle` and follow the instructions in file.
+## ***ACTION*** - EDIT `~/kafka-advanced/Lab03-1/solution/build.gradle` and follow the instructions in file.
 
 
-#### ~/kafka-advanced/lab2/solution/build.gradle
+#### ~/kafka-advanced/Lab03-1/solution/build.gradle
 
 ```java
 group 'fenago-kafka'
@@ -107,7 +107,7 @@ Next, we will import the Kafka packages and define a constant for the topic and 
 of bootstrap servers that the producer will connect.
 
 #### KafkaProducerExample.java - imports and constants
-#### ~/kafka-advanced/lab2/src/main/java/com/fenago/kafka/KafkaProducerExample.java
+#### ~/kafka-advanced/Lab03-1/src/main/java/com/fenago/kafka/KafkaProducerExample.java
 
 ```java
 
@@ -145,7 +145,7 @@ ____
 Now, that we imported the Kafka classes and defined some constants, let's create a Kafka producer.
 
 #### KafkaProducerExample.java - Create Producer to send Records
-#### ~/kafka-advanced/lab2/src/main/java/com/fenago/kafka/KafkaProducerExample.java
+#### ~/kafka-advanced/Lab03-1/src/main/java/com/fenago/kafka/KafkaProducerExample.java
 
 ```java
 public class KafkaProducerExample {
@@ -196,7 +196,7 @@ method to send some message ids and messages to the Kafka topic we created earli
 
 
 #### KafkaProducerExample.java - Send Records Synchronously
-#### ~/kafka-advanced/lab2/src/main/java/com/fenago/kafka/KafkaProducerExample.java
+#### ~/kafka-advanced/Lab03-1/src/main/java/com/fenago/kafka/KafkaProducerExample.java
 
 ```java
 public class KafkaProducerExample {
@@ -250,7 +250,7 @@ ____
 Next you define the `main` method.
 
 #### KafkaProducerExample.java - Running the Producer
-#### ~/kafka-advanced/lab2/src/main/java/com/fenago/kafka/KafkaProducerExample.java
+#### ~/kafka-advanced/Lab03-1/src/main/java/com/fenago/kafka/KafkaProducerExample.java
 
 ```java
 public static void main(String... args) throws Exception {
@@ -277,7 +277,7 @@ The big difference here will be that we use a lambda expression to define a call
 
 
 #### KafkaProducerExample.java - Send Records Asynchronously with Kafka Producer
-#### ~/kafka-advanced/lab2/src/main/java/com/fenago/kafka/KafkaProducerExample.java
+#### ~/kafka-advanced/Lab03-1/src/main/java/com/fenago/kafka/KafkaProducerExample.java
 
 ```java
 static void runProducer(final int sendMessageCount) throws InterruptedException {

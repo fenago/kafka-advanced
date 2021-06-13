@@ -50,7 +50,7 @@ Let's use an example to talk about this. The following example is from our `Avro
 
 Complete solution for this lab is available in the following directory:
 
-`~/kafka-advanced/labs/Lab07-4`
+`~/kafka-advanced/labs/Lab07-4/solution`
 
 
 #### Employee example Avro Schema
@@ -290,21 +290,9 @@ note the behavior for the various compatibility settings.
 
 #### Running Schema Registry
 
-```
-$ cat ~/kafka-advanced/confluent/etc/schema-registry/schema-registry.properties
+Run schema registry if not running already:
 
-listeners=http://0.0.0.0:8081
-kafkastore.connection.url=localhost:2181
-kafkastore.topic=_schemas
-debug=false
-```
-
-Run following command in the terminal to start schema registry:
-
-```
-$ 
-~/kafka-advanced/confluent/bin/schema-registry-start  ~/kafka-advanced/confluent/etc/schema-registry/schema-registry.properties
-```
+`~/kafka-advanced/run-schema_registry.sh`
 
 
 ***ACTION*** - RUN the schema registry on port 8081
@@ -547,6 +535,7 @@ Notice just like the producer we have to tell the consumer where to find the Reg
 to configure the Kafka Avro Deserializer.
 
 #### Configuring Schema Registry for Consumer
+
 ```
 //Use Kafka Avro Deserializer.
 

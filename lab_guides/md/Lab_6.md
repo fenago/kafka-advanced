@@ -20,7 +20,7 @@ In this section we are writing a Kafka producer that will publish events into th
 `~/kafka-advanced/labs/Lab06/kafka-producer`
 
 
-Open project in Intellij as shown below:
+Open project in IntelliJ as shown below:
 
 ![](./images/storm1.png)
 
@@ -95,7 +95,7 @@ Perform the following step to create the producer:
         <includeProjectDependencies>true</includeProjectDependencies
         <includePluginDependencies>false</includePluginDependencies> 
         <classpathScope>compile</classpathScope> 
-        <mainClass>com.stormadvance.kafka_producer. KafkaSampleProducer 
+        <mainClass>com.stormadvance.kafka_producer.KafkaSampleProducer 
         </mainClass> 
       </configuration> 
     </plugin> 
@@ -349,7 +349,7 @@ Follow the steps to create the Storm topology:
 
 4.  Now we will first create the `WordBolt` that will
     aggregate the words into sentences. For this, create a class called
-    `WordBolt` in the `com.stormadvance.kafka` package. The code for
+    `WordBolt` in the `com.stormadvance.storm_kafka_topology` package. The code for
     `WordBolt` is as follows, complete with explanation:
 ```
 public class WordBolt extends BaseBasicBolt { 
@@ -395,7 +395,7 @@ public class WordBolt extends BaseBasicBolt {
 
 5.  Next is `SentenceBolt`, which just prints the sentences
     that it receives. Create `SentenceBolt` in
-    the `com.stormadvance.kafka` package. The code is as
+    the `com.stormadvance.storm_kafka_topology` package. The code is as
     follows, with explanations:
 
 ```
@@ -423,7 +423,7 @@ public class SentenceBolt extends BaseBasicBolt {
     the `KafkaSpout` and wire it with `WordBolt` and
     `SentenceBolt`. Create a new class
     called `KafkaTopology` in
-    the `com.stormadvance.kafka` package. The code is as
+    the `com.stormadvance.storm_kafka_topology` package. The code is as
     follows, with explanations:
 
 ```

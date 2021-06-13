@@ -1,6 +1,6 @@
 # Lab 7.3: Avro
 
-The work for this lab is done in `~/kafka-advanced/lab7.1`. In this lab, you are going to use Avro.
+The work for this lab is done in `~/kafka-advanced/labs/Lab07-3`. In this lab, you are going to use Avro.
 
 
 

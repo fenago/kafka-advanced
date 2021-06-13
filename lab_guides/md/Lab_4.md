@@ -22,7 +22,9 @@ We will cover the following topics in this lab:
 
 Complete solution for this lab is available in the following directory:
 
-`~/kafka-advanced/labs/Lab04`
+`~/kafka-advanced/labs/Lab04/solution`
+
+![](./images/demo1.png)
 
 
 Kafka Producer APIs 
@@ -174,10 +176,10 @@ by Kafka depends on the `timestamp` type configured for the
 particular topic:
 
 
--   [**CreateTime**]: The `timestamp` of
+-  **CreateTime**: The `timestamp` of
     `ProducerRecord` will be used to append a
     `timestamp` to the data
--   [**LogAppendTime**]: The Kafka broker will overwrite the
+-  **LogAppendTime**: The Kafka broker will overwrite the
     `timestamp` of `ProducerRecord` to the message
     and add a new `timestamp` when the message is appended to
     the log
@@ -192,7 +194,7 @@ response for the record, which includes `offset`,
 messaging publishing patterns. The sending of messages can be either
 synchronous or asynchronous.
 
-[**Synchronous messaging**]: Producer sends a message and waits
+**Synchronous messaging**: Producer sends a message and waits
 for brokers to reply. The Kafka broker either sends an error or
 `RecordMetdata`. We can deal with errors depending on their
 type. This kind of messaging will reduce throughput and latency as the
@@ -213,7 +215,7 @@ Object recordMetadata = producer.send(producerRecord).get();
 
 
 
-[**Asynchronous messaging**]: Sometimes, we have a scenario
+**Asynchronous messaging**: Sometimes, we have a scenario
 where we do not want to deal with responses immediately or we do not
 care about losing a few messages and we want to deal with it after some
 time.
@@ -311,94 +313,6 @@ public class CustomePartition implements Partitioner {
 
 
 
-### Additional producer configuration
-
-
-
-There are other optional configuration properties available for Kafka
-producer that can play an important role in performance, memory,
-reliability, and so on:
-
-
--   `buffer.memory`: This is the amount of memory that
-    producer can use to buffer a message that is waiting to be sent to
-    the Kafka server.In simple terms, it is the total memory that is
-    available to the Java producer to collect unsent messages. When this
-    limit is reached, the producer will block the messages for
-    `max.block.ms`before raising an exception. If your batch
-    size is more, allocate more memory to the producer buffer.
-
-
-Additionally, to avoid keeping records queued indefinitely, you can set
-a timeout using `request.timeout.ms`. If this timeout expires
-before a message can be successfully sent, then it will be removed from
-the queue and an exception will be thrown.
-
-
--   `acks`: This configuration helps in configuring when
-    producer will receive acknowledgment from the leader before
-    considering that the message is committed successfully:
-    
-    -   `acks=0`: Producer will not wait for any
-        acknowledgment from the server. Producer will not know if the
-        message is lost at any point in time and is not committed by the
-        leader broker. Note that no retry will happen in this case and
-        the message will be completely lost. This can be used when you
-        want to achieve very high throughput and when you don\'t care
-        about potential message loss.
-    -   `acks=1`: Producer will receive an acknowledgment as
-        soon as the leader has written the message to its local log. If
-        the leader fails to write the message to its log, producer will
-        retry sending the data according to the retry policy set and
-        avoid potential loss of messages. However, we can still have
-        message loss in a scenario where the leader acknowledges to
-        producer but does not replicate the message to the other broker
-        before it goes down.
-    -   `acks=all`: Producer will only receive acknowledgment
-        when the leader has received acknowledgment for all the replicas
-        successfully. This is a safe setting where we cannot lose data
-        if the replica number is sufficient to avoid such failures.
-        Remember, throughput will be lesser then the first two settings.
-    
--   `batch.size`: This setting allows the producer to batch
-    the messages based on the partition up to the configured amount of
-    size. When the batch reaches the limit, all messages in the batch
-    will be sent. However, it\'s not necessary that producer wait for
-    the batch to be full. It sends the batch after a specific time
-    interval without worrying about the number of messages in the batch.
--   `linger.ms`: This represents an amount of time that a
-    producer should wait for additional messages before sending a
-    current batch to the broker. Kafka producer waits for the batch to
-    be full or the configured `linger.ms` time; if any
-    condition is met, it will send the batch to brokers. Producer will
-    wait till the configured amount of time in milliseconds for any
-    additional messages to get added to the current batch.
--   `compression.type`: By default, producer sends
-    uncompressed messages to brokers. When sending a single message, it
-    will not make that much sense, but when we use batches, it\'s good
-    to use compression to avoid network overhead and increase
-    throughput. The available compressions are GZIP, Snappy, or LZ4.
-    Remember that more batching would lead to better compression.
--   `retires`: If message sending fails, this
-    represents the number of times producer will retry sending messages
-    before it throws an exception. It is irrespective of reseeding a
-    message after receiving an exception.
--   `max.in.flight.requests.per.connection`: This is the
-    number of messages producer can send to brokers without waiting for
-    a response. If you do not care about the order of the messages, then
-    setting its value to more than 1 will increase throughput. However,
-    ordering may change if you set it to more than 1 with retry enabled.
--   `partitioner.class`: If you want to use a custom
-    partitioner for your producer, then this configuration allows you to
-    set the partitioner class, which implements the partitioner
-    interface.
--   `timeout.ms`: This is the amount of time a leader will
-    wait for its followers to acknowledge the message before sending an
-    error to producer. This setting will only help when `acks`
-    is set to all.
-
-
-
 Java Kafka producer example 
 -------------------------------------------
 
@@ -408,14 +322,13 @@ We have covered different configurations and APIs in previous sections.
 Let\'s start coding one simple Java producer, which will help you create
 your own Kafka producer.
 
-[**Prerequisite**]
+**Prerequisite**
 
 
 -   IDE: IntelliJ Idea.
 -   Build tool: Maven, Gradle, or others. We have used Maven to build
     our project.
--   `Pom.xml`: Add Kafka dependency to the `pom`
-    file:
+-   `Pom.xml`: Add Kafka dependency to the `pom` file:
 
 
 ```

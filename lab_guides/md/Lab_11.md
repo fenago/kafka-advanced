@@ -2,7 +2,7 @@
 
 
 
-Lab : Working with Protobuf in Apache Kafka
+Lab 11 : Working with Protobuf in Apache Kafka
 ============================================
 
 Since Confluent Platform version 5.5 Avro is no longer the only schema
@@ -77,7 +77,7 @@ Complete lab solution is available at following path. Run mvn commands to compil
 
 
 ```
-cd ~/kafka-advanced/labs/lab-kafka-protobuf
+cd ~/kafka-advanced/labs/Lab11
 
 mvn clean
 
@@ -86,14 +86,14 @@ mvn install
 
 #### Intellij IDE
 
-Open Intellij IDE and open following project headless/kafka-advanced/labs/lab-kafka-protobuf
+Open Intellij IDE and open following project headless/kafka-advanced/labs/Lab11
 
-![](./images/1.png)
+![](./images/protobuf/1.png)
 
 
 Wait for some time for project to be imported
 
-![](./images/2.png)
+![](./images/protobuf/2.png)
 
 
 
@@ -367,15 +367,15 @@ Check out the JavaDoc to find out more about
 
 **Starting Producer**
 
-![](./images/3.png)
+![](./images/protobuf/3.png)
 
-![](./images/4.png)
+![](./images/protobuf/4.png)
 
 **Starting Consumer**
 
-![](./images/5.png)
+![](./images/protobuf/5.png)
 
-![](./images/6.png)
+![](./images/protobuf/6.png)
 
 
 
@@ -384,7 +384,7 @@ Check out the JavaDoc to find out more about
 **Step 1: Compile** (Terminal 1)
 
 ```
-cd ~/kafka-advanced/labs/lab-kafka-protobuf
+cd ~/kafka-advanced/labs/Lab11
 
 mvn clean compile
 ```
@@ -411,7 +411,7 @@ mvn exec:java -Dexec.mainClass="com.fenago.kafka.protobuf.producer.ProtobufProdu
 
 Run producer class multiple times and verify that message is displayed in consumer logs:
 
-![](./images/7.png)
+![](./images/protobuf/7.png)
 
 
 Now you’re ready to start writing producers and consumers that send Protobuf messages to Apache Kafka with

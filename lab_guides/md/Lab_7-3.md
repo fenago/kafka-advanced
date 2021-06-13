@@ -18,25 +18,6 @@ code generation. Avro needs less encoding as part of the data since it stores
 names and types in the schema reducing duplication. Avro supports the evolution
 of schemas.
 
-### Why Avro for Kafka and Hadoop?
-
-Avro supports direct mapping to JSON as well as a compact binary format.
-It is a very fast serialization format. Avro is widely used in the Hadoop ecosystem.
-Avro supports polyglot bindings to many programming languages and a code generation
-for static languages. For dynamically typed languages, code generation is not needed.
-Another key advantage of Avro is its support of evolutionary schemas which supports
-compatibility checks, and allows evolving your data over time.
-
-Avro supports platforms like Kafka that has multiple Producers and Consumers which evolve over
-time. Avro schemas help keep your data clean and robust.
-
-There was a trend towards schema-less as part of the NoSQL, but that pendulum has swung back a bit
-e.g., Cassandra has schemas REST/JSON was schema-less and IDL-less but not anymore with Swagger,
-API gateways, and RAML. Now the trend is more towards schemas that can evolve and Avro fits
-well in this space.
-
-- Avro Schema provides Future Proof Robustness
-- Avro provides future usability of data
 
 
 
@@ -55,7 +36,7 @@ Avro schemas and IDL are written in JSON.
 
 Complete solution for this lab is available in the following directory:
 
-`~/kafka-advanced/labs/Lab07-3`
+`~/kafka-advanced/labs/Lab07-3/solution`
 
 
 Let's take a look at an example Avro schema.
@@ -325,6 +306,7 @@ employee.put("age", "OLD");
 ```
 
 #### Stack trace from above
+
 ```
 
 org.apache.avro.file.DataFileWriter$AppendWriteException: java.lang.ClassCastException:
