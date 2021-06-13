@@ -17,7 +17,7 @@ Connectors based on our use case requirement. It also provides an API
 that can be used to build your own Connector. We will go through a few
 examples in this section.
 
-
+**Note:** Confluent services (started in lab 7) should be running before proceeding.
 
 <h3><span style="color:red;">JDBC Source Connector</span></h3>
 
@@ -50,6 +50,8 @@ after creation.
 1.  Create a SQLite database with this command:
 
 ```
+$ cd /headless/kafka-advanced/confluent-6.1.1/bin
+
 $ sqlite3 test.db
 ```
 
@@ -81,6 +83,14 @@ sqlite> INSERT INTO accounts(name) VALUES('bob');
 
 **Tip:** You can run `SELECT * from accounts;` to verify your table has been created.
 
+### Install the connector using Confluent Hub
+
+
+Navigate to your Confluent Platform installation directory and run the following command to install the latest (latest) connector version. The connector must be installed on every machine where Connect will run.
+
+```
+./confluent-hub install confluentinc/kafka-connect-jdbc:latest
+```
 
 ### Load the JDBC Source Connector
 
@@ -89,7 +99,7 @@ Load the predefined JDBC source connector.
 1.  Optional: View the available predefined connectors with this command:
 
 ```
-confluent list connectors
+./confluent local list connectors
 ```
 
 Your output should resemble:
@@ -110,7 +120,7 @@ Bundled Predefined Connectors (edit configuration under etc/):
     be in the same directory where Connect is started.
 
 ```
-confluent load jdbc-source
+./confluent load jdbc-source
 ```
 
 Your output should resemble:
@@ -138,11 +148,16 @@ started Kafka Connect, start a console consumer, reading from the
 beginning of the topic:
 
 ```
-./bin/kafka-avro-console-consumer --bootstrap-server localhost:9092 --topic test-sqlite-jdbc-accounts --from-beginning
+$ cd /headless/kafka-advanced/confluent-6.1.1
 
+$ ./bin/kafka-avro-console-consumer --bootstrap-server localhost:9092 --topic test-sqlite-jdbc-accounts --from-beginning
+```
+
+**Output:**
+
+```
 {"id":1,"name":{"string":"alice"}}
 {"id":2,"name":{"string":"bob"}}
-
 ```
 
 The output shows the two records as expected, one per line, in the JSON
@@ -224,10 +239,12 @@ Now we can run the connector with this configuration.
 ./bin/connect-standalone etc/schema-registry/connect-avro-standalone.properties etc/kafka-connect-jdbc/sink-quickstart-sqlite.properties
 ```
 
-Now, we will produce a record into the orders topic.
+Now, we will produce a record into the orders topic. Open new terminal and execute following command:
 
 ```
-bin/kafka-avro-console-producer \
+$ cd /headless/kafka-advanced/confluent-6.1.1
+
+$ bin/kafka-avro-console-producer \
 --broker-list localhost:9092 --topic orders \
 --property value.schema='{"type":"record","name":"myrecord","fields":[{"name":"id","type":"int"},{"name":"product", "type": "string"}, {"name":"quantity", "type": "int"}, {"name":"price",
 "type": "float"}]}'
