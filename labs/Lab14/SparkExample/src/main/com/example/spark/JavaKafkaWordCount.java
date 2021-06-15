@@ -37,7 +37,7 @@ public static void main(String[] args) throws InterruptedException {
     args[2]= "test";
     args[3]= "1";
 
-    SparkConf sparkConf = new SparkConf().setAppName("JavaKafkaWordCount").setMaster("spark://<UPDATE_HOSTNAME>:7077");
+    SparkConf sparkConf = new SparkConf().setAppName("JavaKafkaWordCount").setMaster("local[2]");
     // Create the context with a 1 second batch size
     JavaStreamingContext jssc = new JavaStreamingContext(sparkConf, new Duration(20000));
 

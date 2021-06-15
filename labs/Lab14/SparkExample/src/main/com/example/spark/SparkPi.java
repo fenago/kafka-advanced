@@ -11,7 +11,7 @@ import org.apache.spark.api.java.function.Function2;
 
 public class SparkPi {
 	public static void main(String[] args) throws Exception {
-	    SparkConf sparkConf = new SparkConf().setAppName("JavaSparkPi").setMaster("spark://<UPDATE_HOSTNAME>:7077");
+	    SparkConf sparkConf = new SparkConf().setAppName("JavaSparkPi").setMaster("local[2]");
 	    JavaSparkContext jsc = new JavaSparkContext(sparkConf);
 
 	    int slices = (args.length == 1) ? Integer.parseInt(args[0]) : 2;
