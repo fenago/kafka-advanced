@@ -11,8 +11,13 @@ that will be captured in the following code are as follows:
 
 Complete solution for this lab is available in the following directory:
 
-`cd ~/kafka-advanced/labs/Lab14`
+```
+cd ~/kafka-advanced/labs/Lab14
 
+mvn clean compile
+````
+
+Open solution in IntelliJ IDE:
 
 ![](./images/spdemo1.png)
 
