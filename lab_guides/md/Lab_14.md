@@ -1,11 +1,17 @@
+<img align="right" src="./logo.png">
+
+
+
 Connecting Kafka to Spark Streaming
 -----------------------------------
-
 
 In this lab, we will develop a program that reads the
 streaming data off the Kafka topic and counts the words. The aspects
 that will be captured in the following code are as follows:
 
+
+### Prereq
+Zookeeper and apache kafka should be running.
 
 ### Lab Solution
 
@@ -15,7 +21,7 @@ Complete solution for this lab is available in the following directory:
 cd ~/kafka-advanced/labs/Lab14
 
 mvn clean compile
-````
+```
 
 Open solution in IntelliJ IDE:
 
@@ -176,7 +182,7 @@ System.out.println("############################################################
 ![](./images/spdemo3.png)
 
 
-2. Enter `http://localhost:8080` in browser 
+2. Enter `http://localhost:4040` in browser after running java program:
 
 ![](./images/spdemo4.png)
 
