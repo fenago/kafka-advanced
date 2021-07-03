@@ -20,17 +20,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0f327890-64a7-49bd-af9b-adf9b348060b" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ipfrauddetetion.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ipfrauddetetion.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fenago/streaming/direct/JavaDirectKafkaWordCount.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fenago/streaming/direct/JavaDirectKafkaWordCount.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/IP_LOG.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/fenago/producer/IPLogProducer.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/fenago/streaming/CacheIPLookup.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/fenago/streaming/FraudDetectionApp$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/fenago/streaming/FraudDetectionApp.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/fenago/streaming/IIPScanner.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/fenago/streaming/direct/JavaDirectKafkaWordCount.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ipfrauddetetion/IP_LOG.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ipfrauddetetion/com/fenago/producer/IPLogProducer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ipfrauddetetion/com/fenago/streaming/CacheIPLookup.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ipfrauddetetion/com/fenago/streaming/FraudDetectionApp$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ipfrauddetetion/com/fenago/streaming/FraudDetectionApp.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ipfrauddetetion/com/fenago/streaming/IIPScanner.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ipfrauddetetion/com/fenago/streaming/direct/JavaDirectKafkaWordCount.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ipfrauddetetion/com/fenago/streaming/receiver/KafkaReceiverWordCountJava$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ipfrauddetetion/com/fenago/streaming/receiver/KafkaReceiverWordCountJava$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ipfrauddetetion/com/fenago/streaming/receiver/KafkaReceiverWordCountJava$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ipfrauddetetion/com/fenago/streaming/receiver/KafkaReceiverWordCountJava$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ipfrauddetetion/com/fenago/streaming/receiver/KafkaReceiverWordCountJava.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fenago/streaming/receiver/KafkaReceiverWordCountJava.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/fenago/streaming/receiver/KafkaReceiverWordCountJava$1.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/fenago/streaming/receiver/KafkaReceiverWordCountJava$2.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/fenago/streaming/receiver/KafkaReceiverWordCountJava$3.class" beforeDir="false" />
@@ -58,12 +60,6 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="1616" />
-    <option name="height" value="876" />
-  </component>
   <component name="ProjectId" id="1unCwbqErg9cr3zbMLdHavN3xMX" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -71,6 +67,8 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Modules" />
@@ -347,6 +345,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
     <state x="121" y="55" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1625293430197">
