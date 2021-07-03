@@ -19,29 +19,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0f327890-64a7-49bd-af9b-adf9b348060b" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/out/production/ipfrauddetetion/IP_LOG.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ipfrauddetetion/com/fenago/producer/IPLogProducer.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ipfrauddetetion/com/fenago/streaming/CacheIPLookup.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ipfrauddetetion/com/fenago/streaming/FraudDetectionApp$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ipfrauddetetion/com/fenago/streaming/FraudDetectionApp.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ipfrauddetetion/com/fenago/streaming/IIPScanner.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ipfrauddetetion/com/fenago/streaming/direct/JavaDirectKafkaWordCount.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ipfrauddetetion/com/fenago/streaming/receiver/KafkaReceiverWordCountJava$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ipfrauddetetion/com/fenago/streaming/receiver/KafkaReceiverWordCountJava$2.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ipfrauddetetion/com/fenago/streaming/receiver/KafkaReceiverWordCountJava$3.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ipfrauddetetion/com/fenago/streaming/receiver/KafkaReceiverWordCountJava$4.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ipfrauddetetion/com/fenago/streaming/receiver/KafkaReceiverWordCountJava.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fenago/streaming/receiver/KafkaReceiverWordCountJava.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/fenago/streaming/receiver/KafkaReceiverWordCountJava$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/fenago/streaming/receiver/KafkaReceiverWordCountJava$2.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/fenago/streaming/receiver/KafkaReceiverWordCountJava$3.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/fenago/streaming/receiver/KafkaReceiverWordCountJava$4.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/fenago/streaming/receiver/KafkaReceiverWordCountJava.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/ip-fraud-detetion-1.0-SNAPSHOT.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/original-ip-fraud-detetion-1.0-SNAPSHOT.jar" beforeDir="false" />
-    </list>
+    <list default="true" id="0f327890-64a7-49bd-af9b-adf9b348060b" name="Default" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -81,7 +59,7 @@
       <recent name="D:\Datametica_COE\ipfrauddetetion\src\main\resources" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.IPLogProducer">
+  <component name="RunManager" selected="Application.JavaDirectKafkaWordCount">
     <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Tests">
       <module name="" />
       <option name="TESTING_TYPE" value="0" />
@@ -210,7 +188,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="JavaDirectKafkaWordCount" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+    <configuration name="JavaDirectKafkaWordCount" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="INCLUDE_PROVIDED_SCOPE" value="true" />
       <option name="MAIN_CLASS_NAME" value="com.fenago.streaming.direct.JavaDirectKafkaWordCount" />
       <module name="ipfrauddetetion" />
@@ -304,13 +282,12 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Application.JavaDirectKafkaWordCount" />
       <item itemvalue="Application.IPLogProducer" />
       <item itemvalue="Application.FraudDetectionApp" />
-      <item itemvalue="Application.JavaDirectKafkaWordCount" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.JavaDirectKafkaWordCount" />
         <item itemvalue="Application.JavaDirectKafkaWordCount" />
         <item itemvalue="Application.FraudDetectionApp" />
         <item itemvalue="Application.IPLogProducer" />
@@ -348,10 +325,10 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="121" y="55" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1625293430197">
+    <state x="121" y="55" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1625307952242">
       <screen x="0" y="31" width="1280" height="993" />
     </state>
-    <state x="121" y="55" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.31.1280.993@0.31.1280.993" timestamp="1625293430197" />
+    <state x="121" y="55" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.31.1280.993@0.31.1280.993" timestamp="1625307952242" />
     <state x="287" y="272" width="698" height="514" key="FileChooserDialogImpl" timestamp="1625293011838">
       <screen x="0" y="31" width="1280" height="993" />
     </state>

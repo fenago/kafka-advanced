@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/ip-fraud-detetion.iml" filepath="$PROJECT_DIR$/ip-fraud-detetion.iml" />
       <module fileurl="file://$PROJECT_DIR$/ipfrauddetetion.iml" filepath="$PROJECT_DIR$/ipfrauddetetion.iml" />
     </modules>
   </component>

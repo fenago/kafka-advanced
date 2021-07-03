@@ -7,9 +7,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="ipfrauddetetion" />
+        <module name="ip-fraud-detetion" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="ip-fraud-detetion" target="1.8" />
       <module name="ipfrauddetetion" target="1.8" />
     </bytecodeTargetLevel>
   </component>
