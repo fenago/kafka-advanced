@@ -248,7 +248,16 @@ public class JavaDirectKafkaWordCount {
 }
 ```
 
+#### Edit Configuration
 
+![](./images/j3.png)
+
+Before running application, check that following checkbox is selected:
+
+![](./images/j4.png)
+
+
+#### Run Application
 Run the example as shown below:
 
 ![](./images/j2.png)
