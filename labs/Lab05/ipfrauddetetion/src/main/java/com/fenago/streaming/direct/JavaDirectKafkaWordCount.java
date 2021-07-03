@@ -24,7 +24,7 @@ public class JavaDirectKafkaWordCount {
         String brokers = "localhost:9092";
         String topics = "test1";
 
-        SparkConf sparkConf = new SparkConf().setMaster("local").setAppName("DirectKafkaWordCount").setMaster("local[2]");
+        SparkConf sparkConf = new SparkConf() ;//.setMaster("local").setAppName("DirectKafkaWordCount").setMaster("local[2]");
         JavaStreamingContext javaStreamingContext = new JavaStreamingContext(sparkConf, Durations.seconds(2));
         Set<String> topicsSet = new HashSet<>(Arrays.asList(topics.split(",")));
         Map<String, String> kafkaConfiguration = new HashMap<>();
