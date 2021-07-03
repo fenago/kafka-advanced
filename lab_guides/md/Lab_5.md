@@ -168,8 +168,17 @@ If this example execute successfully, your spark installation is fine. You can s
 **Hint:** Add following parameter while running spark-submit `--executor-memory 2g `.
 
 
-#### Java example for receiver-based integration
+#### Create Kafka Topic
+Now, we need to create `test1` in Kafka. To do so, execute the following command:
 
+
+```
+cd ~/kafka-advanced
+
+kafka/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test1
+```
+
+#### Java example for receiver-based integration
 
 
 Let us take an example to be sure:
@@ -202,7 +211,7 @@ public class KafkaWordCountJava {
         String zkQuorum = "localhost:2181";
         String groupName = "stream";
         int numThreads = 3;
-        String topicsName = "test";
+        String topicsName = "test1";
         SparkConf SparkConf = new SparkConf().setAppName("WordCountKafkaStream").setMaster("local[2]");
 
         JavaStreamingContext javaStreamingContext = new JavaStreamingContext(SparkConf, new Duration(5000));
@@ -250,10 +259,12 @@ public class KafkaWordCountJava {
 }
 ```
 
+Run the example as shown below:
+
+![](./images/j1.png)
+
 
 ### Direct approach
-
-
 
 In receiver-based approach, we saw issues of data loss, costing less
 throughput using write-ahead logs and difficulty in achieving exactly
@@ -290,7 +301,7 @@ public class JavaDirectKafkaWordCount {
     public static void main(String[] args) throws Exception {
 
         String brokers = "localhost:9092";
-        String topics = "test";
+        String topics = "test1";
 
         SparkConf SparkConf = new SparkConf().setAppName("DirectKafkaWordCount").setMaster("local[2]");
         JavaStreamingContext javaStreamingContext = new JavaStreamingContext(SparkConf, Durations.seconds(2));
@@ -325,8 +336,9 @@ public class JavaDirectKafkaWordCount {
 ```
 
 
+Run the example as shown below:
 
-
+![](./images/j2.png)
 
 
 Use case log processing - fraud IP detection 
@@ -805,6 +817,18 @@ public class FraudDetectionApp {
 ```
 
 
+
+#### Create Kafka Topic
+Now, we need to create `iplog` in Kafka. To do so, execute the following command:
+
+
+```
+cd ~/kafka-advanced
+
+kafka/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic iplog
+```
+
+#### Run Spark Streaming Application
 Once the Spark Streaming application starts, run Kafka producer and check the records.
 
 **Step 1:** Run spark streaming code as shown below:
