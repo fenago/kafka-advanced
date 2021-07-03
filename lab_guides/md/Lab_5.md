@@ -753,6 +753,12 @@ kafka/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-fact
 #### Run Spark Streaming Application
 Once the Spark Streaming application starts, run Kafka producer and check the records.
 
+
+Before running application, check that following checkbox is selected:
+
+![](./images/j5.png)
+
+
 **Step 1:** Run spark streaming code as shown below:
 
 ![](./images/spark3.png)
