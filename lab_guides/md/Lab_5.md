@@ -13,7 +13,6 @@ In short, we will cover the following topics:
 
 
 -   Introduction to Spark
--   Receiver-based approach (Spark-Kafka integration)
 -   Direct approach (Spark-Kafka integration)
 -   Use case (Log processing)
 
@@ -178,95 +177,9 @@ cd ~/kafka-advanced
 kafka/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test1
 ```
 
-#### Java example for receiver-based integration
+#### Direct approach
 
-
-Let us take an example to be sure:
-
-```
-import org.apache.Spark.SparkConf;
-import org.apache.Spark.api.java.function.FlatMapFunction;
-import org.apache.Spark.api.java.function.Function;
-import org.apache.Spark.api.java.function.Function2;
-import org.apache.Spark.api.java.function.PairFunction;
-import org.apache.Spark.streaming.Duration;
-import org.apache.Spark.streaming.api.java.JavaDStream;
-import org.apache.Spark.streaming.api.java.JavaPairDStream;
-import org.apache.Spark.streaming.api.java.JavaPairReceiverInputDStream;
-import org.apache.Spark.streaming.api.java.JavaStreamingContext;
-import org.apache.Spark.streaming.kafka.KafkaUtils;
-import scala.Tuple2;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-
-public class KafkaWordCountJava {
-    private static final Pattern WORD_DELIMETER = Pattern.compile(" ");
-
-    public static void main(String[] args) throws Exception {
-        String zkQuorum = "localhost:2181";
-        String groupName = "stream";
-        int numThreads = 3;
-        String topicsName = "test1";
-        SparkConf SparkConf = new SparkConf().setAppName("WordCountKafkaStream").setMaster("local[2]");
-
-        JavaStreamingContext javaStreamingContext = new JavaStreamingContext(SparkConf, new Duration(5000));
-
-        Map<String, Integer> topicToBeUsedBySpark = new HashMap<>();
-        String[] topics = topicsName.split(",");
-        for (String topic : topics) {
-            topicToBeUsedBySpark.put(topic, numThreads);
-        }
-
-        JavaPairReceiverInputDStream<String, String> streamMessages =
-                KafkaUtils.createStream(javaStreamingContext, zkQuorum, groupName, topicToBeUsedBySpark);
-
-        JavaDStream<String> lines = streamMessages.map(new Function<Tuple2<String, String>, String>() {
-            @Override
-            public String call(Tuple2<String, String> tuple2) {
-                return tuple2._2();
-            }
-        });
-
-        JavaDStream<String> words = lines.flatMap(new FlatMapFunction<String, String>() {
-            @Override
-            public Iterator<String> call(String x) {
-                return Arrays.asList(WORD_DELIMETER.split(x)).iterator();
-            }
-        });
-
-        JavaPairDStream<String, Integer> wordCounts = words.mapToPair(
-                new PairFunction<String, String, Integer>() {
-                    @Override
-                    public Tuple2<String, Integer> call(String s) {
-                        return new Tuple2<>(s, 1);
-                    }
-                }).reduceByKey(new Function2<Integer, Integer, Integer>() {
-            @Override
-            public Integer call(Integer i1, Integer i2) {
-                return i1 + i2;
-            }
-        });
-
-        wordCounts.print();
-        javaStreamingContext.start();
-        javaStreamingContext.awaitTermination();
-    }
-}
-```
-
-Run the example as shown below:
-
-![](./images/j1.png)
-
-
-### Direct approach
-
-In receiver-based approach, we saw issues of data loss, costing less
+In receiver-based approach, there are issues of data loss, costing less
 throughput using write-ahead logs and difficulty in achieving exactly
 one semantic of data processing. To overcome all these problems, Spark
 introduced the direct stream approach of integrating Spark with Kafka.
