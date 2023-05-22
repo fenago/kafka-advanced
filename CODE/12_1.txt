@@ -1,0 +1,19 @@
+KafkaServer {
+ com.sun.security.auth.module.Krb5LoginModule required
+ useKeyTab=true
+ keyTab="/path/to/kafka.service.keytab"
+ storeKey=true
+ useTicketCache=false
+ serviceName="kafka" 
+ principal="kafka/brokerhost.fqdn@REALM";
+ };
+
+Client { // used for zookeeper connection
+ com.sun.security.auth.module.Krb5LoginModule required
+ useKeyTab=true
+ keyTab="/path/to/kafka.service.keytab"
+ storeKey=true
+ useTicketCache=false
+ serviceName="zookeeper"
+ principal="kafka/brokerhost.fqdn@EXAMPLE.COM";
+ };

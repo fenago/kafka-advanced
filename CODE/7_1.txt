@@ -1,0 +1,26 @@
+job.name=kafkatohdfs 
+job.group=Kafka 
+job.description=Kafka to hdfs using goblin 
+job.lock.enabled=false 
+
+kafka.brokers=localhost:9092 source.class=Gobblin.source.extractor.extract.kafka.KafkaSimpleSource
+extract.namespace=Gobblin.extract.kafka writer.builder.class=Gobblin.writer.SimpleDataWriterBuilder
+
+writer.file.path.type=tablename 
+writer.destination.type=HDFS 
+writer.output.format=txt 
+data.publisher.type=Gobblin.publisher.BaseDataPublisher
+
+mr.job.max.mappers=1
+metrics.reporting.file.enabled=true 
+metrics.log.dir=/Gobblin-kafka/metrics 
+metrics.reporting.file.suffix=txt 
+
+bootstrap.with.offset=earliest 
+fs.uri=hdfs://localhost:8020
+writer.fs.uri=hdfs://localhost:8020
+state.store.fs.uri=hdfs://localhost:8020
+
+mr.job.root.dir=/Gobblin-kafka/working 
+state.store.dir=/Gobblin-kafka/state-store task.data.root.dir=/jobs/kafkaetl/Gobblin/Gobblin-kafka/task-data data.publisher.final.dir=/Gobblintest/job-output
+

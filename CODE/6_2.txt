@@ -1,0 +1,46 @@
+import org.apache.Storm.task.OutputCollector;
+import org.apache.Storm.task.TopologyContext;
+import org.apache.Storm.topology.IRichBolt;
+import org.apache.Storm.topology.OutputFieldsDeclarer;
+import org.apache.Storm.tuple.Fields;
+import org.apache.Storm.tuple.Tuple;
+import org.apache.Storm.tuple.Values;
+
+import java.util.Map;
+
+public class StringToWordsSpliterBolt implements IRichBolt {
+    private OutputCollector collector;
+
+
+    public void prepare(Map StormConf, TopologyContext context,
+                        OutputCollector collector) {
+        this.collector = collector;
+    }
+
+
+    public void execute(Tuple input) {
+        String line = input.getString(0);
+        String[] words = line.split(" ");
+
+        for(String word: words) {
+            if(!word.isEmpty()) {
+                collector.emit(new Values(word));
+            }
+
+        }
+
+        collector.ack(input);
+    }
+
+    public void declareOutputFields(OutputFieldsDeclarer declarer) {
+        declarer.declare(new Fields("word"));
+    }
+
+    @Override
+    public void cleanup() {}
+
+    @Override
+    public Map<String, Object> getComponentConfiguration() {
+        return null;
+    }
+

@@ -1,0 +1,15 @@
+class CustomPartition extends Partitioner {
+  override def close(): Unit = {}
+
+  override def partition(topicName: String, key: scala.Any, keyBytes: Array[Byte], value: scala.Any, valueBytes: Array[Byte], cluster: Cluster): Int = {
+
+    val partitions: util.List[PartitionInfo] = cluster.partitionsForTopic(topicName)
+
+    val numPartitions: Int = partitions.size
+
+    //TODO : your partition logic here
+    0
+  }
+
+  override def configure(map: util.Map[String, _]): Unit = {}
+}

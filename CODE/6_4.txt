@@ -1,0 +1,56 @@
+import org.apache.Storm.Config
+import org.apache.Storm.LocalCluster
+import org.apache.Storm.StormSubmitter
+import org.apache.Storm.kafka._
+import org.apache.Storm.spout.SchemeAsMultiScheme
+import org.apache.Storm.topology.TopologyBuilder
+
+object KafkaStormWordCountTopology {
+
+  def main(args: Array[String]): Unit = {
+    val zkConnString: String = "localhost:2181"
+    val topic: String = "words"
+    val hosts: BrokerHosts = new ZkHosts(zkConnString)
+    val kafkaSpoutConfig: SpoutConfig =
+      new SpoutConfig(hosts, topic, "/" + topic, "wordcountID")
+    kafkaSpoutConfig.startOffsetTime = kafka.api.OffsetRequest.EarliestTime()
+    kafkaSpoutConfig.scheme = new SchemeAsMultiScheme(new StringScheme())
+    val topologyBuilder: TopologyBuilder = new TopologyBuilder()
+    topologyBuilder.setSpout("kafkaspout", new KafkaSpout(kafkaSpoutConfig))
+    topologyBuilder
+      .setBolt("stringsplit", new StringToWordsSpliterBolt())
+      .shuffleGrouping("kafkaspout")
+    topologyBuilder
+      .setBolt("counter", new WordCountCalculatorBolt())
+      .shuffleGrouping("stringsplit")
+    val config: Config = new Config()
+    config.setDebug(true)
+    if (args != null && args.length > 1) {
+      config.setNumWorkers(3)
+      StormSubmitter.submitTopology(args(1),
+                                    config,
+                                    topologyBuilder.createTopology())
+    } else {
+// for a component to 3
+      config.setMaxTaskParallelism(3)
+// LocalCluster is used to run locally
+      val cluster: LocalCluster = new LocalCluster()
+      cluster.submitTopology("KafkaLocal",
+                             config,
+                             topologyBuilder.createTopology())
+// sleep
+      try Thread.sleep(10000)
+      catch {
+        case e: InterruptedException => {
+          cluster.killTopology("KafkaToplogy")
+          cluster.shutdown()
+        }
+
+      }
+      cluster.shutdown()
+    }
+// Cap the maximum number of executors that can be spawned
+// Cap the maximum number of executors that can be spawned
+  }
+
+}

@@ -1,0 +1,53 @@
+package com.fenago.Storm.ipfrauddetection;
+
+import com.fenago.Storm.utils.CacheIPLookup;
+import com.fenago.Storm.utils.IIPScanner;
+import org.apache.Storm.task.OutputCollector;
+import org.apache.Storm.task.TopologyContext;
+import org.apache.Storm.topology.IRichBolt;
+import org.apache.Storm.topology.OutputFieldsDeclarer;
+import org.apache.Storm.topology.base.BaseRichBolt;
+import org.apache.Storm.tuple.Fields;
+import org.apache.Storm.tuple.Tuple;
+import org.apache.Storm.tuple.Values;
+
+import java.util.Map;
+
+public class FraudDetectorBolt extends BaseRichBolt {
+    private IIPScanner cacheIPLookup = new CacheIPLookup();
+    private OutputCollector collector;
+
+
+    @Override
+    public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
+        this.collector = outputCollector;
+    }
+
+    @Override
+    public void execute(Tuple input) {
+        String ipRecord = (String) input.getValue(0);
+        String[] columns = ipRecord.split(",");
+
+        String IP = columns[0];
+        String[] ranges = IP.split("\\.");
+        String range = null;
+        try {
+            range = ranges[0];
+        } catch (ArrayIndexOutOfBoundsException ex) {
+
+        }
+        boolean isFraud = cacheIPLookup.isFraudIP(range);
+
+        if (isFraud) {
+            Values value = new Values(ipRecord);
+            collector.emit(value);
+            collector.ack(input);
+        }
+    }
+
+
+    @Override
+    public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
+        outputFieldsDeclarer.declare(new Fields("fraudip"));
+    }
+}

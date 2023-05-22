@@ -1,0 +1,58 @@
+package com.fenago.Kafka;
+
+
+import com.fenago.Kafka.lookup.CacheIPLookup;
+import com.fenago.Kafka.utils.PropertyReader;
+import org.apache.Kafka.common.serialization.Serde;
+import org.apache.Kafka.common.serialization.Serdes;
+import org.apache.Kafka.Streams.KafkaStreams;
+import org.apache.Kafka.Streams.StreamsConfig;
+import org.apache.Kafka.Streams.kStream.KStream;
+import org.apache.Kafka.Streams.kStream.KStreamBuilder;
+
+import java.util.Properties;
+
+public class IPFraudKafkaStreamApp {
+    private static CacheIPLookup cacheIPLookup = new CacheIPLookup();
+    private static PropertyReader propertyReader = new PropertyReader();
+
+    public static void main(String[] args) throws Exception {
+        Properties KafkaStreamProperties = new Properties();
+        KafkaStreamProperties.put(StreamsConfig.APPLICATION_ID_CONFIG, "IP-Fraud-Detection");
+        KafkaStreamProperties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        KafkaStreamProperties.put(StreamsConfig.ZOOKEEPER_CONNECT_CONFIG, "localhost:2181");
+        KafkaStreamProperties.put(StreamsConfig.KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+        KafkaStreamProperties.put(StreamsConfig.VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+
+        Serde<String> stringSerde = Serdes.String();
+
+        KStreamBuilder fraudDetectionTopology = new KStreamBuilder();
+//Reading fraud record from topic configured in configuration file
+
+        KStream<String, String> ipRecords = fraudDetectionTopology.Stream(stringSerde, stringSerde, propertyReader.getPropertyValue("topic"));
+//Checking if record is fraud using in memory lookup service
+
+        KStream<String, String> fraudIpRecords = ipRecords
+                .filter((k, v) -> isFraud(v));
+//Storing fraud IP’s to topic 
+        fraudIpRecords.to(propertyReader.getPropertyValue("output_topic"));
+
+        KafkaStreams StreamManager = new KafkaStreams(fraudDetectionTopology, KafkaStreamProperties);
+        StreamManager.start();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(StreamManager::close));
+    }
+
+//Fraud ip lookup method
+    private static boolean isFraud(String record) {
+        String IP = record.split(" ")[0];
+        String[] ranges = IP.split("\\.");
+        String range = null;
+        try {
+            range = ranges[0] + "." + ranges[1];
+        } catch (ArrayIndexOutOfBoundsException ex) {
+                 //handling here
+        }
+        return cacheIPLookup.isFraudIP(range);
+    }
+}

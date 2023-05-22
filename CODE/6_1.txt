@@ -1,0 +1,50 @@
+import org.apache.Storm.Config;
+import org.apache.Storm.LocalCluster;
+import org.apache.Storm.StormSubmitter;
+import org.apache.Storm.kafka.*;
+import org.apache.Storm.spout.SchemeAsMultiScheme;
+import org.apache.Storm.topology.TopologyBuilder;
+
+public class KafkaStormWordCountTopology {
+    public static void main(String[] args) throws Exception {
+
+        String zkConnString = "localhost:2181";
+        String topic = "words";
+        BrokerHosts hosts = new ZkHosts(zkConnString);
+
+        SpoutConfig kafkaSpoutConfig = new SpoutConfig(hosts, topic, "/" + topic,
+                "wordcountID");
+        kafkaSpoutConfig.startOffsetTime = kafka.api.OffsetRequest.EarliestTime();
+        kafkaSpoutConfig.scheme = new SchemeAsMultiScheme(new StringScheme());
+
+        TopologyBuilder topologyBuilder = new TopologyBuilder();
+        topologyBuilder.setSpout("kafkaspout", new KafkaSpout(kafkaSpoutConfig));
+        topologyBuilder.setBolt("stringsplit", new StringToWordsSpliterBolt()).shuffleGrouping("kafkaspout");
+        topologyBuilder.setBolt("counter", new WordCountCalculatorBolt()).shuffleGrouping("stringsplit");
+
+        Config config = new Config();
+        config.setDebug(true);
+        if (args != null && args.length > 1) {
+            config.setNumWorkers(3);
+            StormSubmitter.submitTopology(args[1], config, topologyBuilder.createTopology());
+        } else {
+            // Cap the maximum number of executors that can be spawned
+            // for a component to 3
+            config.setMaxTaskParallelism(3);
+            // LocalCluster is used to run locally
+            LocalCluster cluster = new LocalCluster();
+            cluster.submitTopology("KafkaLocal", config, topologyBuilder.createTopology());
+            // sleep
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                cluster.killTopology("KafkaToplogy");
+                cluster.shutdown();
+            }
+
+            cluster.shutdown();
+        }
+    }
+}
+

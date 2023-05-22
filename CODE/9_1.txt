@@ -1,0 +1,47 @@
+package com.fenago.Kafka;
+
+import org.apache.Kafka.common.serialization.Serde;
+import org.apache.Kafka.common.serialization.Serdes;
+import org.apache.Kafka.Streams.KafkaStreams;
+import org.apache.Kafka.Streams.KeyValue;
+import org.apache.Kafka.Streams.StreamsConfig;
+import org.apache.Kafka.Streams.kStream.KStream;
+import org.apache.Kafka.Streams.kStream.KStreamBuilder;
+
+import java.util.Arrays;
+import java.util.Properties;
+
+public class KafkaStreamWordCount {
+    public static void main(String[] args) throws Exception {
+        Properties KafkaStreamProperties = new Properties();
+// Stream configuration 
+        KafkaStreamProperties.put(StreamsConfig.APPLICATION_ID_CONFIG, "Kafka-Stream-wordCount");
+        KafkaStreamProperties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        KafkaStreamProperties.put(StreamsConfig.ZOOKEEPER_CONNECT_CONFIG, "localhost:2181");
+        KafkaStreamProperties.put(StreamsConfig.KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+        KafkaStreamProperties.put(StreamsConfig.VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+
+        Serde<String> stringSerde = Serdes.String();
+        Serde<Long> longSerde = Serdes.Long();
+
+        KStreamBuilder StreamTopology = new KStreamBuilder();
+
+//Kstream to read input data from input topic
+        KStream<String, String> topicRecords = StreamTopology.Stream(stringSerde, stringSerde, "input");
+        KStream<String, Long> wordCounts = topicRecords
+                .flatMapValues(value -> Arrays.asList(value.toLowerCase().split("\\W+")))
+                .map((key, word) -> new KeyValue<>(word, word))
+                .countByKey("Count")
+                .toStream();
+
+//Store wordcount result in wordcount topic
+        wordCounts.to(stringSerde, longSerde, "wordCount");
+
+        KafkaStreams StreamManager = new KafkaStreams(StreamTopology, KafkaStreamProperties);
+//Running Stream job
+        StreamManager.start();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(StreamManager::close));
+    }
+
+}

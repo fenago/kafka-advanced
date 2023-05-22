@@ -1,0 +1,44 @@
+import org.apache.Storm.task.OutputCollector
+import org.apache.Storm.task.TopologyContext
+import org.apache.Storm.topology.IRichBolt
+import org.apache.Storm.topology.OutputFieldsDeclarer
+import org.apache.Storm.tuple.Tuple
+import java.util.HashMap
+import java.util.Map
+
+class WordCountCalculatorBolt extends IRichBolt {
+
+  var wordCountMap: Map[String, Integer] = _
+
+  private var collector: OutputCollector = _
+
+  def prepare(StormConf: Map[_, _],
+              context: TopologyContext,
+              collector: OutputCollector): Unit = {
+    this.wordCountMap = new HashMap[String, Integer]()
+    this.collector = collector
+  }
+
+  def execute(input: Tuple): Unit = {
+    var str: String = input.getString(0)
+    str = str.toLowerCase().trim()
+    if (!wordCountMap.containsKey(str)) {
+      wordCountMap.put(str, 1)
+    } else {
+      val c: java.lang.Integer = wordCountMap.get(str) + 1
+      wordCountMap.put(str, c)
+    }
+    collector.ack(input)
+  }
+
+  def cleanup(): Unit = {
+    for ((key, value) <- wordCountMap) {
+      println(key + " : " + value)
+    }
+  }
+
+  override def declareOutputFields(declarer: OutputFieldsDeclarer): Unit = {}
+
+  override def getComponentConfiguration(): Map[String, Any] = null
+
+}

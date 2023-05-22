@@ -1,0 +1,17 @@
+public class CustomePartition implements Partitioner {
+    public int partition(String topicName, Object key, byte[] keyBytes, Object value, byte[] valueByte, Cluster cluster) {
+        List<PartitionInfo> partitions = cluster.partitionsForTopic(topicName);
+
+        int numPartitions = partitions.size();
+        //Todo: Partition logic here
+        return 0;
+    }
+
+    public void close() {
+
+    }
+
+    public void configure(Map<String, ?> map) {
+
+    }
+}

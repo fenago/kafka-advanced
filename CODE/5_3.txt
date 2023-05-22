@@ -1,0 +1,54 @@
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import scala.Tuple2;
+
+import kafka.serializer.StringDecoder;
+
+import org.apache.Spark.SparkConf;
+import org.apache.Spark.streaming.api.java.*;
+import org.apache.Spark.streaming.kafka.KafkaUtils;
+import org.apache.Spark.streaming.Durations;
+
+public class JavaDirectKafkaWordCount {
+    private static final Pattern SPACE = Pattern.compile(" ");
+
+    public static void main(String[] args) throws Exception {
+
+        String brokers = "localhost:9092";
+        String topics = "test";
+
+        SparkConf SparkConf = new SparkConf().setAppName("DirectKafkaWordCount");
+        JavaStreamingContext javaStreamingContext = new JavaStreamingContext(SparkConf, Durations.seconds(2));
+
+        Set<String> topicsSet = new HashSet<>(Arrays.asList(topics.split(",")));
+        Map<String, String> kafkaConfiguration = new HashMap<>();
+        kafkaConfiguration.put("metadata.broker.list", brokers);
+
+        JavaPairInputDStream<String, String> messages = KafkaUtils.createDirectStream(
+                javaStreamingContext,
+                String.class,
+                String.class,
+                StringDecoder.class,
+                StringDecoder.class,
+                kafkaConfiguration,
+                topicsSet
+        );
+
+        JavaDStream<String> lines = messages.map(Tuple2::_2);
+
+        JavaDStream<String> words = lines.flatMap(x -> Arrays.asList(SPACE.split(x)).iterator());
+
+        JavaPairDStream<String, Integer> wordCounts = words.mapToPair(s -> new Tuple2<>(s, 1))
+                .reduceByKey((i1, i2) -> i1 + i2);
+
+        wordCounts.print();
+
+        javaStreamingContext.start();
+        javaStreamingContext.awaitTermination();
+    }
+}

@@ -1,0 +1,39 @@
+import org.apache.Storm.task.OutputCollector
+import org.apache.Storm.task.TopologyContext
+import org.apache.Storm.topology.IRichBolt
+import org.apache.Storm.topology.OutputFieldsDeclarer
+import org.apache.Storm.tuple.Fields
+import org.apache.Storm.tuple.Tuple
+import org.apache.Storm.tuple.Values
+import java.util.Map
+
+
+class StringToWordsSpliterBolt extends IRichBolt {
+
+  private var collector: OutputCollector = _
+
+  def prepare(StormConf: Map[_, _],
+              context: TopologyContext,
+              collector: OutputCollector): Unit = {
+    this.collector = collector
+  }
+
+  def execute(input: Tuple): Unit = {
+    val line: String = input.getString(0)
+    val words: Array[String] = line.split(" ")
+    for (word <- words if !word.isEmpty) {
+      collector.emit(new Values(word))
+    }
+    collector.ack(input)
+  }
+
+  def declareOutputFields(declarer: OutputFieldsDeclarer): Unit = {
+    declarer.declare(new Fields("fraudIP"))
+  }
+
+  override def cleanup(): Unit = {}
+
+  override def getComponentConfiguration(): Map[String, Any] = null
+
+}
+

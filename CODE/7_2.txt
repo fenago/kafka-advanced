@@ -1,0 +1,24 @@
+pipeline.sources = kafka1
+pipeline.channels = channel1
+pipeline.sinks = hdfssink
+
+pipeline.sources.kafka1.type = org.apache.flume.source.kafka.KafkaSource
+pipeline.sources.kafka1.ZookeeperConnect = zk01.example.com:2181
+pipeline.sources.kafka1.topic = test
+pipeline.sources.kafka1.groupId = kafkaflume
+pipeline.sources.kafka1.channels = channel1
+pipeline.sources.kafka1.interceptors = i1
+pipeline.sources.kafka1.interceptors.i1.type = timestamp
+pipeline.sources.kafka1.kafka.consumer.timeout.ms = 100
+
+pipeline.channels.channel1.type = memory
+pipeline.channels.channel1.capacity = 100000
+pipeline.channels.channel1.transactionCapacity = 10000
+
+pipeline.sinks.hdfssink.type = hdfs
+pipeline.sinks.hdfssink.hdfs.path = /user/hdfspath
+pipeline.sinks.hdfssink.hdfs.rollInterval = 10
+pipeline.sinks.hdfssink.hdfs.rollSize = 0
+pipeline.sinks.hdfssink.hdfs.rollCount = 0
+pipeline.sinks.hdfssink.hdfs.fileType = DataStream
+pipeline.sinks.hdfssink.channel = channel1

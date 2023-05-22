@@ -1,0 +1,40 @@
+package com.fenago.Storm.ipfrauddetection;
+
+import com.fenago.Storm.utils.CacheIPLookup;
+import com.fenago.Storm.utils.IIPScanner;
+import org.apache.log4j.Logger;
+import org.apache.Storm.task.OutputCollector;
+import org.apache.Storm.task.TopologyContext;
+import org.apache.Storm.topology.OutputFieldsDeclarer;
+import org.apache.Storm.topology.base.BaseRichBolt;
+import org.apache.Storm.tuple.Fields;
+import org.apache.Storm.tuple.Tuple;
+import org.apache.Storm.tuple.Values;
+
+import java.util.Map;
+
+
+public class IPFraudHiveBolt extends BaseRichBolt {
+    private static final long serialVersionUID = 1L;
+    private static final Logger logger = Logger.getLogger(IPFraudHiveBolt.class);
+    OutputCollector _collector;
+    private IIPScanner cacheIPLookup = new CacheIPLookup();
+
+    public void prepare(Map StormConf, TopologyContext context, OutputCollector collector) {
+        _collector = collector;
+    }
+
+    public void execute(Tuple input) {
+        String ipRecord = (String) input.getValue(0);
+        String[] columns = ipRecord.split(",");
+        Values value = new Values(columns[0], columns[3], columns[4], columns[5], columns[6]);
+        _collector.emit(value);
+        _collector.ack(input);
+
+
+    }
+
+    public void declareOutputFields(OutputFieldsDeclarer ofDeclarer) {
+        ofDeclarer.declare(new Fields("ip", "date", "request_url", "protocol_type", "status_code"));
+    }
+}
